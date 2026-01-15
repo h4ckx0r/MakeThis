@@ -60,6 +60,10 @@
             "Composer\\Config::disableProcessTimeout",
             "docker compose --env-file .env -p makethis -f devops/docker-compose.yaml down"
         ],
+        "docker:migrate": [
+            "Composer\\Config::disableProcessTimeout",
+            "docker compose --env-file .env -p makethis -f devops/docker-compose.yaml exec laravel php artisan migrate --force"
+        ],
         "lint": [
             "pint --parallel"
         ],
