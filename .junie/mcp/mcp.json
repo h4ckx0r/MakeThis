@@ -3,7 +3,7 @@
         "laravel-boost": {
             "command": "/Users/h4ckx0r/.config/herd-lite/bin/php",
             "args": [
-                "/Applications/XAMPP/xamppfiles/htdocs/MakeThis/MakeThis/artisan",
+                "/Users/h4ckx0r/Programacion/MakeThis/nuevo/MakeThis/artisan",
                 "boost:mcp"
             ]
         }
