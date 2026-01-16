@@ -1,12 +1,10 @@
 {
     "agents": [
-        "claude_code",
         "codex",
         "copilot",
         "opencode"
     ],
     "editors": [
-        "claude_code",
         "codex",
         "opencode",
         "phpstorm",
