@@ -63,6 +63,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 ## Laravel Boost
 - Laravel Boost is an MCP server that comes with powerful tools designed specifically for this application. Use them.
+- Always use MCP tools when needed, prioritizing Context7 for documentation lookups.
 
 ## Artisan
 - Use the `list-artisan-commands` tool when you need to call an Artisan command to double-check the available parameters.
