@@ -20,6 +20,24 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - pestphp/pest (PEST) - v4
 - phpunit/phpunit (PHPUNIT) - v12
 
+## Project Summary
+- Laravel 12 + Livewire 4 starter kit.
+- Authentication handled by Fortify.
+
+## Frontend Stack
+- Tailwind CSS v4 for styling.
+- DaisyUI is the required UI component library.
+- Vite handles frontend builds.
+
+## UI Guidelines
+- Build all interfaces with DaisyUI components and Tailwind CSS utilities.
+- Do not introduce other UI component libraries without approval.
+
+## Local Development
+- `composer run dev` runs the full stack (server, queue, logs, Vite).
+- `npm run dev` runs Vite only.
+- `npm run build` builds production assets.
+
 ## Conventions
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
