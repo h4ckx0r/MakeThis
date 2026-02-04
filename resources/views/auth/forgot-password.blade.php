@@ -20,7 +20,14 @@
             </header>
 
             {{-- Contenido principal centrado --}}
-            <main class="flex-1 flex items-center justify-center px-6 py-12">
+            <main class="flex-1 flex items-center justify-center px-6 py-12 relative">
+                {{-- Flecha de retroceso --}}
+                <a href="{{ route('home') }}" class="absolute top-8 left-8 text-2xl hover:opacity-70 transition-opacity">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </a>
+
                 <div class="w-full max-w-md space-y-8">
                     {{-- Logo centrado --}}
                     <div class="flex justify-center">
@@ -58,13 +65,6 @@
                         <button type="submit" class="btn btn-primary rounded-full w-full h-14 normal-case text-[15px] font-normal">
                             VALIDAR
                         </button>
-
-                        {{-- Link para volver --}}
-                        <div class="text-center">
-                            <a href="{{ route('home') }}" class="text-sm text-primary hover:underline">
-                                Volver al inicio
-                            </a>
-                        </div>
                     </form>
                 </div>
             </main>

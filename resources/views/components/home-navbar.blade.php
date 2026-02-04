@@ -81,7 +81,7 @@
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <a href="#" class="text-[9px] font-normal underline hover:text-primary">
+                                                    <a href="{{ route('register') }}" class="text-[9px] font-normal underline hover:text-primary">
                                                         Crear una cuenta gratis
                                                     </a>
                                                 </div>

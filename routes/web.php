@@ -19,6 +19,15 @@ Route::get('/login-options', function () {
     return view('auth.login-options');
 })->name('login-options');
 
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::post('/register', function () {
+    // TODO: Implementar lógica de registro
+    return redirect()->route('home')->with('status', 'Registro completado correctamente');
+})->name('register.store');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
