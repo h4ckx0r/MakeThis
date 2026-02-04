@@ -31,8 +31,8 @@
 
                     {{-- Título --}}
                     <div class="text-center">
-                        <h1 class="text-2xl font-bold uppercase tracking-wide">
-                            ¿Has olvidado tu contraseña?
+                        <h1 class="text-2xl font-semibold">
+                            ¿HAS OLVIDADO TU CONTRASEÑA?
                         </h1>
                     </div>
 
@@ -43,20 +43,20 @@
                         {{-- Campo Email --}}
                         <div class="form-control">
                             <label class="label">
-                                <span class="label-text font-medium">Email</span>
+                                <span class="label-text text-[15px] font-normal">Email</span>
                             </label>
                             <input
                                 type="email"
                                 name="email"
                                 placeholder="ejemplo@correo.com"
-                                class="input input-bordered w-full"
+                                class="input input-bordered rounded-full w-full h-14"
                                 required
                             />
                         </div>
 
                         {{-- Botón Validar --}}
-                        <button type="submit" class="btn btn-primary w-full uppercase">
-                            Validar
+                        <button type="submit" class="btn btn-primary rounded-full w-full h-14 normal-case text-[15px] font-normal">
+                            VALIDAR
                         </button>
 
                         {{-- Link para volver --}}

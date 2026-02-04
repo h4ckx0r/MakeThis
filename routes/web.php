@@ -15,6 +15,10 @@ Route::post('/forgot-password', function () {
     return back()->with('status', 'Email enviado correctamente');
 })->name('forgot-password.send');
 
+Route::get('/login-options', function () {
+    return view('auth.login-options');
+})->name('login-options');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

@@ -28,60 +28,60 @@
                                         </div>
 
                                         {{-- Formulario --}}
-                                        <form action="/login" method="POST" class="space-y-4">
+                                        <form action="/login" method="POST" class="space-y-3">
                                             @csrf
 
                                             {{-- Campo Email --}}
                                             <div class="form-control">
-                                                <label class="label">
-                                                    <span class="label-text">Email</span>
+                                                <label class="label pb-1">
+                                                    <span class="label-text text-[12px] font-normal">Email</span>
                                                 </label>
                                                 <input
                                                     type="email"
                                                     name="email"
                                                     placeholder="ejemplo@correo.com"
-                                                    class="input input-bordered w-full"
+                                                    class="input input-bordered rounded-lg w-full h-10 text-sm"
                                                     required
                                                 />
                                             </div>
 
                                             {{-- Campo Contraseña --}}
                                             <div class="form-control">
-                                                <label class="label">
-                                                    <span class="label-text">Contraseña</span>
+                                                <label class="label pb-1">
+                                                    <span class="label-text text-[12px] font-normal">Contraseña</span>
                                                 </label>
                                                 <input
                                                     type="password"
                                                     name="password"
                                                     placeholder="••••••••"
-                                                    class="input input-bordered w-full"
+                                                    class="input input-bordered rounded-lg w-full h-10 text-sm"
                                                     required
                                                 />
                                             </div>
 
                                             {{-- Link Olvidó contraseña --}}
                                             <div class="flex justify-end">
-                                                <a href="{{ route('forgot-password') }}" class="text-sm text-primary hover:underline">
+                                                <a href="{{ route('forgot-password') }}" class="text-[9px] font-normal underline hover:text-primary">
                                                     ¿Olvidó contraseña?
                                                 </a>
                                             </div>
 
                                             {{-- Botón Validar --}}
-                                            <div>
-                                                <button type="submit" class="btn btn-primary w-full">
+                                            <div class="pt-1">
+                                                <button type="submit" class="btn btn-primary rounded-lg w-full h-10 normal-case text-[12px] font-normal">
                                                     Validar
                                                 </button>
                                             </div>
 
                                             {{-- Enlaces adicionales --}}
-                                            <div class="space-y-2 text-center text-sm">
+                                            <div class="space-y-1 text-center pt-2">
                                                 <div>
-                                                    <a href="#" class="text-primary hover:underline">
+                                                    <a href="{{ route('login-options') }}" class="text-[9px] font-normal underline hover:text-primary">
                                                         Ver otras formas de inicio de sesión
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <a href="#" class="text-primary hover:underline">
+                                                    <a href="#" class="text-[9px] font-normal underline hover:text-primary">
                                                         Crear una cuenta gratis
                                                     </a>
                                                 </div>
