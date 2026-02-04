@@ -28,6 +28,10 @@ Route::post('/register', function () {
     return redirect()->route('home')->with('status', 'Registro completado correctamente');
 })->name('register.store');
 
+Route::get('/terms-conditions', function () {
+    return view('terms-conditions');
+})->name('terms-conditions');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
