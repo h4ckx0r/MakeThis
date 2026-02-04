@@ -6,6 +6,15 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->name('forgot-password');
+
+Route::post('/forgot-password', function () {
+    // TODO: Implementar lógica de recuperación de contraseña
+    return back()->with('status', 'Email enviado correctamente');
+})->name('forgot-password.send');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

@@ -61,7 +61,7 @@
 
                                             {{-- Link Olvidó contraseña --}}
                                             <div class="flex justify-end">
-                                                <a href="#" class="text-sm text-primary hover:underline">
+                                                <a href="{{ route('forgot-password') }}" class="text-sm text-primary hover:underline">
                                                     ¿Olvidó contraseña?
                                                 </a>
                                             </div>
