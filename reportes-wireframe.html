@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuenta - Reportes | MakeThis</title>
+    <link rel="stylesheet" href="css/reportes-wireframe.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="profile-section">
+                <div class="profile-photo">
+                    <span>Foto de Perfil</span>
+                </div>
+                <div class="profile-info">
+                    <span class="username">@Nombre</span>
+                    <button class="menu-btn">⋯</button>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <button class="nav-pill">Prioridades</button>
+                <button class="nav-pill">Proximidad</button>
+                <button class="nav-pill">Popularidad</button>
+                <button class="nav-pill">Mi Cuenta</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active">Reportes</button>
+            <button class="tab-btn">Solicitudes</button>
+            <button class="tab-btn">Mensajes</button>
+            <button class="tab-btn">Usuarios</button>
+            <button class="tab-btn">Catálogo</button>
+        </nav>
+
+        <!-- Reports Section -->
+        <section class="reports-section">
+            <h1 class="section-title">Reportes</h1>
+
+            <!-- Search and Filter -->
+            <div class="search-filter">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Buscar Nº Solicitud" class="search-input">
+                </div>
+                <button class="filter-btn">
+                    <span>Filtrar</span>
+                    <span class="filter-icon">☰</span>
+                </button>
+            </div>
+
+            <!-- Reports List -->
+            <div class="reports-list">
+                <!-- Report Item 1 - Yellow -->
+                <div class="report-item">
+                    <input type="checkbox" class="report-checkbox yellow">
+                    <div class="report-header">
+                        <span class="report-title">Nº Solicitud - Fecha - Fallo de datos</span>
+                        <button class="expand-btn">∨</button>
+                    </div>
+                </div>
+
+                <!-- Report Item 2 - Green -->
+                <div class="report-item">
+                    <input type="checkbox" class="report-checkbox green">
+                    <div class="report-header">
+                        <span class="report-title">Nº Solicitud - Fecha - Pedido Recibido</span>
+                        <button class="expand-btn">∨</button>
+                    </div>
+                </div>
+
+                <!-- Report Item 3 - Red -->
+                <div class="report-item">
+                    <input type="checkbox" class="report-checkbox red">
+                    <div class="report-header">
+                        <span class="report-title">Nº Solicitud - Fecha - Reporte</span>
+                        <button class="expand-btn">∨</button>
+                    </div>
+                </div>
+
+                <!-- Report Item 4 - Yellow -->
+                <div class="report-item">
+                    <input type="checkbox" class="report-checkbox yellow">
+                    <div class="report-header">
+                        <span class="report-title">Nº Solicitud - Fecha - Estado</span>
+                        <button class="expand-btn">∨</button>
+                    </div>
+                </div>
+
+                <!-- Report Item 5 - Yellow -->
+                <div class="report-item">
+                    <input type="checkbox" class="report-checkbox yellow">
+                    <div class="report-header">
+                        <span class="report-title">Nº Solicitud - Fecha - Estado</span>
+                        <button class="expand-btn">∨</button>
+                    </div>
+                </div>
+
+                <!-- Report Item 6 - Yellow (Expanded) -->
+                <div class="report-item expanded">
+                    <input type="checkbox" class="report-checkbox yellow">
+                    <div class="report-header">
+                        <span class="report-title">Nº Solicitud - Fecha - Estado</span>
+                        <button class="expand-btn active">∧</button>
+                    </div>
+                    
+                    <!-- Expanded Content -->
+                    <div class="report-details">
+                        <div class="report-meta">
+                            <div class="meta-row">
+                                <span class="meta-label">Nº Solicitud:</span>
+                                <span class="meta-value">_______</span>
+                                <span class="meta-label">Cliente</span>
+                                <span class="meta-label">Tipo: Fallo en la entrega</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">Fecha:</span>
+                                <div class="date-inputs">
+                                    <input type="text" class="date-input" value="DD">
+                                    <input type="text" class="date-input" value="MM">
+                                    <input type="text" class="date-input" value="AAAA">
+                                </div>
+                                <span class="meta-label">Estado</span>
+                            </div>
+                        </div>
+
+                        <div class="report-content-grid">
+                            <div class="content-box">
+                                <div class="content-box-inner">
+                                    <span class="content-nav prev">‹</span>
+                                    <div class="content-text">
+                                        <p>Archivos adjuntos, fotos,</p>
+                                        <p>informes, firmas electrónicas.</p>
+                                    </div>
+                                    <span class="content-nav next">›</span>
+                                </div>
+                            </div>
+                            <div class="content-box">
+                                <div class="content-box-inner scrollable">
+                                    <p>Información detallada del tipo</p>
+                                    <p>de reporte</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Report Button -->
+            <div class="add-report-section">
+                <button class="add-report-btn">Añadir Reporte</button>
+                <div class="connector-line"></div>
+            </div>
+
+            <!-- New Report Form -->
+            <div class="new-report-form">
+                <input type="checkbox" class="report-checkbox">
+                <div class="form-content">
+                    <div class="form-meta">
+                        <div class="meta-row">
+                            <span class="meta-label">Nº Solicitud:</span>
+                            <span class="meta-value">_______</span>
+                            <span class="meta-label">Cliente</span>
+                            <span class="meta-label">Tipo: _____</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="meta-label">Fecha:</span>
+                            <div class="date-inputs">
+                                <input type="text" class="date-input" value="DD">
+                                <input type="text" class="date-input" value="MM">
+                                <input type="text" class="date-input" value="AAAA">
+                            </div>
+                            <span class="meta-label">Estado</span>
+                            <div class="status-dropdown">
+                                <select class="status-select">
+                                    <option>∨</option>
+                                    <option>En Revisión</option>
+                                    <option>En Proceso</option>
+                                    <option>Enviado</option>
+                                    <option>Completado</option>
+                                    <option>Incidencia</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-content-grid">
+                        <div class="content-box">
+                            <div class="content-box-inner">
+                                <span class="content-nav prev">‹</span>
+                                <div class="content-text">
+                                    <p>Archivos adjuntos, fotos,</p>
+                                    <p>informes, firmas electrónicas.</p>
+                                </div>
+                                <span class="content-nav next">›</span>
+                            </div>
+                        </div>
+                        <div class="content-box">
+                            <div class="content-box-inner scrollable">
+                                <p>Información detallada del tipo</p>
+                                <p>de reporte</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn">‹</button>
+                <button class="page-btn">‹</button>
+                <span class="page-indicator">●</span>
+                <button class="page-btn">›</button>
+                <button class="page-btn">›</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-box">
+                    <svg viewBox="0 0 60 60" class="logo-svg">
+                        <path d="M10 50 L30 10 L50 50 L30 35 Z" fill="#1a5f5f" stroke="#000" stroke-width="2"/>
+                        <text x="30" y="58" text-anchor="middle" font-size="8" fill="#000">MakeThis</text>
+                    </svg>
+                </div>
+                <span class="logo-text">MakeThis</span>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">MakeThis</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Enlace</a></li>
+                    <li><a href="#">Enlace</a></li>
+                    <li><a href="#">Enlace</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Aspectos Legales</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Enlace</a></li>
+                    <li><a href="#">Enlace</a></li>
+                    <li><a href="#">Enlace</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3 class="footer-title">Contacto</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Enlace</a></li>
+                    <li><a href="#">Enlace</a></li>
+                    <li><a href="#">Enlace</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-social">
+                <div class="social-icon">Red<br>Social</div>
+                <div class="social-icon">Red<br>Social</div>
+                <div class="social-icon">Red<br>Social</div>
+                <div class="social-icon">Red<br>Social</div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
