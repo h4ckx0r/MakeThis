@@ -31,6 +31,15 @@ Route::post('/register', function () {
 Route::get('/terms-conditions', function () {
     return view('terms-conditions');
 })->name('terms-conditions');
+
+Route::get('/solicitudes-cliente', function () {
+    return view('solicitudes-cliente');
+})->name('solicitudes-cliente');
+
+Route::get('/me-gusta-cliente', function () {
+    return view('me-gusta-cliente');
+})->name('me-gusta-cliente');
+
 Route::view('sobre-nosotros', 'about-us')
     ->name('about-us');
 
