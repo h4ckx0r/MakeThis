@@ -173,7 +173,7 @@ $title = 'Usuarios';
 
         {{-- Add User Modal --}}
         <dialog id="add_user_modal" class="modal">
-            <div class="modal-box max-w-2xl bg-white border border-neutral-900 p-8 rounded-lg">
+            <div class="modal-box max-w-2xl bg-white text-black border border-neutral-900 p-8 rounded-lg">
                 <h3 class="font-bold text-2xl text-center mb-6">Añadir Usuario</h3>
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <input type="text" placeholder="Nombre" class="w-full border border-neutral-400 p-2 rounded" />
@@ -206,7 +206,7 @@ $title = 'Usuarios';
 
         {{-- Edit User Modal --}}
         <dialog id="edit_user_modal" class="modal">
-            <div class="modal-box max-w-2xl bg-white border border-neutral-900 p-8 rounded-lg">
+            <div class="modal-box max-w-2xl bg-white text-black border border-neutral-900 p-8 rounded-lg">
                 <h3 class="font-bold text-2xl text-center mb-6">Editar Usuario</h3>
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <input type="text" value="Juan" class="w-full border border-neutral-400 p-2 rounded" />
@@ -239,7 +239,7 @@ $title = 'Usuarios';
 
         {{-- Delete Confirmation Modal --}}
         <dialog id="delete_user_modal" class="modal">
-            <div class="modal-box bg-white border border-neutral-900 p-8 rounded-lg text-center">
+            <div class="modal-box bg-white text-black border border-neutral-900 p-8 rounded-lg text-center">
                 <h3 class="font-bold text-lg mb-4">¿Estás seguro de que quieres eliminar este usuario?</h3>
                 <p class="mb-6">Esta acción no se puede deshacer.</p>
                 <div class="flex gap-4 justify-center">

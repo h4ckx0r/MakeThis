@@ -467,20 +467,20 @@ $title = 'Reportes';
 
                 {{-- Add Report Button --}}
                 <div class="mb-5 flex flex-col items-center">
-                    <button class="btn btn-primary" onclick="my_modal_1.showModal()">Añadir reporte</button>
+                    <button class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900"
+                        onclick="my_modal_1.showModal()">Añadir reporte</button>
                     <dialog id="my_modal_1" class="modal">
-                        <div class="modal-box max-w-3xl">
+                        <div class="modal-box max-w-3xl bg-white text-black">
                             <div
-                                class="mb-8 flex items-start gap-4 rounded border border-neutral-900 bg-neutral-100 p-5 dark:border-neutral-100 dark:bg-neutral-800">
+                                class="mb-8 flex items-start gap-4 rounded border border-neutral-900 bg-neutral-100 p-5">
                                 <input type="checkbox"
-                                    class="mt-0.5 h-5 w-5 flex-shrink-0 appearance-none rounded border-2 border-neutral-900 dark:border-neutral-100">
+                                    class="mt-0.5 h-5 w-5 flex-shrink-0 appearance-none rounded border-2 border-neutral-900">
                                 <div class="flex-1 space-y-4">
                                     {{-- Form Meta --}}
                                     <div class="space-y-2">
                                         <div class="flex flex-wrap items-center gap-4 text-sm">
                                             <span class="font-medium">Nº Solicitud:</span>
-                                            <span
-                                                class="border-b border-neutral-900 px-2 dark:border-neutral-100">_______</span>
+                                            <span class="border-b border-neutral-900 px-2">_______</span>
                                             <span class="font-medium">Cliente</span>
                                             <span class="font-medium">Tipo: _____</span>
                                         </div>
@@ -488,15 +488,15 @@ $title = 'Reportes';
                                             <span class="font-medium">Fecha:</span>
                                             <div class="flex gap-1">
                                                 <input type="text" value="DD"
-                                                    class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs dark:border-neutral-100 dark:bg-neutral-900">
+                                                    class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs">
                                                 <input type="text" value="MM"
-                                                    class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs dark:border-neutral-100 dark:bg-neutral-900">
+                                                    class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs">
                                                 <input type="text" value="AAAA"
-                                                    class="w-14 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs dark:border-neutral-100 dark:bg-neutral-900">
+                                                    class="w-14 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs">
                                             </div>
                                             <span class="font-medium">Estado</span>
                                             <select
-                                                class="rounded border border-neutral-900 bg-white px-2 py-1 text-xs dark:border-neutral-100 dark:bg-neutral-900">
+                                                class="rounded border border-neutral-900 bg-white px-2 py-1 text-xs">
                                                 <option>En Revisión</option>
                                                 <option>En Proceso</option>
                                                 <option>Enviado</option>
@@ -509,8 +509,7 @@ $title = 'Reportes';
                                     {{-- Form Content Grid --}}
                                     <div class="grid gap-5 md:grid-cols-2">
                                         {{-- Files Box --}}
-                                        <div
-                                            class="min-h-[150px] rounded border border-neutral-900 bg-white p-4 dark:border-neutral-100 dark:bg-neutral-900">
+                                        <div class="min-h-[150px] rounded border border-neutral-900 bg-white p-4">
                                             <div class="flex h-full items-center justify-between">
                                                 <span class="cursor-pointer text-2xl text-neutral-600">‹</span>
                                                 <div class="text-center text-sm leading-relaxed">
@@ -523,17 +522,20 @@ $title = 'Reportes';
 
                                         {{-- Details Box --}}
                                         <div
-                                            class="min-h-[150px] overflow-y-auto rounded border border-neutral-900 bg-white p-4 dark:border-neutral-100 dark:bg-neutral-900">
+                                            class="min-h-[150px] overflow-y-auto rounded border border-neutral-900 bg-white p-4">
                                             <p class="text-sm">Información detallada del tipo</p>
                                             <p class="text-sm">de reporte</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-action">
+                            <div class="modal-action justify-center gap-4">
                                 <form method="dialog">
-                                    <!-- if there is a button in form, it will close the modal -->
-                                    <button class="btn btn-primary">Close</button>
+                                    <button
+                                        class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900">Cancelar</button>
+                                    <button
+                                        class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900 ml-2">Guardar
+                                        Reporte</button>
                                 </form>
                             </div>
                         </div>

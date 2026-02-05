@@ -111,7 +111,8 @@ $title = 'Solicitudes';
                                     </div>
                                 </div>
                                 <div class="mt-4 flex justify-end">
-                                    <span class="text-2xl cursor-pointer">⋯</span>
+                                    <button class="text-2xl cursor-pointer"
+                                        onclick="edit_request_modal.showModal()">⋯</button>
                                 </div>
                             </div>
                         </div>
@@ -132,6 +133,10 @@ $title = 'Solicitudes';
                         <div class="collapse-content border-t border-neutral-200 dark:border-neutral-700">
                             <div class="p-6">
                                 <p>Contenido...</p>
+                                <div class="mt-4 flex justify-end">
+                                    <button class="text-2xl cursor-pointer"
+                                        onclick="edit_request_modal.showModal()">⋯</button>
+                                </div>
                             </div>
                         </div>
                     </details>
@@ -151,6 +156,10 @@ $title = 'Solicitudes';
                         <div class="collapse-content border-t border-neutral-200 dark:border-neutral-700">
                             <div class="p-6">
                                 <p>Contenido...</p>
+                                <div class="mt-4 flex justify-end">
+                                    <button class="text-2xl cursor-pointer"
+                                        onclick="edit_request_modal.showModal()">⋯</button>
+                                </div>
                             </div>
                         </div>
                     </details>
@@ -169,12 +178,64 @@ $title = 'Solicitudes';
                         <div class="collapse-content border-t border-neutral-200 dark:border-neutral-700">
                             <div class="p-6">
                                 <p>Contenido...</p>
+                                <div class="mt-4 flex justify-end">
+                                    <button class="text-2xl cursor-pointer"
+                                        onclick="edit_request_modal.showModal()">⋯</button>
+                                </div>
                             </div>
                         </div>
                     </details>
                 </div>
             </div>
         </div>
+
+
+
+        {{-- Edit Request Modal --}}
+        <dialog id="edit_request_modal" class="modal">
+            <div class="modal-box max-w-3xl bg-white text-black border border-neutral-900 p-8 rounded-lg">
+                <h3 class="font-bold text-2xl text-center mb-6">Editar Solicitud</h3>
+
+                <div class="grid gap-6 mb-6">
+                    {{-- Status Select --}}
+                    <div class="flex flex-col gap-2">
+                        <label class="font-semibold">Estado</label>
+                        <select class="w-full border border-neutral-400 p-2 rounded bg-white">
+                            <option>En Proceso</option>
+                            <option>Aceptada</option>
+                            <option>Cancelada</option>
+                            <option>En Revisión</option>
+                        </select>
+                    </div>
+
+                    {{-- Detailed Info --}}
+                    <div class="flex flex-col gap-2">
+                        <label class="font-semibold">Información Detallada (Tamaño, Material, Idea...)</label>
+                        <textarea class="w-full h-32 border border-neutral-400 p-2 rounded bg-white resize-none"
+                            placeholder="Escribe aquí los detalles..."></textarea>
+                    </div>
+
+                    {{-- File Upload --}}
+                    <div class="flex flex-col gap-2">
+                        <label class="font-semibold">Adjuntar Archivos</label>
+                        <input type="file" class="file-input file-input-bordered w-full border-neutral-400 bg-white"
+                            multiple />
+                    </div>
+                </div>
+
+                <div class="modal-action justify-center gap-4">
+                    <form method="dialog">
+                        <button
+                            class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900">Cancelar</button>
+                        <button
+                            class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900 ml-2">Guardar</button>
+                    </form>
+                </div>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
 
         {{-- Footer --}}
         <footer
