@@ -16,7 +16,82 @@
                     </li>
                     @foreach (range(1, 4) as $index)
                         <li>
-                            <a class="text-sm font-medium">Placeholder</a>
+                            @if ($index === 4)
+                                <div class="dropdown dropdown-end">
+                                    <button type="button" tabindex="0" class="text-sm font-medium">Mi Cuenta</button>
+                                    <div tabindex="0" class="dropdown-content z-[1] mt-3 w-80 rounded-lg border border-base-300 bg-base-100 p-6 shadow-xl">
+                                        {{-- Logo --}}
+                                        <div class="flex justify-center mb-4">
+                                            <div class="flex h-16 w-16 items-center justify-center rounded-lg bg-base-200">
+                                                <x-app-logo-icon class="size-10 fill-current text-black dark:text-white" />
+                                            </div>
+                                        </div>
+
+                                        {{-- Formulario --}}
+                                        <form action="/login" method="POST" class="space-y-3">
+                                            @csrf
+
+                                            {{-- Campo Email --}}
+                                            <div class="form-control">
+                                                <label class="label pb-1">
+                                                    <span class="label-text text-[12px] font-normal">Email</span>
+                                                </label>
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    placeholder="ejemplo@correo.com"
+                                                    class="input input-bordered rounded-lg w-full h-10 text-sm"
+                                                    required
+                                                />
+                                            </div>
+
+                                            {{-- Campo Contraseña --}}
+                                            <div class="form-control">
+                                                <label class="label pb-1">
+                                                    <span class="label-text text-[12px] font-normal">Contraseña</span>
+                                                </label>
+                                                <input
+                                                    type="password"
+                                                    name="password"
+                                                    placeholder="••••••••"
+                                                    class="input input-bordered rounded-lg w-full h-10 text-sm"
+                                                    required
+                                                />
+                                            </div>
+
+                                            {{-- Link Olvidó contraseña --}}
+                                            <div class="flex justify-end">
+                                                <a href="{{ route('forgot-password') }}" class="text-[9px] font-normal underline hover:text-primary">
+                                                    ¿Olvidó contraseña?
+                                                </a>
+                                            </div>
+
+                                            {{-- Botón Validar --}}
+                                            <div class="pt-1">
+                                                <button type="submit" class="btn btn-primary rounded-lg w-full h-10 normal-case text-[12px] font-normal">
+                                                    Validar
+                                                </button>
+                                            </div>
+
+                                            {{-- Enlaces adicionales --}}
+                                            <div class="space-y-1 text-center pt-2">
+                                                <div>
+                                                    <a href="{{ route('login-options') }}" class="text-[9px] font-normal underline hover:text-primary">
+                                                        Ver otras formas de inicio de sesión
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a href="{{ route('register') }}" class="text-[9px] font-normal underline hover:text-primary">
+                                                        Crear una cuenta gratis
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            @else
+                                <a class="text-sm font-medium">Placeholder</a>
+                            @endif
                         </li>
                     @endforeach
                 </ul>
