@@ -21,7 +21,7 @@
                     <label class="block text-sm font-semibold uppercase tracking-wide text-gray-600">Tipo de Pieza</label>
                     <div class="bg-base-200 rounded-lg p-4">
                         <p class="text-lg font-semibold capitalize">
-                            @if(session('preview.tipo') === 'propia')
+                            @if(session('preview')['tipo'] === 'propia')
                                 Tu Modelo 3D
                             @else
                                 Diseño Personalizado
@@ -34,7 +34,7 @@
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold uppercase tracking-wide text-gray-600">Material</label>
                     <div class="bg-base-200 rounded-lg p-4">
-                        <p class="text-lg font-semibold">{{ session('preview.material') }}</p>
+                        <p class="text-lg font-semibold">{{ session('preview')['material'] }}</p>
                     </div>
                 </div>
 
@@ -42,17 +42,17 @@
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold uppercase tracking-wide text-gray-600">Color</label>
                     <div class="bg-base-200 rounded-lg p-4">
-                        <p class="text-lg font-semibold">{{ session('preview.color') }}</p>
+                        <p class="text-lg font-semibold">{{ session('preview')['color'] }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Indicaciones -->
-            @if(session('preview.indicaciones'))
+            @if(session('preview')['indicaciones'] ?? false)
                 <div>
                     <label class="block text-sm font-semibold uppercase tracking-wide text-gray-600 mb-2">Indicaciones Especiales</label>
                     <div class="bg-base-200 rounded-lg p-4">
-                        <p class="whitespace-pre-line">{{ session('preview.indicaciones') }}</p>
+                        <p class="whitespace-pre-line">{{ session('preview')['indicaciones'] }}</p>
                     </div>
                 </div>
             @endif

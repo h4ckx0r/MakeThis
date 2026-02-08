@@ -44,11 +44,17 @@ class PiezaController extends Controller
 
     public function store(Request $request)
     {
+        // Asegurar que el usuario está autenticado
+        if (!auth()->check()) {
+            return redirect()->route('login')
+                ->with('warning', 'Debes ingresar para confirmar tu solicitud.');
+        }
+
         $previewData = session('preview');
 
         if (!$previewData) {
             return redirect()->route('piezas.solicitar')
-                ->with('error', 'Sesión expirada.');
+                ->with('error', 'Sesión expirada. Por favor, vuelve a llenar el formulario.');
         }
 
         $solicitud = SolicitudPieza::create([

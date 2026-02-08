@@ -75,10 +75,12 @@ Route::get('/piezas/propia', fn() => view('piezas.propia'))
 Route::get('/piezas/personalizada', fn() => view('piezas.personalizada'))
     ->name('piezas.personalizada');
 
-// Preview y store (autenticados)
+// Preview (público para permitir edición antes de registrarse)
+Route::post('/piezas/preview', [PiezaController::class, 'preview'])
+    ->name('piezas.preview');
+
+// Store (autenticado)
 Route::middleware('auth')->group(function () {
-    Route::post('/piezas/preview', [PiezaController::class, 'preview'])
-        ->name('piezas.preview');
     Route::post('/piezas/store', [PiezaController::class, 'store'])
         ->name('piezas.store');
 });
