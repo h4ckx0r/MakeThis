@@ -71,4 +71,72 @@ class PiezaController extends Controller
         return redirect()->route('solicitudes-cliente')
             ->with('success', 'Solicitud enviada. ID: #' . $solicitud->id);
     }
+
+    public function adminIndex(Request $request)
+    {
+        $query = Pieza::with('tags');
+
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('nombre', 'like', '%' . $request->search . '%');
+        }
+
+        $piezas = $query->orderBy('created_at', 'desc')->get();
+        $availableTags = Tag::orderBy('nombre')->get();
+
+        return view('admin.piezas', compact('piezas', 'availableTags'));
+    }
+
+    public function adminStore(Request $request)
+    {
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'visible_catalogo' => 'nullable|boolean',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+        $validated['visible_catalogo'] = $request->has('visible_catalogo');
+
+        $pieza = Pieza::create($validated);
+        $pieza->tags()->sync($validated['tags'] ?? []);
+
+        return redirect()->route('admin.piezas.index')
+            ->with('success', 'Pieza creada exitosamente');
+    }
+
+    public function adminUpdate(Request $request, Pieza $pieza)
+    {
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'visible_catalogo' => 'nullable|boolean',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+        $validated['visible_catalogo'] = $request->has('visible_catalogo');
+
+        $pieza->update($validated);
+        $pieza->tags()->sync($validated['tags'] ?? []);
+
+        return redirect()->route('admin.piezas.index')
+            ->with('success', 'Pieza actualizada exitosamente');
+    }
+
+    public function adminDestroy(Pieza $pieza)
+    {
+        $hasSolicitudes = SolicitudPieza::where('pieza_id', $pieza->id)->exists();
+
+        if ($hasSolicitudes) {
+            return redirect()->route('admin.piezas.index')
+                ->with('error', 'No se puede eliminar porque tiene solicitudes asociadas');
+        }
+
+        $pieza->tags()->detach();
+        $pieza->delete();
+
+        return redirect()->route('admin.piezas.index')
+            ->with('success', 'Pieza eliminada exitosamente');
+    }
 }

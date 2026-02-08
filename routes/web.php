@@ -66,6 +66,18 @@ Route::view('usuarios', 'usuarios')
 Route::view('solicitudes', 'solicitudes')
     ->name('solicitudes');
 
+// Rutas administrativas de piezas (protegidas)
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    Route::get('/piezas', [PiezaController::class, 'adminIndex'])
+        ->name('admin.piezas.index');
+    Route::post('/piezas', [PiezaController::class, 'adminStore'])
+        ->name('admin.piezas.store');
+    Route::put('/piezas/{pieza}', [PiezaController::class, 'adminUpdate'])
+        ->name('admin.piezas.update');
+    Route::delete('/piezas/{pieza}', [PiezaController::class, 'adminDestroy'])
+        ->name('admin.piezas.destroy');
+});
+
 // Rutas para Catálogo de Piezas (públicas)
 Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
     ->name('piezas.catalogo');
