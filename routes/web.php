@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PiezaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -58,5 +59,28 @@ Route::view('usuarios', 'usuarios')
 
 Route::view('solicitudes', 'solicitudes')
     ->name('solicitudes');
+
+// Rutas para Catálogo de Piezas (públicas)
+Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
+    ->name('piezas.catalogo');
+
+// Selección de tipo
+Route::get('/piezas/solicitar', fn() => view('piezas.solicitar'))
+    ->name('piezas.solicitar');
+
+// Formularios
+Route::get('/piezas/propia', fn() => view('piezas.propia'))
+    ->name('piezas.propia');
+
+Route::get('/piezas/personalizada', fn() => view('piezas.personalizada'))
+    ->name('piezas.personalizada');
+
+// Preview y store (autenticados)
+Route::middleware('auth')->group(function () {
+    Route::post('/piezas/preview', [PiezaController::class, 'preview'])
+        ->name('piezas.preview');
+    Route::post('/piezas/store', [PiezaController::class, 'store'])
+        ->name('piezas.store');
+});
 
 require __DIR__ . '/settings.php';
