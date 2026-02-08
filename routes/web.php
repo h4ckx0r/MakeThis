@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PiezaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -46,6 +47,12 @@ Route::view('sobre-nosotros', 'about-us')
 Route::view('maquinaria', 'machinery')
     ->name('machinery');
 
+Route::view('equipo', 'equipo')
+    ->name('equipo');
+
+Route::view('colaboraciones', 'colaboraciones')
+    ->name('colaboraciones');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -58,5 +65,42 @@ Route::view('usuarios', 'usuarios')
 
 Route::view('solicitudes', 'solicitudes')
     ->name('solicitudes');
+
+// Rutas administrativas de piezas (protegidas)
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    Route::get('/piezas', [PiezaController::class, 'adminIndex'])
+        ->name('admin.piezas.index');
+    Route::post('/piezas', [PiezaController::class, 'adminStore'])
+        ->name('admin.piezas.store');
+    Route::put('/piezas/{pieza}', [PiezaController::class, 'adminUpdate'])
+        ->name('admin.piezas.update');
+    Route::delete('/piezas/{pieza}', [PiezaController::class, 'adminDestroy'])
+        ->name('admin.piezas.destroy');
+});
+
+// Rutas para Catálogo de Piezas (públicas)
+Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
+    ->name('piezas.catalogo');
+
+// Selección de tipo
+Route::get('/piezas/solicitar', fn() => view('piezas.solicitar'))
+    ->name('piezas.solicitar');
+
+// Formularios
+Route::get('/piezas/propia', fn() => view('piezas.propia'))
+    ->name('piezas.propia');
+
+Route::get('/piezas/personalizada', fn() => view('piezas.personalizada'))
+    ->name('piezas.personalizada');
+
+// Preview (público para permitir edición antes de registrarse)
+Route::post('/piezas/preview', [PiezaController::class, 'preview'])
+    ->name('piezas.preview');
+
+// Store (autenticado)
+Route::middleware('auth')->group(function () {
+    Route::post('/piezas/store', [PiezaController::class, 'store'])
+        ->name('piezas.store');
+});
 
 require __DIR__ . '/settings.php';
