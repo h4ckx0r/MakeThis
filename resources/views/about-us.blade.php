@@ -20,12 +20,12 @@
                             <a href="{{ route('machinery') }}" wire:navigate class="btn btn-xl h-auto w-full border border-base-300 bg-base-200 shadow-none py-16">
                                 <h2 class="text-3xl font-medium">Maquinaria y Materiales</h2>
                             </a>
-                            <button class="btn btn-xl h-auto w-full border border-base-300 bg-base-200 shadow-none py-16">
+                            <a href="{{ route('equipo') }}" wire:navigate class="btn btn-xl h-auto w-full border border-base-300 bg-base-200 shadow-none py-16">
                                 <h2 class="text-3xl font-medium">Equipo</h2>
-                            </button>
-                            <button class="btn btn-xl h-auto w-full border border-base-300 bg-base-200 shadow-none py-16">
+                            </a>
+                            <a href="{{ route('colaboraciones') }}" wire:navigate class="btn btn-xl h-auto w-full border border-base-300 bg-base-200 shadow-none py-16">
                                 <h2 class="text-3xl font-medium">Colaboraciones</h2>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </section>

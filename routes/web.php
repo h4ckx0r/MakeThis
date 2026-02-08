@@ -47,6 +47,12 @@ Route::view('sobre-nosotros', 'about-us')
 Route::view('maquinaria', 'machinery')
     ->name('machinery');
 
+Route::view('equipo', 'equipo')
+    ->name('equipo');
+
+Route::view('colaboraciones', 'colaboraciones')
+    ->name('colaboraciones');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
