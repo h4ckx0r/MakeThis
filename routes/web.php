@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'home')
     ->name('home');
 
+Route::view('terms-conditions', 'terms-conditions')
+    ->name('terms-conditions');
+
 Route::prefix('about')->group(function () {
     Route::view('', 'about-us.about-us')
         ->name('about-us');
@@ -21,13 +24,14 @@ Route::prefix('about')->group(function () {
 
 Route::prefix('auth')->group(function () {
     Route::view('login', 'auth.login')
-        ->name('login');
-    Route::view('register', 'auth.register')
-        ->name('register');
+        ->name('auth.login');
+    Route::get('register', function() {
+        return view('auth.register');
+    })->name('auth.register');
     Route::view('forgot-password', 'auth.forgot-password')
-        ->name('forgot-password');
+        ->name('auth.forgot-password');
     Route::view('login-options', 'auth.login-options')
-        ->name('login-options');
+        ->name('auth.login-options');
 });
 
 Route::prefix('client')->group(function () {
@@ -71,6 +75,7 @@ Route::view('terms-conditions', 'terms-conditions')
 
 
 
+require __DIR__.'/settings.php';
 
 // DEPRECADO ;)
 Route::post('/forgot-password', function () {
@@ -137,4 +142,4 @@ Route::middleware('auth')->group(function () {
         ->name('piezas.store');
 });
 
-require __DIR__.'/settings.php';
+*/

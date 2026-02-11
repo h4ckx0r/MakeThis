@@ -28,7 +28,7 @@
                                         </div>
 
                                         {{-- Formulario --}}
-                                        <form action="/login" method="POST" class="space-y-3">
+                                        <form action="{{ route('auth.login') }}" method="POST" class="space-y-3">
                                             @csrf
 
                                             {{-- Campo Email --}}
@@ -61,7 +61,7 @@
 
                                             {{-- Link Olvidó contraseña --}}
                                             <div class="flex justify-end">
-                                                <a href="{{ route('forgot-password') }}" class="text-[9px] font-normal underline hover:text-primary">
+                                                <a href="{{ route('auth.forgot-password') }}" class="text-[9px] font-normal underline hover:text-primary">
                                                     ¿Olvidó contraseña?
                                                 </a>
                                             </div>
@@ -76,12 +76,12 @@
                                             {{-- Enlaces adicionales --}}
                                             <div class="space-y-1 text-center pt-2">
                                                 <div>
-                                                    <a href="{{ route('login-options') }}" class="text-[9px] font-normal underline hover:text-primary">
+                                                    <a href="{{ route('auth.login-options') }}" class="text-[9px] font-normal underline hover:text-primary">
                                                         Ver otras formas de inicio de sesión
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <a href="{{ route('register') }}" class="text-[9px] font-normal underline hover:text-primary">
+                                                    <a href="{{ route('auth.register') }}" class="text-[9px] font-normal underline hover:text-primary">
                                                         Crear una cuenta gratis
                                                     </a>
                                                 </div>
