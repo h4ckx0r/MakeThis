@@ -3,14 +3,76 @@
 use App\Http\Controllers\PiezaController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('forgot-password');
+// VISTAS
+Route::view('/', 'home')
+    ->name('home');
 
+Route::prefix('about')->group(function () {
+    Route::view('', 'about-us.about-us')
+        ->name('about-us');
+    Route::view('machinery', 'about-us.machinery.machinery')
+        ->name('about-us.machinery');
+    Route::view('team', 'about-us.team.team')
+        ->name('about-us.team');
+    Route::view('collaborations', 'about-us.collaborations.collaborations')
+        ->name('about-us.collaborations');
+});
+
+Route::prefix('auth')->group(function () {
+    Route::view('login', 'auth.login')
+        ->name('login');
+    Route::view('register', 'auth.register')
+        ->name('register');
+    Route::view('forgot-password', 'auth.forgot-password')
+        ->name('forgot-password');
+    Route::view('login-options', 'auth.login-options')
+        ->name('login-options');
+});
+
+Route::prefix('client')->group(function () {
+    Route::view('requests', 'client.requests')
+        ->name('client.requests');
+    Route::view('likes', 'client.likes')
+        ->name('client.likes');
+});
+
+Route::prefix('prints')->group(function () {
+    Route::view('catalog', 'prints.catalog')
+        ->name('prints.catalog');
+
+    Route::prefix('request')->group(function() {
+        Route::view('', 'prints.request')
+            ->name('prints.request');
+        Route::view('custom', 'prints.custom')
+            ->name('prints.custom');
+        Route::view('own', 'prints.own')
+            ->name('prints.own');
+        Route::view('preview', 'prints.preview')
+            ->name('prints.preview');
+    });
+});
+
+Route::view('terms-conditions', 'terms-conditions')
+    ->name('terms-conditions');
+
+
+
+
+
+
+// CONTROLADORES
+
+
+
+
+
+
+
+
+
+
+// DEPRECADO ;)
 Route::post('/forgot-password', function () {
     // TODO: Implementar lógica de recuperación de contraseña
     return back()->with('status', 'Email enviado correctamente');
@@ -21,40 +83,13 @@ Route::get('/login-options', function () {
 })->name('login-options');
 
 Route::get('/register', function () {
-    return view('livewire.auth.register');
+    return view('auth.register');
 })->name('register');
 
 Route::post('/register', function () {
+    // TODO: Implementar lógica de registro
     return redirect()->route('home')->with('status', 'Registro completado correctamente');
 })->name('register.store');
-
-Route::get('/terms-conditions', function () {
-    return view('terms-conditions');
-})->name('terms-conditions');
-
-Route::get('/solicitudes-cliente', function () {
-    return view('solicitudes-cliente');
-})->name('solicitudes-cliente');
-
-Route::get('/me-gusta-cliente', function () {
-    return view('me-gusta-cliente');
-})->name('me-gusta-cliente');
-
-Route::view('sobre-nosotros', 'about-us')
-    ->name('about-us');
-
-Route::view('maquinaria', 'machinery')
-    ->name('machinery');
-
-Route::view('equipo', 'equipo')
-    ->name('equipo');
-
-Route::view('colaboraciones', 'colaboraciones')
-    ->name('colaboraciones');
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
 Route::view('reportes', 'reportes')
     ->name('reportes');
