@@ -3,7 +3,7 @@
         <div class="flex-1">
             <a href="{{ route('home') }}" class="flex items-center gap-3 text-lg font-semibold" wire:navigate>
                 <span class="flex h-10 w-10 items-center justify-center rounded-md bg-base-200">
-                    <x-app-logo-icon class="size-6 fill-current text-black dark:text-white" />
+                    <x-app-logo-icon class="size-10 fill-current text-black dark:text-white" />
                 </span>
                 <span>MakeThis</span>
             </a>
@@ -19,7 +19,7 @@
                             @if ($index === 4)
                                 <div class="dropdown dropdown-end">
                                     <button type="button" tabindex="0" class="text-sm font-medium">Mi Cuenta</button>
-                                    <div tabindex="0" class="dropdown-content z-[1] mt-3 w-80 rounded-lg border border-base-300 bg-base-100 p-6 shadow-xl">
+                                    <div tabindex="0" class="dropdown-content z-1 mt-3 w-80 rounded-lg border border-base-300 bg-base-100 p-6 shadow-xl">
                                         {{-- Logo --}}
                                         <div class="flex justify-center mb-4">
                                             <div class="flex h-16 w-16 items-center justify-center rounded-lg bg-base-200">

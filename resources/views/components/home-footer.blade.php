@@ -3,8 +3,8 @@
         <div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
             {{-- Logo --}}
             <div class="flex items-center">
-                <span class="flex h-[140px] w-[146px] items-center justify-center rounded-[10px] border border-base-300 bg-base-200">
-                    <x-app-logo-icon class="size-16 fill-current text-black dark:text-white" />
+                <span class="flex h-35 w-36.5 items-center justify-center rounded-[10px] border border-base-300 bg-base-200">
+                    <x-app-logo-icon class="size-48 fill-current text-black dark:text-white" />
                 </span>
             </div>
 
@@ -35,7 +35,7 @@
             {{-- Redes Sociales --}}
             <div class="flex flex-wrap gap-3 lg:justify-end">
                 @foreach (range(1, 4) as $index)
-                    <div class="flex h-[50px] w-[50px] items-center justify-center border border-base-300 bg-base-200 text-center text-[15px] font-normal leading-tight">
+                    <div class="flex h-12.5 w-12.5 items-center justify-center border border-base-300 bg-base-200 text-center text-[15px] font-normal leading-tight">
                         <span>Red<br>Social</span>
                     </div>
                 @endforeach
