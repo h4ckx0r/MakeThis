@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PiezaController;
+use Illuminate\Support\Facades\Route;
 
 
 // VISTAS
@@ -78,6 +78,13 @@ Route::post('/forgot-password', function () {
     return back()->with('status', 'Email enviado correctamente');
 })->name('forgot-password.send');
 
+Route::get('/login-options', function () {
+    return view('auth.login-options');
+})->name('login-options');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
 
 Route::post('/register', function () {
     // TODO: Implementar lógica de registro
@@ -109,6 +116,17 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
     ->name('piezas.catalogo');
 
+// Selección de tipo
+Route::get('/piezas/solicitar', fn () => view('piezas.solicitar'))
+    ->name('piezas.solicitar');
+
+// Formularios
+Route::get('/piezas/propia', fn () => view('piezas.propia'))
+    ->name('piezas.propia');
+
+Route::get('/piezas/personalizada', fn () => view('piezas.personalizada'))
+    ->name('piezas.personalizada');
+
 // Preview (público para permitir edición antes de registrarse)
 Route::post('/piezas/preview', [PiezaController::class, 'preview'])
     ->name('piezas.preview');
@@ -119,4 +137,4 @@ Route::middleware('auth')->group(function () {
         ->name('piezas.store');
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

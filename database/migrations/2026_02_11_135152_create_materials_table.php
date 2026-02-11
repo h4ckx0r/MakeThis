@@ -6,15 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('pieza_tag', function (Blueprint $table) {
-            $table->foreignId('pieza_id')->constrained()->onDelete('cascade');
-            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
-            $table->primary(['pieza_id', 'tag_id']);
+        Schema::create('materials', function (Blueprint $table) {
+            $table->uuid('id');
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pieza_tag');
+        Schema::dropIfExists('materials');
     }
 };
