@@ -17,6 +17,11 @@ if [ ! -d "/var/www/node_modules" ] || [ ! -f "/var/www/.npm-installed-arm64" ];
     # Create marker file to indicate npm install was done for this architecture
     # touch .npm-installed-arm64
 fi
+# Create storage symlink if it doesn't exist
+if [ ! -L "/var/www/public/storage" ]; then
+    echo "Creating storage symlink..."
+    php artisan storage:link
+fi
 
 # Run the command passed as arguments
 exec "$@"
