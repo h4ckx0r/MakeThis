@@ -44,15 +44,43 @@
                     </div>
 
                     {{-- Formulario --}}
-                    <form action="/register" method="POST" class="space-y-4">
+                    <form action="{{ route('register.store') }}" method="POST" class="space-y-4">
                         @csrf
+
+                        {{-- Campo Nombre --}}
+                        <input
+                        type="text"
+                        name="name"
+                        value="{{ old('name') }}"
+                        placeholder="Nombre"
+                        class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
+                        />
+
+                        {{-- Campo Apellidos --}}
+                        <input
+                            type="text"
+                            name="surname"
+                            value="{{ old('surname') }}"
+                            placeholder="Apellidos"
+                            class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
+                        />
+
+                        {{-- Campo Teléfono --}}
+                        <input
+                            type="tel"
+                            name="phone"
+                            value="{{ old('phone') }}"
+                            placeholder="Teléfono"
+                            class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
+                        />
 
                         {{-- Campo Email --}}
                         <input
                             type="email"
                             name="email"
+                            value="{{ old('email') }}"
                             placeholder="Email"
-                            class="input input-bordered rounded-lg w-full h-[53px] text-[15px] font-normal"
+                            class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
                             required
                         />
 
@@ -62,7 +90,7 @@
                                 type="password"
                                 name="password"
                                 placeholder="Contraseña (mín. 8 caracteres)"
-                                class="input input-bordered rounded-lg w-full h-[53px] text-[15px] font-normal pr-12"
+                                class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12"
                                 minlength="8"
                                 required
                                 x-data="{ show: false }"
@@ -81,14 +109,30 @@
                             </button>
                         </div>
 
-                        {{-- Campo Nombre de Usuario --}}
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="Nombre de Usuario"
-                            class="input input-bordered rounded-lg w-full h-[53px] text-[15px] font-normal"
-                            required
-                        />
+                        {{-- Campo Confirmar Contraseña --}}
+                        <div class="relative">
+                            <input
+                                type="password"
+                                name="password_confirmation"
+                                placeholder="Confirmar Contraseña"
+                                class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12"
+                                minlength="8"
+                                required
+                                x-data="{ show: false }"
+                                x-bind:type="show ? 'text' : 'password'"
+                            />
+                            <button
+                                type="button"
+                                class="absolute right-4 top-1/2 -translate-y-1/2"
+                                x-data="{ show: false }"
+                                x-on:click="show = !show; $el.previousElementSibling.type = show ? 'text' : 'password'"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </div>
 
                         {{-- Checkbox Newsletter --}}
                         <div class="flex items-center gap-3 py-1">
@@ -98,10 +142,10 @@
 
                         {{-- Texto legal --}}
                         <div class="text-[15px] font-normal leading-relaxed py-1">
-                            Al hacer clic en el botón "Validar", aceptas las
-                            <a href="#" class="underline hover:text-primary">Condiciones Generales de Venta</a>
+                            Al hacer clic en el botón "Registrarse", aceptas las
+                            <a href="{{ route('terms-conditions') }}" class="underline hover:text-primary">Condiciones Generales de Venta</a>
                             y la
-                            <a href="#" class="underline hover:text-primary">Política de Privacidad</a>
+                            <a href="{{ route('terms-conditions') }}" class="underline hover:text-primary">Política de Privacidad</a>
                             de MakeThis.
                         </div>
 
@@ -120,9 +164,9 @@
                             </a>
                         </div>
 
-                        {{-- Botón Validar --}}
-                        <button type="submit" class="btn btn-primary rounded-full w-full h-[53px] normal-case text-[15px] font-normal mt-6">
-                            VALIDAR
+                        {{-- Botón Registrarse --}}
+                        <button type="submit" class="btn btn-primary rounded-full w-full h-13.25 normal-case text-[15px] font-normal mt-6">
+                            REGISTRARSE
                         </button>
                     </form>
                 </div>

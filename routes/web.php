@@ -1,16 +1,96 @@
 <?php
 
+use App\Http\Middleware\EnsureIsAdmin;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PiezaController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('forgot-password');
+// VISTAS
+Route::view('/', 'home')
+    ->name('home');
 
+Route::view('terms-conditions', 'terms-conditions')
+    ->name('terms-conditions');
+
+Route::prefix('about')->group(function () {
+    Route::view('', 'about-us.about-us')
+        ->name('about-us');
+    Route::view('machinery', 'about-us.machinery.machinery')
+        ->name('about-us.machinery');
+    Route::view('team', 'about-us.team.team')
+        ->name('about-us.team');
+    Route::view('collaborations', 'about-us.collaborations.collaborations')
+        ->name('about-us.collaborations');
+});
+
+Route::prefix('auth')->group(function () {
+    Route::view('login', 'auth.login')
+        ->name('auth.login');
+    Route::get('register', function() {
+        return view('auth.register');
+    })->name('auth.register');
+    Route::view('forgot-password', 'auth.forgot-password')
+        ->name('auth.forgot-password');
+    Route::view('login-options', 'auth.login-options')
+        ->name('auth.login-options');
+});
+
+Route::prefix('client')->group(function () {
+    Route::view('requests', 'client.requests')
+        ->name('client.requests');
+    Route::view('likes', 'client.likes')
+        ->name('client.likes');
+});
+
+Route::prefix('prints')->group(function () {
+    Route::view('catalog', 'prints.catalog')
+        ->name('prints.catalog');
+
+    Route::prefix('request')->group(function() {
+        Route::view('', 'prints.request')
+            ->name('prints.request');
+        Route::view('custom', 'prints.custom')
+            ->name('prints.custom');
+        Route::view('own', 'prints.own')
+            ->name('prints.own');
+        Route::view('preview', 'prints.preview')
+            ->name('prints.preview');
+    });
+});
+
+Route::prefix('admin')->middleware(EnsureIsAdmin::class)
+    ->group(function () {
+    Route::view('catalog', 'admin.catalog')
+        ->name('admin.catalog');
+    Route::view('users', 'admin.users')
+        ->name('admin.users');
+    Route::view('requests', 'admin.requests')
+        ->name('admin.requests');
+    Route::view('reports', 'admin.reports')
+        ->name('admin.reports');
+});
+
+
+
+
+
+
+
+
+// CONTROLADORES
+
+
+
+
+
+
+
+
+
+require __DIR__.'/settings.php';
+
+// DEPRECADO ;)
+
+/*
 Route::post('/forgot-password', function () {
     // TODO: Implementar lógica de recuperación de contraseña
     return back()->with('status', 'Email enviado correctamente');
@@ -28,34 +108,6 @@ Route::post('/register', function () {
     // TODO: Implementar lógica de registro
     return redirect()->route('home')->with('status', 'Registro completado correctamente');
 })->name('register.store');
-
-Route::get('/terms-conditions', function () {
-    return view('terms-conditions');
-})->name('terms-conditions');
-
-Route::get('/solicitudes-cliente', function () {
-    return view('solicitudes-cliente');
-})->name('solicitudes-cliente');
-
-Route::get('/me-gusta-cliente', function () {
-    return view('me-gusta-cliente');
-})->name('me-gusta-cliente');
-
-Route::view('sobre-nosotros', 'about-us')
-    ->name('about-us');
-
-Route::view('maquinaria', 'machinery')
-    ->name('machinery');
-
-Route::view('equipo', 'equipo')
-    ->name('equipo');
-
-Route::view('colaboraciones', 'colaboraciones')
-    ->name('colaboraciones');
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
 Route::view('reportes', 'reportes')
     ->name('reportes');
@@ -83,14 +135,14 @@ Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
     ->name('piezas.catalogo');
 
 // Selección de tipo
-Route::get('/piezas/solicitar', fn() => view('piezas.solicitar'))
+Route::get('/piezas/solicitar', fn () => view('piezas.solicitar'))
     ->name('piezas.solicitar');
 
 // Formularios
-Route::get('/piezas/propia', fn() => view('piezas.propia'))
+Route::get('/piezas/propia', fn () => view('piezas.propia'))
     ->name('piezas.propia');
 
-Route::get('/piezas/personalizada', fn() => view('piezas.personalizada'))
+Route::get('/piezas/personalizada', fn () => view('piezas.personalizada'))
     ->name('piezas.personalizada');
 
 // Preview (público para permitir edición antes de registrarse)
@@ -103,4 +155,4 @@ Route::middleware('auth')->group(function () {
         ->name('piezas.store');
 });
 
-require __DIR__ . '/settings.php';
+*/
