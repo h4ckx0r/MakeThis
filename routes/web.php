@@ -8,9 +8,16 @@ use App\Http\Controllers\PiezaController;
 Route::view('/', 'home')
     ->name('home');
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('forgot-password');
+Route::prefix('about')->group(function () {
+    Route::view('', 'about-us.about-us')
+        ->name('about-us');
+    Route::view('machinery', 'about-us.machinery.machinery')
+        ->name('about-us.machinery');
+    Route::view('team', 'about-us.team.team')
+        ->name('about-us.team');
+    Route::view('collaborations', 'about-us.collaborations.collaborations')
+        ->name('about-us.collaborations');
+});
 
 Route::post('/forgot-password', function () {
     // TODO: Implementar lógica de recuperación de contraseña
