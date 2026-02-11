@@ -1,12 +1,15 @@
 <?php
 
-use App\Http\Controllers\PiezaController;
+use App\Http\Middleware\EnsureIsAdmin;
 use Illuminate\Support\Facades\Route;
 
 
 // VISTAS
 Route::view('/', 'home')
     ->name('home');
+
+Route::view('terms-conditions', 'terms-conditions')
+    ->name('terms-conditions');
 
 Route::prefix('about')->group(function () {
     Route::view('', 'about-us.about-us')
@@ -21,13 +24,14 @@ Route::prefix('about')->group(function () {
 
 Route::prefix('auth')->group(function () {
     Route::view('login', 'auth.login')
-        ->name('login');
-    Route::view('register', 'auth.register')
-        ->name('register');
+        ->name('auth.login');
+    Route::get('register', function() {
+        return view('auth.register');
+    })->name('auth.register');
     Route::view('forgot-password', 'auth.forgot-password')
-        ->name('forgot-password');
+        ->name('auth.forgot-password');
     Route::view('login-options', 'auth.login-options')
-        ->name('login-options');
+        ->name('auth.login-options');
 });
 
 Route::prefix('client')->group(function () {
@@ -53,8 +57,19 @@ Route::prefix('prints')->group(function () {
     });
 });
 
-Route::view('terms-conditions', 'terms-conditions')
-    ->name('terms-conditions');
+Route::prefix('admin')->middleware(EnsureIsAdmin::class)
+    ->group(function () {
+    Route::view('catalog', 'admin.catalog')
+        ->name('admin.catalog');
+    Route::view('users', 'admin.users')
+        ->name('admin.users');
+    Route::view('requests', 'admin.requests')
+        ->name('admin.requests');
+    Route::view('reports', 'admin.reports')
+        ->name('admin.reports');
+});
+
+
 
 
 
@@ -71,8 +86,11 @@ Route::view('terms-conditions', 'terms-conditions')
 
 
 
+require __DIR__.'/settings.php';
 
 // DEPRECADO ;)
+
+/*
 Route::post('/forgot-password', function () {
     // TODO: Implementar lógica de recuperación de contraseña
     return back()->with('status', 'Email enviado correctamente');
@@ -137,4 +155,4 @@ Route::middleware('auth')->group(function () {
         ->name('piezas.store');
 });
 
-require __DIR__.'/settings.php';
+*/
