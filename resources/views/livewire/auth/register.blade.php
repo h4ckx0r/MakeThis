@@ -20,6 +20,30 @@
                 :placeholder="__('Full name')"
             />
 
+            <!-- Surname -->
+            <flux:input
+                name="surname"
+                :label="__('SurName')"
+                :value="old('surname')"
+                type="text"
+                required
+                autofocus
+                autocomplete="surname"
+                :placeholder="__('Full Surname')"
+            />
+
+            <!-- Phone -->
+            <flux:input
+                name="phone"
+                :label="__('Phone')"
+                :value="old('phone')"
+                type="text"
+                required
+                autofocus
+                autocomplete="phone"
+                :placeholder="__('Phone')"
+            />
+
             <!-- Email Address -->
             <flux:input
                 name="email"

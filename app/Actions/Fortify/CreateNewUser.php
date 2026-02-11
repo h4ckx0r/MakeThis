@@ -24,8 +24,18 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
+        if (User::query()->count() < 1) {
+            $firstUser = true;
+        } else {
+            $firstUser = false;
+        }
+
         return User::create([
             'name' => $input['name'],
+            'surname' => $input['surname'],
+            'phone' => $input['phone'],
+            'address' => $input['address'],
+            'isAdmin' => $firstUser,
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
