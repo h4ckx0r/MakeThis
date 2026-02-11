@@ -6,17 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('piezas', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->text('descripcion')->nullable();
-            $table->string('imagen')->nullable();
-            $table->boolean('visible_catalogo')->default(true);
+        Schema::create('colors', function (Blueprint $table) {
+            $table->uuid('id');
+            $table->string('name');
+            $table->string('hexColor');
+            $table->uuid('materialId')->references('id')->on('materials')
+            ->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('piezas');
+        Schema::dropIfExists('colors');
     }
 };
