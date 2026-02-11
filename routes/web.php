@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PiezaController;
+use App\Http\Middleware\EnsureIsAdmin;
 use Illuminate\Support\Facades\Route;
 
 
@@ -57,8 +57,19 @@ Route::prefix('prints')->group(function () {
     });
 });
 
-Route::view('terms-conditions', 'terms-conditions')
-    ->name('terms-conditions');
+Route::prefix('admin')->middleware(EnsureIsAdmin::class)
+    ->group(function () {
+    Route::view('catalog', 'admin.catalog')
+        ->name('admin.catalog');
+    Route::view('users', 'admin.users')
+        ->name('admin.users');
+    Route::view('requests', 'admin.requests')
+        ->name('admin.requests');
+    Route::view('reports', 'admin.reports')
+        ->name('admin.reports');
+});
+
+
 
 
 
@@ -78,6 +89,8 @@ Route::view('terms-conditions', 'terms-conditions')
 require __DIR__.'/settings.php';
 
 // DEPRECADO ;)
+
+/*
 Route::post('/forgot-password', function () {
     // TODO: Implementar lógica de recuperación de contraseña
     return back()->with('status', 'Email enviado correctamente');

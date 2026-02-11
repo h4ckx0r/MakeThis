@@ -37,15 +37,15 @@ $title = 'Catálogo de Piezas';
 
         {{-- Tab Navigation --}}
         <nav class="flex border-b border-neutral-900 dark:border-neutral-100">
-            <a href="{{ route('reportes') }}"
+            <a href="{{ route('admin.reports') }}"
                 class="flex-1 max-w-[200px] border-r border-neutral-900 bg-neutral-100 px-8 py-3 text-sm transition hover:bg-neutral-200 text-center dark:border-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700">Reportes</a>
-            <a href="{{ route('solicitudes') }}"
+            <a href="{{ route('admin.requests') }}"
                 class="flex-1 max-w-[200px] border-r border-neutral-900 bg-neutral-100 px-8 py-3 text-sm transition hover:bg-neutral-200 text-center dark:border-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700">Solicitudes</a>
             <button
                 class="flex-1 max-w-[200px] border-r border-neutral-900 bg-neutral-100 px-8 py-3 text-sm transition hover:bg-neutral-200 dark:border-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700">Mensajes</button>
-            <a href="{{ route('usuarios') }}"
+            <a href="{{ route('admin.users') }}"
                 class="flex-1 max-w-[200px] border-r border-neutral-900 bg-neutral-100 px-8 py-3 text-sm transition hover:bg-neutral-200 text-center dark:border-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700">Usuarios</a>
-            <a href="{{ route('admin.piezas.index') }}"
+            <a href="{{ route('admin.catalog') }}"
                 class="flex-1 max-w-[200px] border-neutral-900 bg-white px-8 py-3 text-sm font-semibold text-center dark:border-neutral-100 dark:bg-neutral-900">Catálogo</a>
         </nav>
 
@@ -70,7 +70,7 @@ $title = 'Catálogo de Piezas';
 
                 {{-- Search --}}
                 <div class="mb-5 flex justify-center">
-                    <form method="GET" action="{{ route('admin.piezas.index') }}" class="w-full max-w-md">
+                    <form method="GET" action="{{ route('admin.catalog') }}" class="w-full max-w-md">
                         <div
                             class="flex items-center gap-3 rounded border border-neutral-900 bg-white px-4 py-2 dark:border-neutral-100 dark:bg-neutral-900">
                             <span class="text-base">🔍</span>
