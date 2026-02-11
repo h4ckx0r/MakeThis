@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
+        <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.52/build/spline-viewer.js"></script>
     </head>
     <body class="bg-base-100 text-base-content">
         <div class="min-h-screen">
@@ -14,9 +15,7 @@
                             <div>
                                 <h1 class="text-5xl font-semibold sm:text-6xl lg:text-7xl">MakeThis</h1>
                             </div>
-                            <div class="flex items-center justify-center rounded-xl border border-base-300 bg-base-200 py-12 text-center text-3xl font-medium">
-                                Animación
-                            </div>
+                            <spline-viewer url="https://prod.spline.design/2L2wYelnD5nqJvEF/scene.splinecode"></spline-viewer>
                         </div>
                     </div>
                 </section>
