@@ -51,8 +51,9 @@
                         <input
                             type="email"
                             name="email"
+                            value="{{ old('email') }}"
                             placeholder="Email"
-                            class="input input-bordered rounded-lg w-full h-[53px] text-[15px] font-normal"
+                            class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
                             required
                         />
 
@@ -62,7 +63,7 @@
                                 type="password"
                                 name="password"
                                 placeholder="Contraseña (mín. 8 caracteres)"
-                                class="input input-bordered rounded-lg w-full h-[53px] text-[15px] font-normal pr-12"
+                                class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12"
                                 minlength="8"
                                 required
                                 x-data="{ show: false }"
