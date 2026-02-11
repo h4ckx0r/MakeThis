@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PiezaController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+
+// VISTAS
+Route::view('/', 'home')
+    ->name('home');
 
 Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
