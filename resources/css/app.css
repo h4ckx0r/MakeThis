@@ -107,6 +107,9 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
+    --color-celeste: #87CEEB;
+    --color-celeste-light: #B0E2FF;
+
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
