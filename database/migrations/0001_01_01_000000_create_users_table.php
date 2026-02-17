@@ -4,23 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->string('name');
-            $table->string('surname');
-            $table->string('phone');
+            $table->uuid('id')->primary();
+            $table->string('nombre', 64);
+            $table->string('apellidos', 64);
+            $table->string('telefono', 21);
             $table->boolean('isAdmin');
-            $table->String('address')->nullable();
+            $table->string('direccion')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password', 256);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -15,7 +15,9 @@ trait ProfileValidationRules
     protected function profileRules(?int $userId = null): array
     {
         return [
-            'name' => $this->nameRules(),
+            'nombre' => $this->nameRules(),
+            'apellidos' => ['required', 'string', 'max:64'],
+            'telefono' => ['required', 'string', 'max:21'],
             'email' => $this->emailRules($userId),
         ];
     }
@@ -43,8 +45,8 @@ trait ProfileValidationRules
             'email',
             'max:255',
             $userId === null
-                ? Rule::unique(User::class)
-                : Rule::unique(User::class)->ignore($userId),
+            ?Rule::unique(User::class)
+            : Rule::unique(User::class)->ignore($userId),
         ];
     }
 }

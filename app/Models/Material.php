@@ -11,5 +11,7 @@ class Material extends Model
     /** @use HasFactory<\Database\Factories\MaterialFactory> */
     use HasFactory;
     use HasUuids;
-    protected $guarded = [];
+    protected $fillable = [
+        'nombre',
+    ];
 }
