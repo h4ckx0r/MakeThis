@@ -5,17 +5,17 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('colors', function (Blueprint $table) {
+        Schema::create('three_d_models', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nombre', 64);
-            $table->string('hexColor', 6);
-            $table->foreignUuid('materialId')->constrained('materials')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('nombreModelo', 64);
+            $table->string('tipo', 3);
+            $table->string('modelo', 256);
+            $table->foreignUuid('colorId')->constrained('colors')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('colors');
+        Schema::dropIfExists('three_d_models');
     }
 };

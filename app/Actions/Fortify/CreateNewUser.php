@@ -26,15 +26,17 @@ class CreateNewUser implements CreatesNewUsers
 
         if (User::query()->count() < 1) {
             $firstUser = true;
-        } else {
+        }
+        else {
             $firstUser = false;
         }
 
         return User::create([
-            'name' => $input['name'],
-            'surname' => $input['surname'],
-            'phone' => $input['phone'],
+            'nombre' => $input['nombre'],
+            'apellidos' => $input['apellidos'],
+            'telefono' => $input['telefono'],
             'isAdmin' => $firstUser,
+            'direccion' => $input['direccion'] ?? null,
             'email' => $input['email'],
             'password' => $input['password'],
         ]);

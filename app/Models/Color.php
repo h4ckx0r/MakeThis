@@ -12,5 +12,9 @@ class Color extends Model
     use HasFactory;
     use HasUuids;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'nombre',
+        'hexColor',
+        'materialId',
+    ];
 }
