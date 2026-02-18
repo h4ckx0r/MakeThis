@@ -6,7 +6,7 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:main>
+    <flux:main class="p-0!">
         {{ $slot }}
     </flux:main>
 

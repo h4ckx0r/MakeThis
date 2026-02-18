@@ -16,7 +16,7 @@
                 </p>
             </div>
 
-            <form action="{{ route('piezas.preview') }}" method="POST" class="space-y-8">
+            <form action="{{ route('prints.preview') }}" method="POST" class="space-y-8">
                 @csrf
                 <input type="hidden" name="tipo" value="propia">
 
@@ -118,7 +118,7 @@
 
                 <!-- Botones -->
                 <div class="flex gap-4 pt-6">
-                    <a href="{{ route('piezas.solicitar') }}" class="btn btn-outline">Cancelar</a>
+                    <a href="{{ route('prints.request') }}" class="btn btn-outline">Cancelar</a>
                     <button type="submit" class="btn btn-primary flex-1">Vista Previa</button>
                 </div>
             </form>

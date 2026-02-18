@@ -9,14 +9,14 @@
     <div class="min-h-screen flex flex-col">
         <livewire:navbar />
 
-        <main class="flex-grow container mx-auto px-4 py-12">
+        <main class="grow container mx-auto px-4 py-12">
             <div class="text-center mb-12">
                 <h1 class="text-5xl font-bold mb-4">Catálogo de Piezas</h1>
                 <p class="text-xl text-gray-600">Busque en nuestro catálogo</p>
             </div>
 
             <!-- Filtros -->
-            <form method="GET" action="{{ route('piezas.catalogo') }}" class="mb-12">
+            <form method="GET" action="{{ route('prints.catalog') }}" class="mb-12">
                 <!-- Búsqueda -->
                 <div class="relative max-w-2xl mx-auto mb-6">
                     <input type="text" name="search" placeholder="Busca una pieza" value="{{ request('search', '') }}"
