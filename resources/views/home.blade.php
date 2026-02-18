@@ -3,7 +3,6 @@
 
 <head>
     @include('partials.head')
-
 </head>
 
 <body class="bg-base-100 text-base-content">
@@ -17,7 +16,7 @@
                             <div class="scene">
                                 <h1 class="text-center mt-10 -mb-10 text-5xl font-semibold sm:text-6xl lg:text-7xl" >MakeThis</h1>
                                 @php
-                                    $data = [ //Cambiar con imágenes de piezas 3d
+                                    $data = [
                                         '30640195',
                                         '30415869',
                                         '30620861',
@@ -36,7 +35,7 @@
                                 <div class="a3d -mt-10" style="--n: {{ $n }}">
                                     @foreach($data as $i => $id)
                                         <img class="landing-card"
-                                             src="https://images.pexels.com/photos/{{ $id }}/pexels-photo-{{ $id }}.jpeg"
+                                             src="https://images.pexels.com/photos/{{ $id }}/pexels-photo-{{ $id }}.jpeg?auto=compress&cs=tinysrgb&h=350"
                                              style="--i: {{ $i }}"
                                              alt="Pieza impresa en 3d de muestra">
                                     @endforeach
