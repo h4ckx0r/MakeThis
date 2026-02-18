@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    @include('partials.head')
-</head>
-
-<body class="bg-base-100 text-base-content">
-    <div class="min-h-screen">
-        <livewire:navbar />
-
-            <main class="pt-28">
+<x-layouts::home :title="'Inicio'">
+            <main class="pt-10">
                 <section class="border-b border-base-300">
                     <div class="mx-auto max-w-7xl">
                         <div class="grid items-center">
@@ -98,10 +88,4 @@
                 </div>
             </section>
         </main>
-
-        <livewire:footer />
-    </div>
-    @fluxScripts
-</body>
-
-</html>
+</x-layouts::home>

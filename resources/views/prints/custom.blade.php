@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    @include('partials.head')
-</head>
-
-<body class="bg-base-100 text-base-content">
-    <div class="min-h-screen flex flex-col">
-        <livewire:navbar />
-
+<x-layouts::home :title="'Pieza Personalizada'">
         <main class="grow container mx-auto px-4 py-12">
             <div class="mb-12">
                 <h1 class="text-4xl font-bold mb-2">Pieza Personalizada</h1>
@@ -99,9 +89,4 @@
                 </div>
             </form>
         </main>
-
-        <livewire:footer />
-    </div>
-</body>
-
-</html>
+</x-layouts::home>

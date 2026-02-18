@@ -19,7 +19,7 @@
                 </a>
                 <a href="{{ route('prints.request') }}" wire:navigate
                     class="px-3 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('prints.request') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
-                    {{ __('Pieza') }}
+                    {{ __('Solicitar Pieza') }}
                 </a>
             </nav>
         </div>

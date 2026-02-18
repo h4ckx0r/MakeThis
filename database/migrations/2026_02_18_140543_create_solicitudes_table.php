@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuid('estadoId')->constrained('estados')->onDelete('cascade');
             $table->text('detalles');
             $table->foreignUuid('3dModelId')->constrained('three_d_models')->onDelete('cascade');
-            $table->tinyInteger('porcentajeRelleno');
+            $table->tinyInteger('porcentajeRelleno')->default(20);
             $table->float('alturaCapa')->default(0.2);
             $table->enum('patronRelleno', ['rejilla', 'giroide', 'cubico', 'panal_de_abeja', 'panal_de_abeja_3d']);
             $table->timestamps();
