@@ -1,91 +1,114 @@
 @php
-$title = 'Reportes';
+$title = 'Solicitudes';
 @endphp
 
 <x-layouts::admin :title="$title">
     {{-- Page Title --}}
-    <h1 class="mb-5 text-2xl font-semibold">Reportes de Rafa</h1>
+    <h1 class="mb-8 text-3xl font-semibold text-center text-white tracking-wide">
+        Solicitudes
+    </h1>
 
     {{-- Search and Filter --}}
-    <div class="mb-5 flex items-center gap-4">
+    <div class="mb-8 flex justify-center items-center gap-4">
         <div
-            class="flex flex-1 max-w-md items-center gap-3 rounded border border-neutral-900 bg-white px-4 py-2 dark:border-neutral-100 dark:bg-neutral-900">
-            <span class="text-base">🔍</span>
+            class="flex w-full max-w-md items-center gap-3 rounded-xl border border-sky-500/40 bg-black px-4 py-3 shadow-sm">
+            <span class="text-sky-400 text-lg">🔍</span>
             <input type="text" placeholder="Buscar Nº Solicitud"
-                class="flex-1 border-none bg-transparent text-sm outline-none">
+                class="flex-1 bg-transparent text-sm text-white placeholder-neutral-400 outline-none text-center">
         </div>
+
         <button
-            class="flex items-center gap-2 rounded border border-neutral-900 bg-white px-4 py-2 text-sm dark:border-neutral-100 dark:bg-neutral-900">
-            <span>Filtrar</span>
-            <span class="text-lg">☰</span>
+            class="flex items-center gap-2 rounded-xl border border-sky-500/40 bg-black px-5 py-3 text-sm text-white hover:bg-sky-500/10 transition">
+            Filtrar
+            <span class="text-sky-400">☰</span>
         </button>
     </div>
 
-    {{-- Reports List --}}
-    <div class="mb-8 flex flex-col gap-2">
-        {{-- Report items repeat as before --}}
-        @for ($i = 0; $i < 7; $i++) <details class="collapse bg-base-100 border border-base-300"
-            name="my-accordion-det-1" @if($i===0) open @endif>
-            <summary class="collapse-title font-semibold">Nº Solicitud - Fecha - Estado</summary>
-            <div class="collapse-content text-sm">
-                <div
-                    class="flex items-start gap-4 rounded border border-neutral-900 bg-neutral-100 p-4 dark:border-neutral-100 dark:bg-neutral-800">
-                    <input type="checkbox"
-                        class="mt-0.5 h-5 w-5 flex-shrink-0 appearance-none rounded border-2 border-neutral-900 bg-yellow-400 dark:border-neutral-100">
-                    <div class="flex-1">
-                        <div class="mb-4 flex items-center justify-between">
-                            <span class="text-sm">Nº Solicitud - Fecha - Estado</span>
-                            <button class="px-2 text-xl">∧</button>
+    {{-- Requests List --}}
+    <div class="mb-10 flex flex-col gap-4">
+
+        {{-- Item 1: En Proceso --}}
+        <details class="group rounded-xl border border-sky-500/30 bg-neutral-950 open:shadow-lg transition" open>
+            <summary class="cursor-pointer list-none">
+                <div class="flex items-center justify-between px-5 py-4 text-sm text-white">
+                    <span class="flex items-center gap-3">
+                        <span class="text-xl text-sky-400">🕒</span>
+                        <span class="text-base font-medium">
+                            Nº Solicitud · Fecha · En Proceso
+                        </span>
+                    </span>
+                    <span class="text-xl text-sky-400 transition-transform group-open:rotate-90">
+                        ›
+                    </span>
+                </div>
+            </summary>
+
+            {{-- Expanded Content --}}
+            <div class="border-t border-sky-500/20">
+                <div class="p-6 space-y-6 text-white">
+
+                    {{-- Meta Info --}}
+                    <div class="grid grid-cols-4 gap-4 text-sm text-neutral-300">
+                        <span>Nº Solicitud</span>
+                        <span>Fecha dd/mm/yyyy</span>
+                        <span>Cliente</span>
+                        <span class="text-sky-400 font-medium">Aceptada</span>
+                    </div>
+
+                    {{-- Main Content --}}
+                    <div class="grid grid-cols-2 gap-8">
+                        <div
+                            class="h-40 rounded-xl border border-sky-500/30 bg-black p-4 flex items-center justify-center text-center text-neutral-400">
+                            Archivos adjuntos, fotos, informes…
                         </div>
 
-                        {{-- Expanded Content --}}
-                        <div class="space-y-4">
-                            {{-- Meta Information --}}
-                            <div class="space-y-2">
-                                <div class="flex flex-wrap items-center gap-4 text-sm">
-                                    <span class="font-medium">Nº Solicitud:</span>
-                                    <span
-                                        class="border-b border-neutral-900 px-2 dark:border-neutral-100">_______</span>
-                                    <span class="font-medium">Cliente</span>
-                                    <span class="font-medium">Tipo: Fallo en la entrega</span>
-                                </div>
-                                <div class="flex flex-wrap items-center gap-4 text-sm">
-                                    <span class="font-medium">Fecha:</span>
-                                    <div class="flex gap-1">
-                                        <input type="text" value="DD"
-                                            class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs dark:border-neutral-100 dark:bg-neutral-900">
-                                        <input type="text" value="MM"
-                                            class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs dark:border-neutral-100 dark:bg-neutral-900">
-                                        <input type="text" value="AAAA"
-                                            class="w-14 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs dark:border-neutral-100 dark:bg-neutral-900">
-                                    </div>
-                                    <span class="font-medium">Estado</span>
-                                </div>
-                            </div>
-
-                            {{-- Content Grid --}}
-                            <div class="grid gap-5 md:grid-cols-2">
-                                {{-- Files Box --}}
-                                <div
-                                    class="min-h-[150px] rounded border border-neutral-900 bg-white p-4 dark:border-neutral-100 dark:bg-neutral-900">
-                                    <div class="flex h-full items-center justify-between">
-                                        <span class="cursor-pointer text-2xl text-neutral-600">‹</span>
-                                        <div class="text-center text-sm leading-relaxed">
-                                            <p>Archivos adjuntos, fotos,</p>
-                                            <p>informes, firmas electrónicas.</p>
-                                        </div>
-                                        <span class="cursor-pointer text-2xl text-neutral-600">›</span>
-                                    </div>
-                                </div>
-
-                                {{-- Details Box --}}
-                                <div
-                                    class="min-h-[150px] overflow-y-auto rounded border border-neutral-900 bg-white p-4 dark:border-neutral-100 dark:bg-neutral-900">
-                                    <p class="text-sm">Información detallada del tipo</p>
-                                    <p class="text-sm">de reporte</p>
-                                </div>
-                            </div>
+                        <div
+                            class="h-40 rounded-xl border border-sky-500/30 bg-black p-4 flex items-center justify-center text-center text-neutral-400">
+                            Información detallada de la solicitud
                         </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button class="text-2xl text-sky-400 hover:text-sky-300 transition"
+                            onclick="edit_request_modal.showModal()">
+                            ⋯
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        {{-- More items --}}
+        @for ($i = 0; $i < 3; $i++) <details
+            class="group rounded-xl border border-sky-500/30 bg-neutral-950 transition">
+            <summary class="cursor-pointer list-none">
+                <div class="flex items-center justify-between px-5 py-4 text-sm text-white">
+                    <span class="flex items-center gap-3">
+                        @if($i === 0)
+                        <span class="text-xl text-green-400">✓</span>
+                        <span class="font-medium">Nº Solicitud · Fecha · Aceptada</span>
+                        @elseif($i === 1)
+                        <span class="text-xl text-red-400">✕</span>
+                        <span class="font-medium">Nº Solicitud · Fecha · Cancelada</span>
+                        @else
+                        <span class="text-xl text-sky-400">🕒</span>
+                        <span class="font-medium">Nº Solicitud · Fecha · En Proceso</span>
+                        @endif
+                    </span>
+                    <span class="text-xl text-sky-400 transition-transform group-open:rotate-90">
+                        ›
+                    </span>
+                </div>
+            </summary>
+
+            <div class="border-t border-sky-500/20">
+                <div class="p-6 text-neutral-300">
+                    <p>Contenido…</p>
+                    <div class="mt-4 flex justify-end">
+                        <button class="text-2xl text-sky-400 hover:text-sky-300 transition"
+                            onclick="edit_request_modal.showModal()">
+                            ⋯
+                        </button>
                     </div>
                 </div>
             </div>
@@ -93,90 +116,63 @@ $title = 'Reportes';
             @endfor
     </div>
 
-    {{-- Add Report Button --}}
-    <div class="mb-5 flex flex-col items-center">
-        <button class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900"
-            onclick="my_modal_1.showModal()">Añadir reporte</button>
-        <dialog id="my_modal_1" class="modal">
-            <div class="modal-box max-w-3xl bg-white text-black">
-                <div class="mb-8 flex items-start gap-4 rounded border border-neutral-900 bg-neutral-100 p-5">
-                    <input type="checkbox"
-                        class="mt-0.5 h-5 w-5 flex-shrink-0 appearance-none rounded border-2 border-neutral-900">
-                    <div class="flex-1 space-y-4">
-                        {{-- Form Meta --}}
-                        <div class="space-y-2">
-                            <div class="flex flex-wrap items-center gap-4 text-sm">
-                                <span class="font-medium">Nº Solicitud:</span>
-                                <span class="border-b border-neutral-900 px-2">_______</span>
-                                <span class="font-medium">Cliente</span>
-                                <span class="font-medium">Tipo: _____</span>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-4 text-sm">
-                                <span class="font-medium">Fecha:</span>
-                                <div class="flex gap-1">
-                                    <input type="text" value="DD"
-                                        class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs">
-                                    <input type="text" value="MM"
-                                        class="w-10 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs">
-                                    <input type="text" value="AAAA"
-                                        class="w-14 rounded border border-neutral-900 bg-white px-2 py-1 text-center text-xs">
-                                </div>
-                                <span class="font-medium">Estado</span>
-                                <select class="rounded border border-neutral-900 bg-white px-2 py-1 text-xs">
-                                    <option>En Revisión</option>
-                                    <option>En Proceso</option>
-                                    <option>Enviado</option>
-                                    <option>Completado</option>
-                                    <option>Incidencia</option>
-                                </select>
-                            </div>
-                        </div>
+    {{-- Edit Request Modal --}}
+    <dialog id="edit_request_modal" class="modal">
+        <div class="modal-box max-w-3xl bg-black text-white border border-sky-500/40 p-8 rounded-2xl">
+            <h3 class="text-2xl font-semibold text-center mb-8">
+                Editar Solicitud
+            </h3>
 
-                        {{-- Form Content Grid --}}
-                        <div class="grid gap-5 md:grid-cols-2">
-                            {{-- Files Box --}}
-                            <div class="min-h-[150px] rounded border border-neutral-900 bg-white p-4">
-                                <div class="flex h-full items-center justify-between">
-                                    <span class="cursor-pointer text-2xl text-neutral-600">‹</span>
-                                    <div class="text-center text-sm leading-relaxed">
-                                        <p>Archivos adjuntos, fotos,</p>
-                                        <p>informes, firmas electrónicas.</p>
-                                    </div>
-                                    <span class="cursor-pointer text-2xl text-neutral-600">›</span>
-                                </div>
-                            </div>
+            <div class="grid gap-6 mb-8">
 
-                            {{-- Details Box --}}
-                            <div class="min-h-[150px] overflow-y-auto rounded border border-neutral-900 bg-white p-4">
-                                <p class="text-sm">Información detallada del tipo</p>
-                                <p class="text-sm">de reporte</p>
-                            </div>
-                        </div>
-                    </div>
+                {{-- Status Select --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-medium text-neutral-300">Estado</label>
+                    <select
+                        class="w-full rounded-xl border border-sky-500/30 bg-black p-3 text-white focus:outline-none focus:ring-1 focus:ring-sky-400">
+                        <option>En Proceso</option>
+                        <option>Aceptada</option>
+                        <option>Cancelada</option>
+                        <option>En Revisión</option>
+                    </select>
                 </div>
-                <div class="modal-action justify-center gap-4">
-                    <form method="dialog">
-                        <button
-                            class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900">Cancelar</button>
-                        <button
-                            class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900 ml-2">Guardar
-                            Reporte</button>
-                    </form>
+
+                {{-- Detailed Info --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-medium text-neutral-300">
+                        Información detallada
+                    </label>
+                    <textarea
+                        class="h-32 rounded-xl border border-sky-500/30 bg-black p-3 text-white resize-none focus:outline-none focus:ring-1 focus:ring-sky-400"
+                        placeholder="Escribe aquí los detalles…"></textarea>
+                </div>
+
+                {{-- File Upload --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-medium text-neutral-300">
+                        Adjuntar archivos
+                    </label>
+                    <input type="file"
+                        class="file-input file-input-bordered w-full bg-black border-sky-500/30 text-white" multiple />
                 </div>
             </div>
-        </dialog>
-    </div>
 
-    {{-- Pagination --}}
-    <div class="flex items-center justify-center gap-4 py-5">
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">‹</button>
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">‹</button>
-        <span class="text-xs">●</span>
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">›</button>
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">›</button>
-    </div>
+            <div class="modal-action justify-center gap-4">
+                <form method="dialog">
+                    <button
+                        class="rounded-full border border-neutral-500 px-8 py-3 text-sm text-neutral-300 hover:bg-neutral-800 transition">
+                        Cancelar
+                    </button>
+                    <button
+                        class="ml-2 rounded-full bg-sky-500 px-8 py-3 text-sm font-medium text-black hover:bg-sky-400 transition">
+                        Guardar
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <form method="dialog" class="modal-backdrop bg-black/70">
+            <button></button>
+        </form>
+    </dialog>
 </x-layouts::admin>

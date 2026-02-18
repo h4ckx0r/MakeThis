@@ -1,40 +1,36 @@
 @props(['title' => null])
 
 <x-layouts::basic :title="$title">
-    <div class="flex h-full w-full flex-1 flex-col">
+    <div class="flex min-h-screen w-full flex-col bg-black text-white">
+
         <livewire:navbar />
 
         {{-- Header Section --}}
-        <div
-            class="border-b border-neutral-200 bg-neutral-50 px-10 py-5 pt-28 dark:border-neutral-700 dark:bg-neutral-800">
+        <header class="border-b border-sky-500/30 bg-neutral-950 px-10 py-6 pt-28">
             <div class="mx-auto flex max-w-7xl items-center justify-between">
+
                 {{-- Profile Section --}}
-                <div class="flex items-center gap-5">
-                    <div
-                        class="flex h-28 w-28 items-center justify-center rounded-full bg-neutral-400 text-center text-xs text-black">
+                <div class="flex items-center gap-6">
+                    <div class="flex h-28 w-28 items-center justify-center rounded-full
+                               border border-sky-500/40 bg-black
+                               text-center text-xs text-neutral-300">
                         Foto de<br>Perfil
                     </div>
-                    <div class="flex flex-col gap-2">
-                        <span class="text-base font-medium">@Nombre</span>
-                        <button
-                            class="w-fit rounded border border-neutral-900 bg-white px-4 py-1 text-xl dark:border-neutral-100 dark:bg-neutral-900">⋯</button>
+
+                    <div class="flex flex-col gap-3">
+                        <span class="text-lg font-medium tracking-wide">
+                            @Nombre
+                        </span>
+                        <button class="w-fit rounded-full border border-sky-500/40
+                                   px-4 py-1 text-xl text-sky-400
+                                   hover:bg-sky-500/10 transition">
+                            ⋯
+                        </button>
                     </div>
                 </div>
 
-                {{-- Header Navigation --}}
-                <nav class="flex gap-2">
-                    <button
-                        class="rounded-full border border-neutral-900 bg-white px-5 py-2 text-sm transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">Prioridades</button>
-                    <button
-                        class="rounded-full border border-neutral-900 bg-white px-5 py-2 text-sm transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">Proximidad</button>
-                    <button
-                        class="rounded-full border border-neutral-900 bg-white px-5 py-2 text-sm transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">Popularidad</button>
-                    <button
-                        class="rounded-full border border-neutral-900 bg-white px-5 py-2 text-sm transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">Mi
-                        Cuenta</button>
-                </nav>
             </div>
-        </div>
+        </header>
 
         {{-- Tab Navigation --}}
         @php
@@ -47,23 +43,29 @@
         ];
         @endphp
 
-        <nav class="flex border-b border-neutral-900 dark:border-neutral-100">
+        <nav class="flex border-b border-sky-500/30 bg-black">
             @foreach($tabs as $tab)
             @php
             $isActive = $tab['route'] && request()->routeIs($tab['route']);
-            $classes = $isActive
-            ? 'bg-white font-semibold dark:bg-neutral-900'
-            : 'bg-neutral-100 transition hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700';
-            $commonClasses = 'flex-1 max-w-[200px] border-r border-neutral-900 px-8 py-3 text-sm text-center
-            dark:border-neutral-100';
+
+            $baseClasses = '
+            flex-1 max-w-[200px]
+            px-8 py-4 text-sm text-center
+            border-r border-sky-500/20
+            transition
+            ';
+
+            $stateClasses = $isActive
+            ? 'bg-neutral-950 text-sky-400 font-semibold'
+            : 'text-neutral-400 hover:bg-sky-500/10 hover:text-white';
             @endphp
 
             @if($tab['route'])
-            <a href="{{ route($tab['route']) }}" class="{{ $commonClasses }} {{ $classes }}">
+            <a href="{{ route($tab['route']) }}" class="{{ $baseClasses }} {{ $stateClasses }}">
                 {{ $tab['name'] }}
             </a>
             @else
-            <button class="{{ $commonClasses }} {{ $classes }}">
+            <button class="{{ $baseClasses }} {{ $stateClasses }}">
                 {{ $tab['name'] }}
             </button>
             @endif
@@ -71,12 +73,13 @@
         </nav>
 
         {{-- Main Content --}}
-        <div class="flex-1 px-10 py-8">
+        <main class="flex-1 px-10 py-10">
             <div class="mx-auto max-w-7xl">
                 {{ $slot }}
             </div>
-        </div>
+        </main>
 
         <livewire:footer />
+
     </div>
 </x-layouts::basic>
