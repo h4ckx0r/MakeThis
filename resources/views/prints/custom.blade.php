@@ -1,21 +1,11 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    @include('partials.head')
-</head>
-
-<body class="bg-base-100 text-base-content">
-    <div class="min-h-screen flex flex-col">
-        <livewire:navbar />
-
-        <main class="flex-grow container mx-auto px-4 py-12">
+<x-layouts::home :title="'Pieza Personalizada'">
+        <main class="grow container mx-auto px-4 py-12">
             <div class="mb-12">
                 <h1 class="text-4xl font-bold mb-2">Pieza Personalizada</h1>
                 <p class="text-gray-600">Cuéntanos tu idea y nuestros diseñadores crearán el modelo perfecto para ti</p>
             </div>
 
-            <form action="{{ route('piezas.preview') }}" method="POST" class="space-y-8">
+            <form action="{{ route('prints.preview') }}" method="POST" class="space-y-8">
                 @csrf
                 <input type="hidden" name="tipo" value="personalizada">
 
@@ -94,14 +84,9 @@
 
                 <!-- Botones -->
                 <div class="flex gap-4 pt-6">
-                    <a href="{{ route('piezas.solicitar') }}" class="btn btn-outline">Cancelar</a>
+                    <a href="{{ route('prints.request') }}" class="btn btn-outline">Cancelar</a>
                     <button type="submit" class="btn btn-primary flex-1">Vista Previa</button>
                 </div>
             </form>
         </main>
-
-        <livewire:footer />
-    </div>
-</body>
-
-</html>
+</x-layouts::home>

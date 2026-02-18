@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    @include('partials.head')
-</head>
-
-<body class="bg-base-100 text-base-content">
-    <div class="min-h-screen flex flex-col">
-        <livewire:navbar />
-
+<x-layouts::home :title="'Sube tu Modelo 3D'">
         <main class="flex-grow container mx-auto px-4 py-12">
             <div class="mb-12">
                 <h1 class="text-4xl font-bold mb-2">Sube tu Modelo 3D</h1>
@@ -16,7 +6,7 @@
                 </p>
             </div>
 
-            <form action="{{ route('piezas.preview') }}" method="POST" class="space-y-8">
+            <form action="{{ route('prints.preview') }}" method="POST" class="space-y-8">
                 @csrf
                 <input type="hidden" name="tipo" value="propia">
 
@@ -118,15 +108,11 @@
 
                 <!-- Botones -->
                 <div class="flex gap-4 pt-6">
-                    <a href="{{ route('piezas.solicitar') }}" class="btn btn-outline">Cancelar</a>
+                    <a href="{{ route('prints.request') }}" class="btn btn-outline">Cancelar</a>
                     <button type="submit" class="btn btn-primary flex-1">Vista Previa</button>
                 </div>
             </form>
         </main>
-
-        <livewire:footer />
-    </div>
-
     <script>
         document.getElementById('configRecomendada').addEventListener('change', function () {
             const configAvanzada = document.getElementById('configAvanzada');
@@ -136,6 +122,4 @@
         // Mostrar/ocultar configuración avanzada al inicio
         document.getElementById('configAvanzada').style.display = 'none';
     </script>
-</body>
-
-</html>
+</x-layouts::home>

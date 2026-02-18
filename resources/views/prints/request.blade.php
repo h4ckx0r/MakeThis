@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    @include('partials.head')
-</head>
-
-<body class="bg-base-100 text-base-content">
-    <div class="min-h-screen flex flex-col">
-        <livewire:navbar />
-
-        <main class="flex-grow container mx-auto px-4 py-12">
+<x-layouts::home :title="'Solicitar una Pieza'">
+        <main class="grow container mx-auto px-4 py-12">
             <div class="text-center mb-16">
                 <h1 class="text-5xl font-bold mb-4">Solicitar una Pieza</h1>
                 <p class="text-xl text-gray-600">Elige cómo quieres que sea tu pieza</p>
@@ -17,7 +7,7 @@
 
             <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
                 <!-- Pieza Propia -->
-                <a href="{{ route('piezas.propia') }}" class="group">
+                <a href="{{ route('prints.own') }}" class="group">
                     <div
                         class="card bg-base-100 border border-base-300 hover:border-primary hover:shadow-xl transition-all duration-300 h-full">
                         <div class="card-body items-center text-center p-8">
@@ -39,7 +29,7 @@
                 </a>
 
                 <!-- Pieza Personalizada -->
-                <a href="{{ route('piezas.personalizada') }}" class="group">
+                <a href="{{ route('prints.custom') }}" class="group">
                     <div
                         class="card bg-base-100 border border-base-300 hover:border-primary hover:shadow-xl transition-all duration-300 h-full">
                         <div class="card-body items-center text-center p-8">
@@ -66,15 +56,10 @@
             <div class="mt-16 pt-8 border-t">
                 <h3 class="text-2xl font-bold text-center mb-8">O busca en nuestro catálogo</h3>
                 <div class="text-center">
-                    <a href="{{ route('piezas.catalogo') }}" class="btn btn-outline btn-lg">
+                    <a href="{{ route('prints.catalog') }}" class="btn btn-outline btn-lg">
                         Ver Catálogo de Piezas
                     </a>
                 </div>
             </div>
         </main>
-
-        <livewire:footer />
-    </div>
-</body>
-
-</html>
+</x-layouts::home>

@@ -5,12 +5,15 @@
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
+<body class="min-h-screen bg-base-100 text-base-content pt-16">
+<div class="flex! flex-col">
+    <livewire:navbar/>
     <flux:main class="p-0!">
         {{ $slot }}
     </flux:main>
-
-    @fluxScripts
+    <livewire:footer />
+</div>
+@fluxScripts
 </body>
 
 </html>

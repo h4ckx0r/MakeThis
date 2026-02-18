@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    @include('partials.head')
-</head>
-
-<body class="bg-base-100 text-base-content">
-    <div class="min-h-screen flex flex-col">
-        <livewire:navbar />
-
-        <main class="flex-grow container mx-auto px-4 py-12">
+<x-layouts::home :title="'Preview de Solicitud'">
+        <main class="grow container mx-auto px-4 py-12">
             <div class="mb-12">
                 <h1 class="text-4xl font-bold mb-2">Resumen de tu Solicitud</h1>
                 <p class="text-gray-600">Verifica que todos los datos sean correctos antes de confirmar</p>
@@ -88,8 +78,4 @@
             </div>
         </main>
 
-        <livewire:footer />
-    </div>
-</body>
-
-</html>
+</x-layouts::home>
