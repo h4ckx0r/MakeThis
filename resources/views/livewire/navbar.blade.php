@@ -35,9 +35,9 @@
                     <flux:icon.chevron-down class="size-3 text-white/50" />
                 </button>
 
-                <flux:menu class="!bg-zinc-900 !border-white/10 !text-white">
+                <flux:menu class="bg-zinc-900! border-white/10! text-white!">
                     <flux:menu.item :href="auth()->user()->isAdmin ? route('admin.reports') : route('client.requests')"
-                        wire:navigate class="active:!bg-celeste active:!text-black">
+                        wire:navigate class="active:bg-celeste! active:text-black!">
                         @if(auth()->user()->isAdmin)
                         {{ __('Panel de Control') }}
                         @else
@@ -45,14 +45,14 @@
                         @endif
                     </flux:menu.item>
                     <flux:menu.item :href="route('profile.edit')" wire:navigate
-                        class="active:!bg-celeste active:!text-black">{{ __('Ajustes') }}</flux:menu.item>
+                        class="active:bg-celeste! active:text-black!">{{ __('Ajustes') }}</flux:menu.item>
 
-                    <flux:menu.separator class="!bg-white/10" />
+                    <flux:menu.separator class="bg-white/10!" />
 
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit"
-                            class="w-full text-start active:!bg-celeste active:!text-black">
+                            class="w-full text-start active:bg-celeste! active:text-black!">
                             {{ __('Cerrar sesión') }}
                         </flux:menu.item>
                     </form>
@@ -66,11 +66,11 @@
                     <flux:icon.chevron-down class="size-3" />
                 </button>
 
-                <flux:menu class="!bg-zinc-900 !border-white/10 !text-white">
+                <flux:menu class="bg-zinc-900! border-white/10! text-white!">
                     <flux:menu.item :href="route('auth.login')" wire:navigate
-                        class="active:!bg-celeste active:!text-black">{{ __('Iniciar sesión') }}</flux:menu.item>
+                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Iniciar sesión') }}</flux:menu.item>
                     <flux:menu.item :href="route('auth.register')" wire:navigate
-                        class="active:!bg-celeste active:!text-black">{{ __('Registrarse') }}</flux:menu.item>
+                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Registrarse') }}</flux:menu.item>
                 </flux:menu>
             </flux:dropdown>
             @endauth
