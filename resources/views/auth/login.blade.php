@@ -91,7 +91,7 @@
 
                     {{-- Checkbox Recordarme --}}
                     <div class="flex items-center gap-3 py-1">
-                        <input type="checkbox" name="remember" class="checkbox checkbox-sm border border-black"
+                        <input type="checkbox" name="remember" class="checkbox checkbox-sm border border-base-content"
                             {{ old('remember') ? 'checked' : '' }} />
                         <span class="text-[15px] font-normal">Recordarme</span>
                     </div>

@@ -2,7 +2,7 @@
         <main class="flex-grow container mx-auto px-4 py-12">
             <div class="mb-12">
                 <h1 class="text-4xl font-bold mb-2">Sube tu Modelo 3D</h1>
-                <p class="text-gray-600">Proporciona los detalles de tu pieza para que pueda ser impresa correctamente
+                <p class="text-base-content/60">Proporciona los detalles de tu pieza para que pueda ser impresa correctamente
                 </p>
             </div>
 

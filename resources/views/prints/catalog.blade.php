@@ -12,7 +12,7 @@
         <main class="grow container mx-auto px-4 py-12">
             <div class="text-center mb-12">
                 <h1 class="text-5xl font-bold mb-4">Catálogo de Piezas</h1>
-                <p class="text-xl text-gray-600">Busque en nuestro catálogo</p>
+                <p class="text-xl text-base-content/60">Busque en nuestro catálogo</p>
             </div>
 
             <!-- Filtros -->
@@ -61,7 +61,7 @@
                         d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h3 class="text-xl font-semibold mb-2">No se encontraron piezas</h3>
-                <p class="text-gray-600">Intenta ajustar tus filtros de búsqueda</p>
+                <p class="text-base-content/60">Intenta ajustar tus filtros de búsqueda</p>
             </div>
             @endif
         </main>

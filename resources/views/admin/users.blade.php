@@ -1,52 +1,30 @@
-<x-layouts::home :title="'Usuarios - Panel de Administración'">
-    <div class="flex min-h-screen w-full flex-col py-6 text-white">
+@php $title = 'Usuarios'; @endphp
 
+<x-layouts::admin :title="$title">
 
-
-        {{-- Tab Navigation --}}
-        @php
-        $tabs = [
-        ['name' => 'Reportes', 'route' => 'admin.reports'],
-        ['name' => 'Solicitudes', 'route' => 'admin.requests'],
-        ['name' => 'Mensajes', 'route' => null],
-        ['name' => 'Usuarios', 'route' => 'admin.users'],
-        ['name' => 'Catálogo', 'route' => 'admin.catalog'],
-        ];
-        @endphp
-
-        <nav class="flex border-b border-sky-500/30 ">
-            @foreach($tabs as $tab)
-            @php
-            $isActive = $tab['route'] && request()->routeIs($tab['route']);
-
-            $baseClasses = '
-            flex-1 max-w-[200px]
-            px-8 py-4 text-sm text-center
-            border-r border-sky-500/20
-            transition
-            ';
-
-            $stateClasses = $isActive
-            ? 'bg-neutral-950 text-sky-400 font-semibold'
-            : 'text-neutral-400 hover:bg-sky-500/10 hover:text-white';
-            @endphp
-
-            @if($tab['route'])
-            <a href="{{ route($tab['route']) }}" class="{{ $baseClasses }} {{ $stateClasses }}">
-                {{ $tab['name'] }}
-            </a>
-            @else
-            <button class="{{ $baseClasses }} {{ $stateClasses }}">
-                {{ $tab['name'] }}
-            </button>
-            @endif
-            @endforeach
-        </nav>
-
-        {{-- Users Table --}}
-        <div class="mt-6">
-            @livewire('admin.users-table')
-        </div>
-
+    {{-- Page Title --}}
+    <div class="mb-8">
+        <h1 class="text-3xl font-semibold tracking-wide text-base-content">Usuarios</h1>
     </div>
-</x-layouts::home>
+
+    {{-- Flash alerts --}}
+    @if (session('success'))
+    <div role="alert" class="alert alert-success mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ session('success') }}</span>
+    </div>
+    @endif
+    @if (session('error'))
+    <div role="alert" class="alert alert-error mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ session('error') }}</span>
+    </div>
+    @endif
+
+    @livewire('admin.users-table')
+
+</x-layouts::admin>

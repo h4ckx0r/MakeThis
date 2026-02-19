@@ -30,7 +30,7 @@
             <flux:dropdown position="bottom" align="end">
                 <button
                     class="flex items-center gap-2 rounded-full bg-white/10 p-1 pr-3 transition-colors hover:bg-white/20">
-                    <flux:avatar :initials="auth()->user()->initials()" size="sm" class="!bg-celeste !text-black" />
+                    <flux:avatar :initials="auth()->user()->initials()" size="sm" class="bg-celeste! text-black! rounded-full!" />
                     <span class="hidden text-sm font-medium text-white sm:block">{{ auth()->user()->nombre }}</span>
                     <flux:icon.chevron-down class="size-3 text-white/50" />
                 </button>
