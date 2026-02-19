@@ -14,6 +14,16 @@ class Solicitud extends Model
 
     protected $table = "solicitudes";
 
+    protected $fillable = [
+        'userId',
+        'estadoId',
+        'detalles',
+        '3dModelId',
+        'porcentajeRelleno',
+        'alturaCapa',
+        'patronRelleno',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'userId');
