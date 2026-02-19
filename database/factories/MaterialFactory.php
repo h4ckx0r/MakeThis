@@ -17,7 +17,7 @@ class MaterialFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombre' => fake()->randomElement(['PLA', 'ABS', 'PETG', 'TPU', 'Nylon']),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Material;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class ColorFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombre' => fake()->colorName(),
+            'hexColor' => fake()->regexify('[0-9A-Fa-f]{6}'),
+            'materialId' => Material::factory(),
         ];
     }
 }

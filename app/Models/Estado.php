@@ -10,4 +10,8 @@ class Estado extends Model
 {
     /** @use HasFactory<\Database\Factories\EstadoFactory> */
     use HasFactory, HasUuids;
+
+    protected $fillable = [
+        'nombreEstado',
+    ];
 }

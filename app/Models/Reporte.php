@@ -10,4 +10,11 @@ class Reporte extends Model
 {
     /** @use HasFactory<\Database\Factories\ReporteFactory> */
     use HasFactory, HasUuids;
+
+    protected $fillable = [
+        'solicitudId',
+        'fecha',
+        'titulo',
+        'descripcion',
+    ];
 }

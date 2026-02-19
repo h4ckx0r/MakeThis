@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Pieza;
+use App\Models\Adjunto;
+use App\Models\Color;
+use App\Models\Material;
+use App\Models\PiezaCatalogo;
 use App\Models\Tag;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PiezasSeeder extends Seeder
@@ -14,99 +16,85 @@ class PiezasSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear tags
-        $tags = [
-            ['nombre' => 'mecanico'],
-            ['nombre' => 'decorativo'],
-            ['nombre' => 'funcional'],
-            ['nombre' => 'juguete'],
-            ['nombre' => 'herramienta'],
-            ['nombre' => 'soporte'],
-            ['nombre' => 'conectores'],
-            ['nombre' => 'organización'],
-        ];
+        // Obtener colores PLA para asignar a las piezas
+        $materialPLA = Material::where('nombre', 'PLA')->first();
+        $coloresPLA = Color::where('materialId', $materialPLA->id)->get();
 
-        foreach ($tags as $tag) {
-            Tag::create($tag);
-        }
-
-        // Crear piezas de ejemplo
+        // Piezas del catalogo con sus adjuntos y tags
         $piezas = [
             [
-                'nombre' => 'Engranaje Mecánico',
-                'descripcion' => 'Engranaje de precisión para aplicaciones mecánicas',
-                'visible_catalogo' => true,
+                'nombre' => 'Engranaje Mecanico',
+                'fichero' => 'catalogo/engranaje_mecanico.stl',
                 'tags' => ['mecanico', 'funcional'],
             ],
             [
                 'nombre' => 'Maceta Decorativa',
-                'descripcion' => 'Maceta moderna con diseño minimalista',
-                'visible_catalogo' => true,
-                'tags' => ['decorativo', 'organización'],
+                'fichero' => 'catalogo/maceta_decorativa.stl',
+                'tags' => ['decorativo', 'organizacion'],
             ],
             [
-                'nombre' => 'Soporte para Teléfono',
-                'descripcion' => 'Soporte ajustable para smartphone',
-                'visible_catalogo' => true,
+                'nombre' => 'Soporte para Telefono',
+                'fichero' => 'catalogo/soporte_telefono.stl',
                 'tags' => ['soporte', 'funcional'],
             ],
             [
                 'nombre' => 'Juguete Articulado',
-                'descripcion' => 'Juguete educativo con partes móviles',
-                'visible_catalogo' => true,
+                'fichero' => 'catalogo/juguete_articulado.3mf',
                 'tags' => ['juguete', 'decorativo'],
             ],
             [
                 'nombre' => 'Caja de Herramientas Mini',
-                'descripcion' => 'Caja compacta para organizar pequeñas herramientas',
-                'visible_catalogo' => true,
-                'tags' => ['organización', 'herramienta'],
+                'fichero' => 'catalogo/caja_herramientas.stl',
+                'tags' => ['organizacion', 'herramienta'],
             ],
             [
-                'nombre' => 'Conector Rápido',
-                'descripcion' => 'Conector modular para proyectos',
-                'visible_catalogo' => true,
+                'nombre' => 'Conector Rapido',
+                'fichero' => 'catalogo/conector_rapido.stl',
                 'tags' => ['conectores', 'funcional'],
             ],
             [
                 'nombre' => 'Organizador de Escritorio',
-                'descripcion' => 'Organizador para lápices y accesorios',
-                'visible_catalogo' => true,
-                'tags' => ['organización', 'decorativo'],
+                'fichero' => 'catalogo/organizador_escritorio.3mf',
+                'tags' => ['organizacion', 'decorativo'],
             ],
             [
                 'nombre' => 'Pieza de Ajedrez',
-                'descripcion' => 'Pieza de ajedrez de tamaño estándar',
-                'visible_catalogo' => true,
+                'fichero' => 'catalogo/pieza_ajedrez.stl',
                 'tags' => ['juguete', 'decorativo'],
             ],
             [
                 'nombre' => 'Bracket de Montaje',
-                'descripcion' => 'Soporte de montaje versátil',
-                'visible_catalogo' => true,
+                'fichero' => 'catalogo/bracket_montaje.stl',
                 'tags' => ['soporte', 'mecanico'],
             ],
             [
                 'nombre' => 'Llavero Personalizado',
-                'descripcion' => 'Llavero con diseño personalizable',
-                'visible_catalogo' => true,
+                'fichero' => 'catalogo/llavero.stl',
                 'tags' => ['decorativo', 'funcional'],
             ],
         ];
 
-        foreach ($piezas as $piezaData) {
-            $tags = $piezaData['tags'];
-            unset($piezaData['tags']);
+        foreach ($piezas as $index => $piezaData) {
+            // Crear adjunto para la pieza
+            $adjunto = Adjunto::create([
+                'nombreFichero' => basename($piezaData['fichero']),
+                'idSolicitud' => null,
+                'fichero' => $piezaData['fichero'],
+            ]);
 
-            $pieza = Pieza::create($piezaData);
+            // Asignar un color PLA rotando
+            $color = $coloresPLA[$index % $coloresPLA->count()];
+
+            // Crear la pieza de catalogo
+            $pieza = PiezaCatalogo::create([
+                'nombre' => $piezaData['nombre'],
+                'adjuntoId' => $adjunto->id,
+                'colorId' => $color->id,
+            ]);
 
             // Asociar tags
-            foreach ($tags as $tagNombre) {
-                $tag = Tag::where('nombre', $tagNombre)->first();
-                if ($tag) {
-                    $pieza->tags()->attach($tag->id);
-                }
-            }
+            $tagIds = Tag::whereIn('nombre', $piezaData['tags'])->pluck('id');
+            $pieza->tags()->attach($tagIds);
         }
     }
 }
