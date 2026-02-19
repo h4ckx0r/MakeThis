@@ -1,200 +1,375 @@
-@php
-$title = 'Usuarios';
-@endphp
+@php $title = 'Usuarios'; @endphp
 
 <x-layouts::admin :title="$title">
-    {{-- Page Title --}}
-    <h1 class="mb-5 text-2xl font-semibold text-center">Usuarios</h1>
 
-    {{-- Search and Filter --}}
-    <div class="mb-5 flex justify-center">
-        <div
-            class="flex w-full max-w-md items-center gap-3 rounded border border-neutral-900 bg-white px-4 py-2 dark:border-neutral-100 dark:bg-neutral-900">
-            <span class="text-base">🔍</span>
-            <input type="text" placeholder="Buscar Usuario"
-                class="flex-1 border-none bg-transparent text-sm outline-none text-center">
+    {{-- Page Title + Add Button --}}
+    <div class="mb-8 flex items-center justify-between">
+        <h1 class="text-3xl font-semibold tracking-wide text-base-content">Usuarios</h1>
+        <button class="btn btn-primary btn-sm" onclick="add_user_modal.showModal()">
+            + Añadir Usuario
+        </button>
+    </div>
+
+    {{-- Flash alerts --}}
+    @if (session('success'))
+    <div role="alert" class="alert alert-success mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ session('success') }}</span>
+    </div>
+    @endif
+    @if (session('error'))
+    <div role="alert" class="alert alert-error mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ session('error') }}</span>
+    </div>
+    @endif
+
+    {{-- Search (join) --}}
+    <form method="GET" action="{{ route('admin.users') }}" class="mb-8">
+        <div class="join w-full max-w-md">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Buscar por nombre o email..."
+                class="input join-item input-bordered w-full bg-base-200 border-sky-500/30
+                       text-base-content placeholder-base-content/40 focus:border-sky-400 focus:outline-none"
+            />
+            <button type="submit" class="btn join-item btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
         </div>
-    </div>
+    </form>
 
-    {{-- Users List Header --}}
-    <div class="mb-2 grid grid-cols-[1fr_1fr_1fr_auto] gap-4 px-4 py-2 font-medium text-center">
-        <span>Nombre</span>
-        <span>Correo Electrónico</span>
-        <span>Teléfono</span>
-        <span>Acciones</span>
-    </div>
-
-    {{-- Users List --}}
-    <div class="mb-8 flex flex-col gap-2">
-        @for ($i = 0; $i < 3; $i++) <details
-            class="collapse bg-base-100 border border-neutral-900 dark:border-neutral-100 rounded-lg group">
-            <summary class="collapse-title min-h-0 p-0">
-                <div class="grid grid-cols-[1fr_1fr_1fr_auto] items-center gap-4 px-4 py-3 text-center text-sm w-full">
-                    <span class="text-lg">Juan</span>
-                    <span>correodeJuan@gmail.com</span>
-                    <span>000000000</span>
-                    <div class="flex gap-2 justify-center">
-                        <button onclick="event.preventDefault(); document.getElementById('edit_user_modal').showModal()"
-                            class="w-6 h-6 hover:text-blue-600">
-                            ✏️
-                        </button>
-                        <button
-                            onclick="event.preventDefault(); document.getElementById('delete_user_modal').showModal()"
-                            class="w-6 h-6 hover:text-red-600">
-                            🗑️
-                        </button>
-                    </div>
-                </div>
-            </summary>
-
-            {{-- Expanded Content --}}
-            <div class="collapse-content border-t border-neutral-200 dark:border-neutral-700">
-                <div class="p-6 relative">
-                    {{-- Photo --}}
-                    <div
-                        class="absolute left-4 top-4 w-28 h-28 border border-neutral-900 bg-white flex items-center justify-center text-center text-sm p-2 rounded">
-                        Foto de Perfil
-                    </div>
-
-                    {{-- Info Grid --}}
-                    <div class="ml-36 grid grid-cols-2 gap-y-4 gap-x-8 text-lg">
-                        <div class="flex gap-2">
-                            <span>Nombre:</span>
-                            <span class="underline">Juan</span>
+    {{-- Users Table --}}
+    <div class="rounded-xl border border-sky-500/20 overflow-hidden mb-8">
+        <table class="table table-zebra table-pin-rows w-full">
+            <thead class="bg-base-300">
+                <tr class="text-primary text-sm">
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($users as $user)
+                <tr class="hover:bg-base-200/50 transition-colors">
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <div class="avatar placeholder">
+                                <div class="bg-primary/20 text-primary rounded-full w-10 h-10">
+                                    <span class="text-sm font-semibold">
+                                        {{ strtoupper(substr($user->nombre ?? '?', 0, 1)) }}{{ strtoupper(substr($user->apellidos ?? '', 0, 1)) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="font-medium text-sm text-base-content">
+                                    {{ $user->nombre }} {{ $user->apellidos }}
+                                </div>
+                                <div class="text-xs text-base-content/50">{{ $user->direccion ?? 'Sin dirección' }}</div>
+                            </div>
                         </div>
-                        <div class="flex gap-2">
-                            <span>Tipo:</span>
-                            <span>____</span>
+                    </td>
+                    <td class="text-sm text-base-content/70">{{ $user->email }}</td>
+                    <td class="text-sm text-base-content/70">{{ $user->telefono ?? '—' }}</td>
+                    <td>
+                        @if ($user->isAdmin)
+                        <span class="badge badge-soft badge-primary badge-sm">Admin</span>
+                        @else
+                        <span class="badge badge-soft badge-neutral badge-sm">Usuario</span>
+                        @endif
+                    </td>
+                    <td class="text-center">
+                        <div class="flex gap-2 justify-center">
+                            <button
+                                class="btn btn-ghost btn-sm text-primary hover:text-primary/80"
+                                onclick="openEditUserModal(
+                                    '{{ $user->id }}',
+                                    '{{ addslashes($user->nombre ?? '') }}',
+                                    '{{ addslashes($user->apellidos ?? '') }}',
+                                    '{{ addslashes($user->email) }}',
+                                    '{{ addslashes($user->telefono ?? '') }}',
+                                    '{{ addslashes($user->direccion ?? '') }}',
+                                    {{ $user->isAdmin ? 'true' : 'false' }}
+                                )"
+                            >
+                                Editar
+                            </button>
+                            <button
+                                class="btn btn-ghost btn-sm text-error hover:text-red-400"
+                                onclick="openDeleteUserModal(
+                                    '{{ $user->id }}',
+                                    '{{ addslashes(($user->nombre ?? '') . ' ' . ($user->apellidos ?? '')) }}'
+                                )"
+                            >
+                                Eliminar
+                            </button>
                         </div>
-                        <div class="flex gap-2">
-                            <span>Apellidos:</span>
-                            <span class="underline">Juanez</span>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="text-center py-16 text-base-content/50">
+                        <div class="flex flex-col items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>No hay usuarios{{ request('search') ? ' con "' . request('search') . '"' : '' }}</span>
                         </div>
-                        <div class="flex gap-2">
-                            <span>Dirección:</span>
-                            <span class="underline">Calle Juan, Ciudad de Juan, 0000</span>
-                        </div>
-                        <div class="flex gap-2 col-span-2">
-                            <span>Correo:</span>
-                            <span class="underline">correodeJuan@gmail.com</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <span>Tlf:</span>
-                            <span class="underline">000000000</span>
-                        </div>
-                    </div>
-
-                    {{-- Role Badge --}}
-                    <div class="absolute top-4 right-4 border border-neutral-900 rounded p-2 text-center w-24">
-                        <div class="text-sm font-semibold">Admin</div>
-                        <div class="text-xl">👤</div>
-                    </div>
-                </div>
-            </div>
-            </details>
-            @endfor
-    </div>
-
-    {{-- Add User Button --}}
-    <div class="mb-5 flex flex-col items-center">
-        <button class="rounded-full bg-neutral-300 px-8 py-3 text-xl border border-neutral-900"
-            onclick="add_user_modal.showModal()">Añadir Usuario</button>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
     {{-- Pagination --}}
-    <div class="flex items-center justify-center gap-4 py-5">
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">‹</button>
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">‹</button>
-        <span class="text-xs">●</span>
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">›</button>
-        <button
-            class="rounded border border-neutral-900 bg-white px-3 py-1 transition hover:bg-neutral-100 dark:border-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">›</button>
+    @if ($users->hasPages())
+    <div class="flex justify-center mb-8">
+        <div class="join">
+            @if ($users->onFirstPage())
+            <button class="join-item btn btn-sm btn-disabled">«</button>
+            <button class="join-item btn btn-sm btn-disabled">‹</button>
+            @else
+            <a href="{{ $users->url(1) }}" class="join-item btn btn-sm btn-ghost border-sky-500/30">«</a>
+            <a href="{{ $users->previousPageUrl() }}" class="join-item btn btn-sm btn-ghost border-sky-500/30">‹</a>
+            @endif
+
+            @foreach ($users->getUrlRange(max(1, $users->currentPage() - 2), min($users->lastPage(), $users->currentPage() + 2)) as $page => $url)
+                @if ($page == $users->currentPage())
+                <button class="join-item btn btn-sm btn-primary">{{ $page }}</button>
+                @else
+                <a href="{{ $url }}" class="join-item btn btn-sm btn-ghost border-sky-500/30">{{ $page }}</a>
+                @endif
+            @endforeach
+
+            @if ($users->hasMorePages())
+            <a href="{{ $users->nextPageUrl() }}" class="join-item btn btn-sm btn-ghost border-sky-500/30">›</a>
+            <a href="{{ $users->url($users->lastPage()) }}" class="join-item btn btn-sm btn-ghost border-sky-500/30">»</a>
+            @else
+            <button class="join-item btn btn-sm btn-disabled">›</button>
+            <button class="join-item btn btn-sm btn-disabled">»</button>
+            @endif
+        </div>
     </div>
+    @endif
 
-    {{-- Modals --}}
-    {{-- Add User Modal --}}
+    {{-- ADD USER MODAL --}}
     <dialog id="add_user_modal" class="modal">
-        <div class="modal-box max-w-2xl bg-white text-black border border-neutral-900 p-8 rounded-lg">
-            <h3 class="font-bold text-2xl text-center mb-6">Añadir Usuario</h3>
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <input type="text" placeholder="Nombre" class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="text" placeholder="Apellidos" class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="email" placeholder="Correo Electrónico"
-                    class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="text" placeholder="Teléfono" class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="text" placeholder="Dirección"
-                    class="w-full border border-neutral-400 p-2 rounded col-span-2" />
-                <select class="w-full border border-neutral-400 p-2 rounded">
-                    <option disabled selected>Rol</option>
-                    <option>Admin</option>
-                    <option>User</option>
-                </select>
-                <div class="flex items-center gap-2">
-                    <span class="text-sm">Foto de Perfil</span>
-                    <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-xs" />
+        <div class="modal-box max-w-2xl bg-base-200 border border-sky-500/30 text-base-content">
+            <h3 class="text-xl font-semibold mb-6">Añadir Usuario</h3>
+
+            <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <fieldset class="fieldset mb-4">
+                    <legend class="fieldset-legend text-base-content/60">Datos personales</legend>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label label-text text-base-content/70">Nombre *</label>
+                            <input type="text" name="nombre" required
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400"
+                                   placeholder="Nombre" />
+                        </div>
+                        <div>
+                            <label class="label label-text text-base-content/70">Apellidos</label>
+                            <input type="text" name="apellidos"
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400"
+                                   placeholder="Apellidos" />
+                        </div>
+                        <div>
+                            <label class="label label-text text-base-content/70">Email *</label>
+                            <input type="email" name="email" required
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400"
+                                   placeholder="email@ejemplo.com" />
+                        </div>
+                        <div>
+                            <label class="label label-text text-base-content/70">Teléfono</label>
+                            <input type="text" name="telefono"
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400"
+                                   placeholder="000 000 000" />
+                        </div>
+                        <div class="col-span-2">
+                            <label class="label label-text text-base-content/70">Dirección</label>
+                            <input type="text" name="direccion"
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400"
+                                   placeholder="Calle, Ciudad, CP" />
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="fieldset mb-4">
+                    <legend class="fieldset-legend text-base-content/60">Contraseña *</legend>
+                    <input type="password" name="password" required
+                           class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400"
+                           placeholder="Contraseña inicial" />
+                </fieldset>
+
+                <fieldset class="fieldset mb-6">
+                    <legend class="fieldset-legend text-base-content/60">Configuración</legend>
+                    <div class="flex items-end gap-4">
+                        <div class="flex-1">
+                            <label class="label label-text text-base-content/70">Rol</label>
+                            <select name="isAdmin"
+                                    class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400">
+                                <option value="0">Usuario</option>
+                                <option value="1">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label class="label label-text text-base-content/70">Foto de perfil</label>
+                            <input type="file" name="foto" accept="image/*"
+                                   class="file-input file-input-bordered w-full bg-base-300 border-sky-500/30 text-base-content" />
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="modal-action gap-3">
+                    <form method="dialog">
+                        <button class="btn btn-ghost border-base-300 text-base-content/60">Cancelar</button>
+                    </form>
+                    <button type="submit" class="btn btn-primary">Crear Usuario</button>
                 </div>
-            </div>
-            <div class="modal-action justify-center">
-                <form method="dialog">
-                    <button class="btn btn-neutral text-white px-8">Guardar</button>
-                </form>
-            </div>
+            </form>
         </div>
         <form method="dialog" class="modal-backdrop">
-            <button>close</button>
+            <button></button>
         </form>
     </dialog>
 
-    {{-- Edit User Modal --}}
+    {{-- EDIT USER MODAL --}}
     <dialog id="edit_user_modal" class="modal">
-        <div class="modal-box max-w-2xl bg-white text-black border border-neutral-900 p-8 rounded-lg">
-            <h3 class="font-bold text-2xl text-center mb-6">Editar Usuario</h3>
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <input type="text" value="Juan" class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="text" value="Juanez" class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="email" value="correodeJuan@gmail.com"
-                    class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="text" value="000000000" class="w-full border border-neutral-400 p-2 rounded" />
-                <input type="text" value="Calle Juan, Ciudad de Juan, 0000"
-                    class="w-full border border-neutral-400 p-2 rounded col-span-2" />
-                <select class="w-full border border-neutral-400 p-2 rounded">
-                    <option disabled>Rol</option>
-                    <option selected>Admin</option>
-                    <option>User</option>
-                </select>
-                <div class="flex items-center gap-2">
-                    <span class="text-sm">Cambiar Foto</span>
-                    <input type="file" class="file-input file-input-bordered file-input-sm w-full max-w-xs" />
+        <div class="modal-box max-w-2xl bg-base-200 border border-sky-500/30 text-base-content">
+            <h3 class="text-xl font-semibold mb-6">Editar Usuario</h3>
+
+            <form id="edit_user_form" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <fieldset class="fieldset mb-4">
+                    <legend class="fieldset-legend text-base-content/60">Datos personales</legend>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label label-text text-base-content/70">Nombre *</label>
+                            <input type="text" id="edit_user_nombre" name="nombre" required
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400" />
+                        </div>
+                        <div>
+                            <label class="label label-text text-base-content/70">Apellidos</label>
+                            <input type="text" id="edit_user_apellidos" name="apellidos"
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400" />
+                        </div>
+                        <div>
+                            <label class="label label-text text-base-content/70">Email *</label>
+                            <input type="email" id="edit_user_email" name="email" required
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400" />
+                        </div>
+                        <div>
+                            <label class="label label-text text-base-content/70">Teléfono</label>
+                            <input type="text" id="edit_user_telefono" name="telefono"
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400" />
+                        </div>
+                        <div class="col-span-2">
+                            <label class="label label-text text-base-content/70">Dirección</label>
+                            <input type="text" id="edit_user_direccion" name="direccion"
+                                   class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400" />
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="fieldset mb-6">
+                    <legend class="fieldset-legend text-base-content/60">Configuración</legend>
+                    <div class="flex items-end gap-4">
+                        <div class="flex-1">
+                            <label class="label label-text text-base-content/70">Rol</label>
+                            <select id="edit_user_isAdmin" name="isAdmin"
+                                    class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400">
+                                <option value="0">Usuario</option>
+                                <option value="1">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="flex-1">
+                            <label class="label label-text text-base-content/70">Cambiar foto</label>
+                            <input type="file" name="foto" accept="image/*"
+                                   class="file-input file-input-bordered w-full bg-base-300 border-sky-500/30 text-base-content" />
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="modal-action gap-3">
+                    <form method="dialog">
+                        <button class="btn btn-ghost border-base-300 text-base-content/60">Cancelar</button>
+                    </form>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
-            </div>
-            <div class="modal-action justify-center">
-                <form method="dialog">
-                    <button class="btn btn-neutral text-white px-8">Guardar Cambios</button>
-                </form>
-            </div>
+            </form>
         </div>
         <form method="dialog" class="modal-backdrop">
-            <button>close</button>
+            <button></button>
         </form>
     </dialog>
 
-    {{-- Delete Confirmation Modal --}}
+    {{-- DELETE USER MODAL --}}
     <dialog id="delete_user_modal" class="modal">
-        <div class="modal-box bg-white text-black border border-neutral-900 p-8 rounded-lg text-center">
-            <h3 class="font-bold text-lg mb-4">¿Estás seguro de que quieres eliminar este usuario?</h3>
-            <p class="mb-6">Esta acción no se puede deshacer.</p>
-            <div class="flex gap-4 justify-center">
-                <form method="dialog">
-                    <button class="btn btn-outline">Cancelar</button>
-                    <button class="btn btn-error text-white ml-2">Eliminar</button>
-                </form>
+        <div class="modal-box bg-base-200 border border-error/40 text-base-content text-center">
+            <div class="flex justify-center mb-4 text-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
             </div>
+            <h3 class="font-bold text-lg mb-2">Confirmar eliminación</h3>
+            <p id="delete_user_name" class="text-base-content/70 mb-2"></p>
+            <p class="text-sm text-base-content/50 mb-6">Esta acción no se puede deshacer.</p>
+
+            <form id="delete_user_form" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="flex gap-3 justify-center">
+                    <button type="button" class="btn btn-ghost border-base-300 text-base-content/60"
+                            onclick="delete_user_modal.close()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-error">Eliminar</button>
+                </div>
+            </form>
         </div>
         <form method="dialog" class="modal-backdrop">
-            <button>close</button>
+            <button></button>
         </form>
     </dialog>
+
+    <script>
+        function openEditUserModal(id, nombre, apellidos, email, telefono, direccion, isAdmin) {
+            document.getElementById('edit_user_nombre').value    = nombre;
+            document.getElementById('edit_user_apellidos').value = apellidos;
+            document.getElementById('edit_user_email').value     = email;
+            document.getElementById('edit_user_telefono').value  = telefono;
+            document.getElementById('edit_user_direccion').value = direccion;
+            document.getElementById('edit_user_isAdmin').value   = isAdmin ? '1' : '0';
+
+            const form = document.getElementById('edit_user_form');
+            form.action = '/admin/users/' + id;
+
+            document.getElementById('edit_user_modal').showModal();
+        }
+
+        function openDeleteUserModal(id, nombreCompleto) {
+            document.getElementById('delete_user_name').textContent = 'Vas a eliminar a: ' + nombreCompleto.trim();
+
+            const form = document.getElementById('delete_user_form');
+            form.action = '/admin/users/' + id;
+
+            document.getElementById('delete_user_modal').showModal();
+        }
+    </script>
+
 </x-layouts::admin>

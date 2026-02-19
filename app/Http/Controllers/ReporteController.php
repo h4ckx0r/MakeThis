@@ -3,63 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reporte;
+use App\Models\Solicitud;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ReporteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function adminIndex(Request $request)
     {
-        //
-    }
+        $query = Reporte::query();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        if ($request->fecha_desde) {
+            $query->whereDate('fecha', '>=', $request->fecha_desde);
+        }
+        if ($request->fecha_hasta) {
+            $query->whereDate('fecha', '<=', $request->fecha_hasta);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $reportesRecientes = $query->latest()->take(20)->get();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Reporte $reporte)
-    {
-        //
-    }
+        $totalSolicitudes = Solicitud::count();
+        $solicitudesCompletadas = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'completada'))->count();
+        $solicitudesPendientes = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'pendiente'))->count();
+        $totalUsuarios = User::count();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Reporte $reporte)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Reporte $reporte)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Reporte $reporte)
-    {
-        //
+        return view('admin.reports', compact(
+            'reportesRecientes',
+            'totalSolicitudes',
+            'solicitudesCompletadas',
+            'solicitudesPendientes',
+            'totalUsuarios'
+        ));
     }
 }

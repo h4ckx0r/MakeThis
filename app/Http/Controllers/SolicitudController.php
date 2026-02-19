@@ -7,60 +7,48 @@ use Illuminate\Http\Request;
 
 class SolicitudController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $solicitudes = Solicitud::all();
+        $solicitudes = Solicitud::with(['user', 'estado'])
+            ->when($request->search, function ($q) use ($request) {
+                $q->where('id', 'like', '%' . $request->search . '%')
+                  ->orWhereHas('user', function ($uq) use ($request) {
+                      $uq->where('nombre', 'like', '%' . $request->search . '%')
+                         ->orWhere('apellidos', 'like', '%' . $request->search . '%')
+                         ->orWhere('email', 'like', '%' . $request->search . '%');
+                  });
+            })
+            ->when($request->estado, function ($q) use ($request) {
+                $q->whereHas('estado', function ($eq) use ($request) {
+                    $eq->where('nombreEstado', $request->estado);
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.requests', compact('solicitudes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Solicitud $solicitud)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Solicitud $solicitud)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Solicitud $solicitud)
     {
-        //
-    }
+        $request->validate([
+            'estado' => 'required|string|in:pendiente,en_proceso,completada,rechazada',
+            'detalles' => 'nullable|string',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Solicitud $solicitud)
-    {
-        //
+        $estado = \App\Models\Estado::where('nombreEstado', $request->estado)->first();
+
+        if ($estado) {
+            $solicitud->estadoId = $estado->id;
+        }
+
+        if ($request->filled('detalles')) {
+            $solicitud->detalles = $request->detalles;
+        }
+
+        $solicitud->save();
+
+        return redirect()->route('admin.requests')->with('success', 'Solicitud actualizada correctamente.');
     }
 }

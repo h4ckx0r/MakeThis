@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\SolicitudController;
 use App\Http\Middleware\EnsureIsAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +27,7 @@ Route::prefix('about')->group(function () {
 Route::prefix('auth')->group(function () {
     Route::view('login', 'auth.login')
         ->name('auth.login');
-    Route::get('register', function() {
+    Route::get('register', function () {
         return view('auth.register');
     })->name('auth.register');
     Route::view('forgot-password', 'auth.forgot-password')
@@ -45,7 +47,7 @@ Route::prefix('prints')->group(function () {
     Route::view('catalog', 'prints.catalog')
         ->name('prints.catalog');
 
-    Route::prefix('request')->group(function() {
+    Route::prefix('request')->group(function () {
         Route::view('', 'prints.request')
             ->name('prints.request');
         Route::view('custom', 'prints.custom')
@@ -59,34 +61,30 @@ Route::prefix('prints')->group(function () {
 
 Route::prefix('admin')->middleware(EnsureIsAdmin::class)
     ->group(function () {
-    Route::view('catalog', 'admin.catalog')
-        ->name('admin.catalog');
-    Route::view('users', 'admin.users')
-        ->name('admin.users');
-    Route::view('requests', 'admin.requests')
-        ->name('admin.requests');
-    Route::view('reports', 'admin.reports')
-        ->name('admin.reports');
-});
+        // Rutas para catálogo
+        Route::view('catalog', 'admin.catalog')
+            ->name('admin.catalog');
 
+        // Rutas para usuarios
+        Route::view('users', 'admin.users')
+            ->name('admin.users');
 
+        // Rutas para solicitudes
+        Route::get('requests', [SolicitudController::class, 'index'])
+            ->name('admin.requests');
+        Route::put('requests/{solicitud}', [SolicitudController::class, 'update'])
+            ->name('admin.requests.update');
 
-
-
-
+        // Rutas para reportes
+        Route::get('reports', [ReporteController::class, 'adminIndex'])
+            ->name('admin.reports');
+    });
 
 
 // CONTROLADORES
 
 
-
-
-
-
-
-
-
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
 
 // DEPRECADO ;)
 

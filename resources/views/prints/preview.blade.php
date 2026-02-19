@@ -2,7 +2,7 @@
         <main class="grow container mx-auto px-4 py-12">
             <div class="mb-12">
                 <h1 class="text-4xl font-bold mb-2">Resumen de tu Solicitud</h1>
-                <p class="text-gray-600">Verifica que todos los datos sean correctos antes de confirmar</p>
+                <p class="text-base-content/60">Verifica que todos los datos sean correctos antes de confirmar</p>
             </div>
 
             <div class="max-w-2xl mx-auto space-y-8">
@@ -10,7 +10,7 @@
                 <div class="space-y-6">
                     <!-- Tipo de Pieza -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold uppercase tracking-wide text-gray-600">Tipo de
+                        <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">Tipo de
                             Pieza</label>
                         <div class="bg-base-200 rounded-lg p-4">
                             <p class="text-lg font-semibold capitalize">
@@ -26,7 +26,7 @@
                     <!-- Material -->
                     <div class="space-y-2">
                         <label
-                            class="block text-sm font-semibold uppercase tracking-wide text-gray-600">Material</label>
+                            class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">Material</label>
                         <div class="bg-base-200 rounded-lg p-4">
                             <p class="text-lg font-semibold">{{ session('preview')['material'] }}</p>
                         </div>
@@ -34,7 +34,7 @@
 
                     <!-- Color -->
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold uppercase tracking-wide text-gray-600">Color</label>
+                        <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">Color</label>
                         <div class="bg-base-200 rounded-lg p-4">
                             <p class="text-lg font-semibold">{{ session('preview')['color'] }}</p>
                         </div>
@@ -44,7 +44,7 @@
                 <!-- Indicaciones -->
                 @if(session('preview')['indicaciones'] ?? false)
                 <div>
-                    <label class="block text-sm font-semibold uppercase tracking-wide text-gray-600 mb-2">Indicaciones
+                    <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60 mb-2">Indicaciones
                         Especiales</label>
                     <div class="bg-base-200 rounded-lg p-4">
                         <p class="whitespace-pre-line">{{ session('preview')['indicaciones'] }}</p>

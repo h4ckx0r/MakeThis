@@ -2,7 +2,7 @@
         <main class="grow container mx-auto px-4 py-12">
             <div class="text-center mb-16">
                 <h1 class="text-5xl font-bold mb-4">Solicitar una Pieza</h1>
-                <p class="text-xl text-gray-600">Elige cómo quieres que sea tu pieza</p>
+                <p class="text-xl text-base-content/60">Elige cómo quieres que sea tu pieza</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
@@ -20,7 +20,7 @@
                                 </svg>
                             </div>
                             <h2 class="text-3xl font-bold">Tu Modelo 3D</h2>
-                            <p class="text-gray-600 mt-2">Sube tu propio modelo 3D y nosotros lo imprimimos</p>
+                            <p class="text-base-content/60 mt-2">Sube tu propio modelo 3D y nosotros lo imprimimos</p>
                             <div class="card-actions justify-center mt-6">
                                 <button class="btn btn-primary">Continuar</button>
                             </div>
@@ -42,7 +42,7 @@
                                 </svg>
                             </div>
                             <h2 class="text-3xl font-bold">Diseño Personalizado</h2>
-                            <p class="text-gray-600 mt-2">Cuéntanos tu idea y nuestros diseñadores crean el modelo
+                            <p class="text-base-content/60 mt-2">Cuéntanos tu idea y nuestros diseñadores crean el modelo
                                 perfecto</p>
                             <div class="card-actions justify-center mt-6">
                                 <button class="btn btn-primary">Continuar</button>

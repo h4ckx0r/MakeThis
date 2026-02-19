@@ -1,178 +1,144 @@
-@php
-$title = 'Solicitudes';
-@endphp
+@php $title = 'Reportes'; @endphp
 
 <x-layouts::admin :title="$title">
+
     {{-- Page Title --}}
-    <h1 class="mb-8 text-3xl font-semibold text-center text-white tracking-wide">
-        Solicitudes
-    </h1>
+    <div class="mb-8">
+        <h1 class="text-3xl font-semibold tracking-wide text-base-content">Reportes</h1>
+        <p class="text-sm text-base-content/50 mt-1">Resumen general de actividad del sistema</p>
+    </div>
 
-    {{-- Search and Filter --}}
-    <div class="mb-8 flex justify-center items-center gap-4">
-        <div
-            class="flex w-full max-w-md items-center gap-3 rounded-xl border border-sky-500/40 bg-black px-4 py-3 shadow-sm">
-            <span class="text-sky-400 text-lg">🔍</span>
-            <input type="text" placeholder="Buscar Nº Solicitud"
-                class="flex-1 bg-transparent text-sm text-white placeholder-neutral-400 outline-none text-center">
+    {{-- Stats Cards --}}
+    <div class="overflow-x-auto mb-10">
+        <div class="stats stats-horizontal shadow w-full bg-base-200 border border-sky-500/20">
+
+            <div class="stat">
+                <div class="stat-figure text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </div>
+                <div class="stat-title text-base-content/60">Total Solicitudes</div>
+                <div class="stat-value text-base-content">{{ $totalSolicitudes }}</div>
+                <div class="stat-desc text-base-content/50">Desde el inicio</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-figure text-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="stat-title text-base-content/60">Completadas</div>
+                <div class="stat-value text-success">{{ $solicitudesCompletadas }}</div>
+                <div class="stat-desc text-base-content/50">
+                    {{ $totalSolicitudes > 0 ? round(($solicitudesCompletadas / $totalSolicitudes) * 100) : 0 }}% del total
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-figure text-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="stat-title text-base-content/60">Pendientes</div>
+                <div class="stat-value text-warning">{{ $solicitudesPendientes }}</div>
+                <div class="stat-desc text-base-content/50">En espera de proceso</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-figure text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </div>
+                <div class="stat-title text-base-content/60">Usuarios</div>
+                <div class="stat-value text-base-content">{{ $totalUsuarios }}</div>
+                <div class="stat-desc text-base-content/50">Registrados en total</div>
+            </div>
+
+        </div>
+    </div>
+
+    {{-- Date Range Filter --}}
+    <form method="GET" action="{{ route('admin.reports') }}" class="mb-8 flex items-end gap-4 flex-wrap">
+        <div class="flex flex-col gap-1">
+            <label class="label label-text text-base-content/60 text-xs">Desde</label>
+            <input type="date" name="fecha_desde"
+                   value="{{ request('fecha_desde') }}"
+                   class="input input-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 focus:outline-none" />
         </div>
 
-        <button
-            class="flex items-center gap-2 rounded-xl border border-sky-500/40 bg-black px-5 py-3 text-sm text-white hover:bg-sky-500/10 transition">
-            Filtrar
-            <span class="text-sky-400">☰</span>
+        <div class="flex flex-col gap-1">
+            <label class="label label-text text-base-content/60 text-xs">Hasta</label>
+            <input type="date" name="fecha_hasta"
+                   value="{{ request('fecha_hasta') }}"
+                   class="input input-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 focus:outline-none" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm self-end">
+            Aplicar filtro
         </button>
+
+        @if(request('fecha_desde') || request('fecha_hasta'))
+        <a href="{{ route('admin.reports') }}" class="btn btn-ghost btn-sm border-base-300 text-base-content/60 self-end">
+            Limpiar
+        </a>
+        @endif
+    </form>
+
+    {{-- Reports Table --}}
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-medium text-base-content/70">
+            Reportes recientes
+            @if(request('fecha_desde') || request('fecha_hasta'))
+            <span class="text-sm text-base-content/50 ml-2">(filtrado)</span>
+            @endif
+        </h2>
+        <span class="text-sm text-base-content/50">{{ $reportesRecientes->count() }} resultado(s)</span>
     </div>
 
-    {{-- Requests List --}}
-    <div class="mb-10 flex flex-col gap-4">
-
-        {{-- Item 1: En Proceso --}}
-        <details class="group rounded-xl border border-sky-500/30 bg-neutral-950 open:shadow-lg transition" open>
-            <summary class="cursor-pointer list-none">
-                <div class="flex items-center justify-between px-5 py-4 text-sm text-white">
-                    <span class="flex items-center gap-3">
-                        <span class="text-xl text-sky-400">🕒</span>
-                        <span class="text-base font-medium">
-                            Nº Solicitud · Fecha · En Proceso
+    <div class="rounded-xl border border-sky-500/20 overflow-hidden">
+        <table class="table table-zebra table-pin-rows w-full">
+            <thead class="bg-base-300">
+                <tr class="text-primary text-sm">
+                    <th>Título</th>
+                    <th>Solicitud</th>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($reportesRecientes as $reporte)
+                <tr class="hover:bg-base-200/50 transition-colors">
+                    <td class="font-medium text-sm text-base-content">{{ $reporte->titulo ?? '—' }}</td>
+                    <td>
+                        <span class="font-mono text-xs text-primary">
+                            {{ $reporte->solicitudId ? '#' . substr($reporte->solicitudId, 0, 8) : '—' }}
                         </span>
-                    </span>
-                    <span class="text-xl text-sky-400 transition-transform group-open:rotate-90">
-                        ›
-                    </span>
-                </div>
-            </summary>
-
-            {{-- Expanded Content --}}
-            <div class="border-t border-sky-500/20">
-                <div class="p-6 space-y-6 text-white">
-
-                    {{-- Meta Info --}}
-                    <div class="grid grid-cols-4 gap-4 text-sm text-neutral-300">
-                        <span>Nº Solicitud</span>
-                        <span>Fecha dd/mm/yyyy</span>
-                        <span>Cliente</span>
-                        <span class="text-sky-400 font-medium">Aceptada</span>
-                    </div>
-
-                    {{-- Main Content --}}
-                    <div class="grid grid-cols-2 gap-8">
-                        <div
-                            class="h-40 rounded-xl border border-sky-500/30 bg-black p-4 flex items-center justify-center text-center text-neutral-400">
-                            Archivos adjuntos, fotos, informes…
+                    </td>
+                    <td class="text-sm text-base-content/60">
+                        {{ $reporte->fecha ? \Carbon\Carbon::parse($reporte->fecha)->format('d/m/Y') : ($reporte->created_at ? $reporte->created_at->format('d/m/Y') : '—') }}
+                    </td>
+                    <td class="text-sm text-base-content/70 max-w-xs">
+                        <span class="line-clamp-2">{{ $reporte->descripcion ?? '—' }}</span>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" class="text-center py-16 text-base-content/50">
+                        <div class="flex flex-col items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>No hay reportes disponibles{{ (request('fecha_desde') || request('fecha_hasta')) ? ' en el rango de fechas seleccionado' : '' }}</span>
                         </div>
-
-                        <div
-                            class="h-40 rounded-xl border border-sky-500/30 bg-black p-4 flex items-center justify-center text-center text-neutral-400">
-                            Información detallada de la solicitud
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end">
-                        <button class="text-2xl text-sky-400 hover:text-sky-300 transition"
-                            onclick="edit_request_modal.showModal()">
-                            ⋯
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </details>
-
-        {{-- More items --}}
-        @for ($i = 0; $i < 3; $i++) <details
-            class="group rounded-xl border border-sky-500/30 bg-neutral-950 transition">
-            <summary class="cursor-pointer list-none">
-                <div class="flex items-center justify-between px-5 py-4 text-sm text-white">
-                    <span class="flex items-center gap-3">
-                        @if($i === 0)
-                        <span class="text-xl text-green-400">✓</span>
-                        <span class="font-medium">Nº Solicitud · Fecha · Aceptada</span>
-                        @elseif($i === 1)
-                        <span class="text-xl text-red-400">✕</span>
-                        <span class="font-medium">Nº Solicitud · Fecha · Cancelada</span>
-                        @else
-                        <span class="text-xl text-sky-400">🕒</span>
-                        <span class="font-medium">Nº Solicitud · Fecha · En Proceso</span>
-                        @endif
-                    </span>
-                    <span class="text-xl text-sky-400 transition-transform group-open:rotate-90">
-                        ›
-                    </span>
-                </div>
-            </summary>
-
-            <div class="border-t border-sky-500/20">
-                <div class="p-6 text-neutral-300">
-                    <p>Contenido…</p>
-                    <div class="mt-4 flex justify-end">
-                        <button class="text-2xl text-sky-400 hover:text-sky-300 transition"
-                            onclick="edit_request_modal.showModal()">
-                            ⋯
-                        </button>
-                    </div>
-                </div>
-            </div>
-            </details>
-            @endfor
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
-    {{-- Edit Request Modal --}}
-    <dialog id="edit_request_modal" class="modal">
-        <div class="modal-box max-w-3xl bg-black text-white border border-sky-500/40 p-8 rounded-2xl">
-            <h3 class="text-2xl font-semibold text-center mb-8">
-                Editar Solicitud
-            </h3>
-
-            <div class="grid gap-6 mb-8">
-
-                {{-- Status Select --}}
-                <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-neutral-300">Estado</label>
-                    <select
-                        class="w-full rounded-xl border border-sky-500/30 bg-black p-3 text-white focus:outline-none focus:ring-1 focus:ring-sky-400">
-                        <option>En Proceso</option>
-                        <option>Aceptada</option>
-                        <option>Cancelada</option>
-                        <option>En Revisión</option>
-                    </select>
-                </div>
-
-                {{-- Detailed Info --}}
-                <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-neutral-300">
-                        Información detallada
-                    </label>
-                    <textarea
-                        class="h-32 rounded-xl border border-sky-500/30 bg-black p-3 text-white resize-none focus:outline-none focus:ring-1 focus:ring-sky-400"
-                        placeholder="Escribe aquí los detalles…"></textarea>
-                </div>
-
-                {{-- File Upload --}}
-                <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-neutral-300">
-                        Adjuntar archivos
-                    </label>
-                    <input type="file"
-                        class="file-input file-input-bordered w-full bg-black border-sky-500/30 text-white" multiple />
-                </div>
-            </div>
-
-            <div class="modal-action justify-center gap-4">
-                <form method="dialog">
-                    <button
-                        class="rounded-full border border-neutral-500 px-8 py-3 text-sm text-neutral-300 hover:bg-neutral-800 transition">
-                        Cancelar
-                    </button>
-                    <button
-                        class="ml-2 rounded-full bg-sky-500 px-8 py-3 text-sm font-medium text-black hover:bg-sky-400 transition">
-                        Guardar
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <form method="dialog" class="modal-backdrop bg-black/70">
-            <button></button>
-        </form>
-    </dialog>
 </x-layouts::admin>
