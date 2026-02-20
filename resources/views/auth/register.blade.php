@@ -79,7 +79,18 @@
                     <div class="relative">
                         <input type="password" name="password" placeholder="Contraseña (mín. 8 caracteres)"
                             class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12"
-                            minlength="8" required />
+                            minlength="8" required
+                            x-data="{ show: false }" x-bind:type="show ? 'text' : 'password'" />
+                        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2"
+                            x-data="{ show: false }"
+                            x-on:click="show = !show; $el.previousElementSibling.type = show ? 'text' : 'password'">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
                     </div>
                     @error('password') <span class="text-error text-sm">{{ $message }}</span> @enderror
 
@@ -99,12 +110,6 @@
                         </button>
                     </div>
 
-                    {{-- Checkbox Newsletter --}}
-                    <div class="flex items-center gap-3 py-1">
-                        <input type="checkbox" name="newsletter" class="checkbox checkbox-sm border border-black" />
-                        <span class="text-[15px] font-normal">Recibir la newsletter</span>
-                    </div>
-
                     {{-- Texto legal --}}
                     <div class="text-[15px] font-normal leading-relaxed py-1">
                         Al hacer clic en el botón "Registrarse", aceptas las
@@ -116,14 +121,13 @@
                         de MakeThis.
                     </div>
 
-                    {{-- Checkbox reCAPTCHA --}}
+                    {{-- Cloudflare Turnstile --}}
                     <div class="flex justify-center">
-                        <div class="border border-base-300 rounded-md p-6 inline-flex items-center gap-4">
-                            <input type="checkbox" name="captcha" class="checkbox checkbox-lg border border-black"
-                                required />
-                            <span class="text-[15px] font-normal">No soy un robot</span>
-                        </div>
+                        <x-turnstile />
                     </div>
+                    @error('cf-turnstile-response')
+                        <span class="text-error text-sm text-center block">{{ $message }}</span>
+                    @enderror
 
                     {{-- Link iniciar sesión --}}
                     <div class="text-center pt-2">
@@ -144,6 +148,7 @@
         {{-- Footer --}}
         <x-home-footer />
     </div>
+    <x-turnstile.scripts />
     @fluxScripts
 </body>
 

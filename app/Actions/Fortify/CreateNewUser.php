@@ -7,6 +7,7 @@ use App\Concerns\ProfileValidationRules;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use RyanChandler\LaravelCloudflareTurnstile\Rules\Turnstile;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -22,6 +23,10 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
+            'cf-turnstile-response' => ['required', new Turnstile()],
+        ], [
+            'cf-turnstile-response.required' => 'Debes completar la verificación de seguridad.',
+            'cf-turnstile-response' => 'La verificación de seguridad ha fallado. Inténtalo de nuevo.',
         ])->validate();
 
         if (User::query()->count() < 1) {
