@@ -81,7 +81,7 @@
                     <td>
                         <div class="flex items-center gap-3">
                             <div class="avatar placeholder">
-                                <div class="bg-primary/20 text-primary rounded-full text-center pt-2 w-10 h-10">
+                                <div class="bg-primary/20 text-primary rounded-full flex justify-center items-center w-10 h-10">
                                     <span class="text-sm font-semibold">
                                         {{ strtoupper(substr($user->nombre ?? '?', 0, 1)) }}{{ strtoupper(substr($user->apellidos ?? '', 0, 1)) }}
                                     </span>
@@ -96,7 +96,7 @@
                     </td>
                     <td class="text-sm text-base-content/70">{{ $user->email }}</td>
                     <td class="text-sm text-base-content/70">{{ $user->telefono ?? '—' }}</td>
-                    <td class="text-sm text-base-content/70 max-w-[180px] truncate" title="{{ $user->direccion }}">
+                    <td class="text-sm text-base-content/70 max-w-45 truncate" title="{{ $user->direccion }}">
                         {{ $user->direccion ?? '—' }}
                     </td>
                     <td class="text-center">

@@ -177,7 +177,7 @@
                         class="items-center gap-3 px-2 pb-2"
                     >
                         <div class="avatar placeholder shrink-0">
-                            <div class="bg-primary/20 text-primary text-center rounded-full pt-1.5 w-8 h-8 text-sm font-semibold">
+                            <div class="bg-primary/20 text-primary flex justify-center items-center rounded-full w-8 h-8 text-sm font-semibold">
                                 <span>{{ strtoupper(substr(auth()->user()->nombre ?? '?', 0, 1)) }}</span>
                             </div>
                         </div>
