@@ -145,7 +145,7 @@ return [
 
     'features' => [
         Features::registration(),
-        Features::resetPasswords(),
+        // Features::resetPasswords(), // Reemplazado por flujo OTP custom
         Features::emailVerification(),
         Features::twoFactorAuthentication([
             'confirm' => true,
