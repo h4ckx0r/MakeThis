@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PasswordResetOtpController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Middleware\EnsureIsAdmin;
@@ -30,10 +31,26 @@ Route::prefix('auth')->group(function () {
     Route::get('register', function () {
         return view('auth.register');
     })->name('auth.register');
-    Route::view('forgot-password', 'auth.forgot-password')
-        ->name('auth.forgot-password');
     Route::view('login-options', 'auth.login-options')
         ->name('auth.login-options');
+});
+
+// Flujo OTP de recuperación de contraseña
+Route::prefix('auth')->middleware('guest')->group(function () {
+    Route::get('forgot-password', [PasswordResetOtpController::class, 'showRequestForm'])
+        ->name('password.request');
+    Route::post('forgot-password', [PasswordResetOtpController::class, 'sendOtp'])
+        ->name('password.sendOtp');
+    Route::get('verify-code', [PasswordResetOtpController::class, 'showVerifyForm'])
+        ->name('password.verifyForm');
+    Route::post('verify-code', [PasswordResetOtpController::class, 'verifyOtp'])
+        ->name('password.verifyOtp');
+    Route::post('resend-code', [PasswordResetOtpController::class, 'resendOtp'])
+        ->name('password.resendOtp');
+    Route::get('reset-password', [PasswordResetOtpController::class, 'showResetForm'])
+        ->name('password.resetForm');
+    Route::post('reset-password', [PasswordResetOtpController::class, 'resetPassword'])
+        ->name('password.reset');
 });
 
 Route::prefix('client')->group(function () {
