@@ -33,4 +33,9 @@ class Solicitud extends Model
     {
         return $this->belongsTo(Estado::class, 'estadoId');
     }
+
+    public function threeDModel(): BelongsTo
+    {
+        return $this->belongsTo(ThreeDModel::class, '3dModelId');
+    }
 }
