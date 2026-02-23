@@ -27,7 +27,7 @@
 
     {{-- Search + Filter --}}
     <form method="GET" action="{{ route('admin.requests') }}" class="mb-8 flex flex-wrap items-end gap-4">
-        <div class="join flex-1 min-w-[240px] max-w-md">
+        <div class="join flex-1 min-w-60 max-w-md">
             <input
                 type="text"
                 name="search"
@@ -44,7 +44,7 @@
         </div>
 
         <select name="estado"
-                class="select select-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 min-w-[180px]"
+                class="select select-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 min-w-45"
                 onchange="this.form.submit()">
             <option value="">Todos los estados</option>
             <option value="pendiente"  @selected(request('estado') === 'pendiente')>Pendiente</option>
@@ -93,7 +93,7 @@
                 @endphp
                 <tr class="hover:bg-base-200/50 transition-colors">
                     <td class="font-mono text-xs text-primary">
-                        #{{ substr($sol->id, 0, 8) }}
+                        #{{ substr($sol->id, 24, 36) }}
                     </td>
                     <td class="text-sm text-base-content/70">
                         {{ $sol->created_at->format('d/m/Y') }}
@@ -102,7 +102,7 @@
                     <td>
                         <div class="flex items-center gap-3">
                             <div class="avatar placeholder">
-                                <div class="bg-primary/20 text-primary rounded-full w-9 h-9 text-xs font-semibold">
+                                <div class="bg-primary/20 text-primary rounded-full w-9 h-9 text-xs flex justify-center items-center font-semibold">
                                     <span>{{ strtoupper(substr($sol->user->nombre ?? '?', 0, 1)) }}</span>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@
                             class="btn btn-ghost btn-sm text-primary hover:text-primary/80"
                             onclick="openRequestModal(
                                 '{{ $sol->id }}',
-                                '{{ substr($sol->id, 0, 8) }}',
+                                '{{ substr($sol->id, 24, 36) }}',
                                 '{{ addslashes(($sol->user->nombre ?? '') . ' ' . ($sol->user->apellidos ?? '')) }}',
                                 '{{ $estadoNombre }}',
                                 '{{ addslashes($sol->detalles ?? '') }}'

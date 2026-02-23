@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Solicitud extends Model
 {
@@ -32,5 +33,15 @@ class Solicitud extends Model
     public function estado(): BelongsTo
     {
         return $this->belongsTo(Estado::class, 'estadoId');
+    }
+
+    public function threeDModel(): BelongsTo
+    {
+        return $this->belongsTo(ThreeDModel::class, '3dModelId');
+    }
+
+    public function adjuntos(): HasMany
+    {
+        return $this->hasMany(Adjunto::class, 'idSolicitud');
     }
 }

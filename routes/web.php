@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PasswordResetOtpController;
+use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Middleware\EnsureIsAdmin;
@@ -61,19 +62,32 @@ Route::prefix('client')->group(function () {
 });
 
 Route::prefix('prints')->group(function () {
-    Route::view('catalog', 'prints.catalog')
+    // Catálogo público con filtros
+    Route::get('catalog', [PrintController::class, 'catalog'])
         ->name('prints.catalog');
 
     Route::prefix('request')->group(function () {
+        // Selección de tipo (no necesita datos del controller)
         Route::view('', 'prints.request')
             ->name('prints.request');
-        Route::view('custom', 'prints.custom')
-            ->name('prints.custom');
-        Route::view('own', 'prints.own')
+
+        // Formularios con datos de BD (materiales + colores)
+        Route::get('own', [PrintController::class, 'ownForm'])
             ->name('prints.own');
-        Route::view('preview', 'prints.preview')
+        Route::get('custom', [PrintController::class, 'customForm'])
+            ->name('prints.custom');
+
+        // Preview: POST valida y guarda en sesión, GET muestra el resumen
+        Route::post('preview', [PrintController::class, 'storePreview'])
+            ->name('prints.preview.store');
+        Route::get('preview', [PrintController::class, 'showPreview'])
             ->name('prints.preview');
     });
+
+    // Crear solicitud (requiere autenticación)
+    Route::post('store', [PrintController::class, 'store'])
+        ->name('prints.store')
+        ->middleware('auth');
 });
 
 Route::prefix('admin')->middleware(EnsureIsAdmin::class)

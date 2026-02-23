@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Piezas;
 
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -10,21 +11,41 @@ class FileUploader extends Component
     use WithFileUploads;
 
     public $file;
-    public $tipo; // '3d' o 'imagen'
-    public $acceptedFormats;
-    public $placeholder;
+    public string $tipo;
+    public string $acceptedFormats;
+    public string $placeholder;
 
-    public function mount($tipo = '3d')
+    public function mount(string $tipo = '3d'): void
     {
         $this->tipo = $tipo;
 
         if ($tipo === '3d') {
             $this->acceptedFormats = '.obj,.stl,.3mf';
-            $this->placeholder = 'Arrastre aquí el modelo 3d de su pieza (OBJ, STL, 3MF)';
+            $this->placeholder = 'Arrastre aquí el modelo 3D de su pieza (OBJ, STL, 3MF)';
         } else {
             $this->acceptedFormats = 'image/*';
-            $this->placeholder = 'Suba todas las imágenes posibles';
+            $this->placeholder = 'Suba imágenes de referencia de su pieza';
         }
+    }
+
+    public function updatedFile(): void
+    {
+        if (!$this->file) {
+            return;
+        }
+
+        $extension = $this->file->getClientOriginalExtension();
+        $uuid = (string) Str::uuid();
+        $filename = "{$uuid}.{$extension}";
+        $this->file->storeAs('temp', $filename, 'public');
+
+        $path = "temp/{$filename}";
+        $name = $this->file->getClientOriginalName();
+        $tipo = $this->tipo;
+
+        $this->js("window.dispatchEvent(new CustomEvent('file-uploaded', {
+            detail: { path: " . json_encode($path) . ", name: " . json_encode($name) . ", tipo: " . json_encode($tipo) . " }
+        }))");
     }
 
     public function render()
