@@ -20,7 +20,7 @@ class ReporteController extends Controller
             $query->whereDate('fecha', '<=', $request->fecha_hasta);
         }
 
-        $reportesRecientes = $query->latest()->take(20)->get();
+        $reportesRecientes = $query->with('solicitud.user')->latest()->take(20)->get();
 
         $totalSolicitudes = Solicitud::count();
         $solicitudesCompletadas = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'completada'))->count();

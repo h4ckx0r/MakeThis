@@ -121,16 +121,29 @@
             </thead>
             <tbody>
             @forelse ($reportesRecientes as $reporte)
-                <tr class="hover:bg-base-200/50 transition-colors">
+                @php
+                    $fechaFormateada = $reporte->fecha
+                        ? Carbon::parse($reporte->fecha)->format('d/m/Y')
+                        : ($reporte->created_at ? $reporte->created_at->format('d/m/Y') : '');
+                    $solicitudRef = $reporte->solicitudId ? substr($reporte->solicitudId, 24) : '';
+                    $clienteNombre = $reporte->solicitud?->user?->nombre ?? '';
+                @endphp
+                <tr
+                    class="hover:bg-base-200/50 transition-colors cursor-pointer"
+                    onclick="openReporteModal(this)"
+                    data-titulo="{{ $reporte->titulo ?? '' }}"
+                    data-descripcion="{{ $reporte->descripcion ?? '' }}"
+                    data-fecha="{{ $fechaFormateada }}"
+                    data-solicitud-id="{{ $solicitudRef }}"
+                    data-cliente="{{ $clienteNombre }}"
+                >
                     <td class="font-medium text-sm text-base-content">{{ $reporte->titulo ?? '—' }}</td>
                     <td>
                         <span class="font-mono text-xs text-primary">
-                            {{ $reporte->solicitudId ? '#' . substr($reporte->solicitudId, 24, 36) : '—' }}
+                            {{ $solicitudRef ? '#' . $solicitudRef : '—' }}
                         </span>
                     </td>
-                    <td class="text-sm text-base-content/60">
-                        {{ $reporte->fecha ? Carbon::parse($reporte->fecha)->format('d/m/Y') : ($reporte->created_at ? $reporte->created_at->format('d/m/Y') : '—') }}
-                    </td>
+                    <td class="text-sm text-base-content/60">{{ $fechaFormateada ?: '—' }}</td>
                     <td class="text-sm text-base-content/70 max-w-xs">
                         <span class="line-clamp-2">{{ $reporte->descripcion ?? '—' }}</span>
                     </td>
@@ -152,5 +165,58 @@
             </tbody>
         </table>
     </div>
+
+
+    {{-- Modal de detalle de reporte --}}
+    <dialog id="reporte-modal" class="modal">
+        <div class="modal-box max-w-lg">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+
+            <h3 class="font-semibold text-lg mb-1" id="modal-reporte-titulo"></h3>
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-sm text-base-content/50" id="modal-reporte-fecha"></span>
+                <span id="modal-reporte-solicitud" class="font-mono text-xs text-primary"></span>
+            </div>
+
+            <div id="modal-reporte-cliente-container">
+                <p class="text-xs text-base-content/50 uppercase tracking-wide mb-1">Cliente</p>
+                <p class="text-sm font-medium mb-4" id="modal-reporte-cliente"></p>
+            </div>
+
+            <div class="divider my-2"></div>
+
+            <div>
+                <p class="text-xs text-base-content/50 uppercase tracking-wide mb-2">Descripción</p>
+                <p class="text-sm whitespace-pre-wrap" id="modal-reporte-descripcion"></p>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
+    </dialog>
+
+    <script>
+        function openReporteModal(row) {
+            const modal = document.getElementById('reporte-modal');
+
+            document.getElementById('modal-reporte-titulo').textContent = row.dataset.titulo || '(Sin título)';
+            document.getElementById('modal-reporte-fecha').textContent = row.dataset.fecha || '—';
+
+            const solicitudEl = document.getElementById('modal-reporte-solicitud');
+            solicitudEl.textContent = row.dataset.solicitudId ? '#' + row.dataset.solicitudId : '';
+
+            const clienteContainer = document.getElementById('modal-reporte-cliente-container');
+            if (row.dataset.cliente) {
+                document.getElementById('modal-reporte-cliente').textContent = row.dataset.cliente;
+                clienteContainer.classList.remove('hidden');
+            } else {
+                clienteContainer.classList.add('hidden');
+            }
+
+            document.getElementById('modal-reporte-descripcion').textContent = row.dataset.descripcion || '—';
+
+            modal.showModal();
+        }
+    </script>
 
 </x-layouts::admin>

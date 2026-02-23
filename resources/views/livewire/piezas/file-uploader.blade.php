@@ -3,7 +3,14 @@
      x-data="{ dragging: false }"
      @dragover.prevent="dragging = true"
      @dragleave.prevent="dragging = false"
-     @drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; $wire.upload('file', $refs.fileInput.files)"
+     @drop.prevent="
+         dragging = false;
+         const dt = $event.dataTransfer;
+         if (dt.files.length) {
+             $refs.fileInput.files = dt.files;
+             $refs.fileInput.dispatchEvent(new Event('change'));
+         }
+     "
      :class="{ 'border-primary bg-base-200': dragging }">
 
     @if ($file)

@@ -45,7 +45,7 @@ Route::prefix('auth')->middleware('guest')->group(function () {
 Route::prefix('client')->middleware('auth')->group(function () {
     Route::get('requests', function () {
         $solicitudes = auth()->user()->solicitudes()
-            ->with(['estado', 'threeDModel.color'])
+            ->with(['estado', 'threeDModel.color', 'adjuntos'])
             ->latest()
             ->get();
         return view('client.requests', compact('solicitudes'));
