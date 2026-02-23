@@ -64,7 +64,7 @@
                             <span class="font-bold italic px-2">SERVICIO</span>
                         </span>
                     </span>
-                    <span class="text-rotate text-3xl duration-65000">
+                    <span class="text-rotate text-3xl duration-6500">
                         <span class="justify-items-center">
                             <span>DETALLE</span>
                             <span class="font-bold italic px-2">CALIDAD</span>
