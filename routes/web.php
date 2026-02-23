@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PasswordResetOtpController;
+use App\Http\Controllers\PiezaCatalogoController;
+use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Middleware\EnsureIsAdmin;
@@ -51,26 +53,45 @@ Route::prefix('client')->middleware('auth')->group(function () {
 });
 
 Route::prefix('prints')->group(function () {
-    Route::view('catalog', 'prints.catalog')
+    // Catálogo público con filtros
+    Route::get('catalog', [PrintController::class, 'catalog'])
         ->name('prints.catalog');
 
     Route::prefix('request')->group(function () {
+        // Selección de tipo (no necesita datos del controller)
         Route::view('', 'prints.request')
             ->name('prints.request');
-        Route::view('custom', 'prints.custom')
-            ->name('prints.custom');
-        Route::view('own', 'prints.own')
+
+        // Formularios con datos de BD (materiales + colores)
+        Route::get('own', [PrintController::class, 'ownForm'])
             ->name('prints.own');
-        Route::view('preview', 'prints.preview')
+        Route::get('custom', [PrintController::class, 'customForm'])
+            ->name('prints.custom');
+
+        // Preview: POST valida y guarda en sesión, GET muestra el resumen
+        Route::post('preview', [PrintController::class, 'storePreview'])
+            ->name('prints.preview.store');
+        Route::get('preview', [PrintController::class, 'showPreview'])
             ->name('prints.preview');
     });
+
+    // Crear solicitud (requiere autenticación)
+    Route::post('store', [PrintController::class, 'store'])
+        ->name('prints.store')
+        ->middleware('auth');
 });
 
 Route::prefix('admin')->middleware(EnsureIsAdmin::class)
     ->group(function () {
         // Rutas para catálogo
-        Route::view('catalog', 'admin.catalog')
+        Route::get('catalog', [PiezaCatalogoController::class, 'adminIndex'])
             ->name('admin.catalog');
+        Route::post('piezas', [PiezaCatalogoController::class, 'adminStore'])
+            ->name('admin.piezas.store');
+        Route::put('piezas/{pieza}', [PiezaCatalogoController::class, 'adminUpdate'])
+            ->name('admin.piezas.update');
+        Route::delete('piezas/{pieza}', [PiezaCatalogoController::class, 'adminDestroy'])
+            ->name('admin.piezas.destroy');
 
         // Rutas para usuarios
         Route::view('users', 'admin.users')
@@ -81,6 +102,10 @@ Route::prefix('admin')->middleware(EnsureIsAdmin::class)
             ->name('admin.requests');
         Route::put('requests/{solicitud}', [SolicitudController::class, 'update'])
             ->name('admin.requests.update');
+
+        // Descarga de adjuntos
+        Route::get('adjuntos/{adjunto}/download', [SolicitudController::class, 'downloadAdjunto'])
+            ->name('admin.adjunto.download');
 
         // Rutas para reportes
         Route::get('reports', [ReporteController::class, 'adminIndex'])

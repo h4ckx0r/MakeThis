@@ -2,7 +2,7 @@
 
 <x-layouts::basic :title="$title">
     <div
-        class="flex min-h-screen w-full bg-base-100"
+        class="flex h-screen overflow-hidden w-full bg-base-100"
         x-data="{ open: $persist(true).as('admin_sidebar_open') }"
     >
 
@@ -177,7 +177,7 @@
                         class="items-center gap-3 px-2 pb-2"
                     >
                         <div class="avatar placeholder shrink-0">
-                            <div class="bg-primary/20 text-primary text-center rounded-full pt-1.5 w-8 h-8 text-sm font-semibold">
+                            <div class="bg-primary/20 text-primary flex justify-center items-center rounded-full w-8 h-8 text-sm font-semibold">
                                 <span>{{ strtoupper(substr(auth()->user()->nombre ?? '?', 0, 1)) }}</span>
                             </div>
                         </div>
@@ -231,13 +231,13 @@
 
 
         {{-- ================== MAIN CONTENT ================== --}}
-        <main class="flex min-w-0 flex-1 flex-col">
+        <main class="flex min-w-0 flex-1 flex-col overflow-hidden">
 
             <div class="flex h-16 shrink-0 items-center border-b border-sky-500/20 bg-base-100 px-8">
                 <span class="text-sm text-base-content/50">Panel de Administración</span>
             </div>
 
-            <div class="flex-1 px-10 py-10">
+            <div class="flex-1 overflow-y-auto px-10 py-10">
                 <div class="mx-auto max-w-7xl">
                     {{ $slot }}
                 </div>

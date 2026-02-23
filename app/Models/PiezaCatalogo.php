@@ -16,8 +16,14 @@ class PiezaCatalogo extends Model
 
     protected $fillable = [
         'nombre',
+        'descripcion',
+        'visible_catalogo',
         'adjuntoId',
         'colorId',
+    ];
+
+    protected $casts = [
+        'visible_catalogo' => 'boolean',
     ];
 
     /**

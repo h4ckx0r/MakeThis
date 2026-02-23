@@ -2,8 +2,8 @@
 
 <div class="card border border-base-300 rounded-[30px] rounded-t-[50px]">
     <figure class="bg-base-200 h-[250px] rounded-t-[40px] m-2.5">
-        @if($pieza->imagen)
-            <img src="{{ asset('storage/' . $pieza->imagen) }}"
+        @if($pieza->adjunto && $pieza->adjunto->fichero)
+            <img src="{{ asset('storage/' . $pieza->adjunto->fichero) }}"
                  alt="{{ $pieza->nombre }}"
                  class="w-full h-full object-cover rounded-[40px]" />
         @else

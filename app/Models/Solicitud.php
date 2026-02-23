@@ -38,4 +38,9 @@ class Solicitud extends Model
     {
         return $this->belongsTo(ThreeDModel::class, '3dModelId');
     }
+
+    public function adjuntos(): HasMany
+    {
+        return $this->hasMany(Adjunto::class, 'idSolicitud');
+    }
 }
