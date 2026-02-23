@@ -43,17 +43,18 @@
             </button>
         </div>
 
-        <select name="estado"
+        <select name="estado_id"
                 class="select select-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 min-w-45"
                 onchange="this.form.submit()">
             <option value="">Todos los estados</option>
-            <option value="pendiente"  @selected(request('estado') === 'pendiente')>Pendiente</option>
-            <option value="en_proceso" @selected(request('estado') === 'en_proceso')>En Proceso</option>
-            <option value="completada" @selected(request('estado') === 'completada')>Completada</option>
-            <option value="rechazada"  @selected(request('estado') === 'rechazada')>Rechazada</option>
+            @foreach ($estados as $estado)
+            <option value="{{ $estado->id }}" @selected(request('estado_id') === $estado->id)>
+                {{ $estado->nombreEstado }}
+            </option>
+            @endforeach
         </select>
 
-        @if(request('search') || request('estado'))
+        @if(request('search') || request('estado_id'))
         <a href="{{ route('admin.requests') }}" class="btn btn-ghost border-sky-500/30 text-base-content/60 btn-sm self-end">
             Limpiar filtros
         </a>
@@ -75,25 +76,25 @@
             <tbody>
                 @forelse ($solicitudes as $sol)
                 @php
-                    $estadoNombre = $sol->estado->nombreEstado ?? 'pendiente';
-                    $badgeClass = match($estadoNombre) {
-                        'pendiente'  => 'badge-warning',
-                        'en_proceso' => 'badge-info',
-                        'completada' => 'badge-success',
-                        'rechazada'  => 'badge-error',
-                        default      => 'badge-neutral',
+                    $estadoNombre = $sol->estado->nombreEstado ?? '';
+                    $estadoId     = $sol->estado->id ?? '';
+                    $badgeClass   = match(true) {
+                        in_array($estadoNombre, ['Pendiente', 'En revision'])                        => 'badge-warning',
+                        in_array($estadoNombre, ['Aprobada', 'En impresion', 'Control de calidad']) => 'badge-info',
+                        $estadoNombre === 'Completada'                                               => 'badge-success',
+                        in_array($estadoNombre, ['Rechazada', 'Cancelada'])                         => 'badge-error',
+                        default                                                                      => 'badge-neutral',
                     };
-                    $estadoLabel = match($estadoNombre) {
-                        'pendiente'  => 'Pendiente',
-                        'en_proceso' => 'En Proceso',
-                        'completada' => 'Completada',
-                        'rechazada'  => 'Rechazada',
-                        default      => ucfirst($estadoNombre),
-                    };
+                    $adjuntosJson = json_encode(
+                        $sol->adjuntos->map(fn($a) => [
+                            'id'     => $a->id,
+                            'nombre' => $a->nombreFichero,
+                        ])->toArray()
+                    );
                 @endphp
                 <tr class="hover:bg-base-200/50 transition-colors">
                     <td class="font-mono text-xs text-primary">
-                        #{{ substr($sol->id, 24, 36) }}
+                        #{{ substr($sol->id, 0, 8) }}
                     </td>
                     <td class="text-sm text-base-content/70">
                         {{ $sol->created_at->format('d/m/Y') }}
@@ -115,18 +116,18 @@
                         </div>
                     </td>
                     <td>
-                        <span class="badge badge-soft {{ $badgeClass }} badge-sm">{{ $estadoLabel }}</span>
+                        <span class="badge badge-soft {{ $badgeClass }} badge-sm">{{ $estadoNombre ?: 'Sin estado' }}</span>
                     </td>
                     <td class="text-center">
                         <button
                             class="btn btn-ghost btn-sm text-primary hover:text-primary/80"
-                            onclick="openRequestModal(
-                                '{{ $sol->id }}',
-                                '{{ substr($sol->id, 24, 36) }}',
-                                '{{ addslashes(($sol->user->nombre ?? '') . ' ' . ($sol->user->apellidos ?? '')) }}',
-                                '{{ $estadoNombre }}',
-                                '{{ addslashes($sol->detalles ?? '') }}'
-                            )"
+                            data-sol-id="{{ $sol->id }}"
+                            data-sol-short="{{ substr($sol->id, 0, 8) }}"
+                            data-sol-cliente="{{ trim(($sol->user->nombre ?? '') . ' ' . ($sol->user->apellidos ?? '')) }}"
+                            data-sol-estado-id="{{ $estadoId }}"
+                            data-sol-detalles="{{ $sol->detalles ?? '' }}"
+                            data-sol-adjuntos="{{ $adjuntosJson }}"
+                            onclick="openRequestModal(this)"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -199,12 +200,11 @@
 
                 <fieldset class="fieldset mb-4">
                     <legend class="fieldset-legend text-base-content/60">Estado</legend>
-                    <select id="modal_estado" name="estado"
+                    <select id="modal_estado" name="estado_id"
                             class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400">
-                        <option value="pendiente">Pendiente</option>
-                        <option value="en_proceso">En Proceso</option>
-                        <option value="completada">Completada</option>
-                        <option value="rechazada">Rechazada</option>
+                        @foreach ($estados as $estado)
+                        <option value="{{ $estado->id }}">{{ $estado->nombreEstado }}</option>
+                        @endforeach
                     </select>
                 </fieldset>
 
@@ -215,11 +215,10 @@
                               placeholder="Detalles adicionales..."></textarea>
                 </fieldset>
 
-                <fieldset class="fieldset mb-6">
-                    <legend class="fieldset-legend text-base-content/60">Adjuntar archivo</legend>
-                    <input type="file"
-                           class="file-input file-input-bordered w-full bg-base-300 border-sky-500/30 text-base-content"
-                           multiple />
+                {{-- Lista de archivos adjuntos --}}
+                <fieldset id="modal_adjuntos_fieldset" class="fieldset mb-4 hidden">
+                    <legend class="fieldset-legend text-base-content/60">Archivos adjuntos</legend>
+                    <ul id="modal_adjuntos_list" class="space-y-1 mt-1"></ul>
                 </fieldset>
 
                 <div class="modal-action gap-3">
@@ -236,14 +235,48 @@
     </dialog>
 
     <script>
-        function openRequestModal(id, shortId, cliente, estado, detalles) {
-            document.getElementById('modal_solicitud_id').textContent = '#' + shortId;
-            document.getElementById('modal_cliente_nombre').textContent = cliente.trim();
-            document.getElementById('modal_detalles').value = detalles;
-            document.getElementById('modal_estado').value = estado;
+        const downloadBaseUrl = '{{ route('admin.adjunto.download', ['adjunto' => '__ADJUNTO_ID__']) }}';
+
+        function openRequestModal(btn) {
+            const id       = btn.dataset.solId;
+            const shortId  = btn.dataset.solShort;
+            const cliente  = btn.dataset.solCliente;
+            const estadoId = btn.dataset.solEstadoId;
+            const detalles = btn.dataset.solDetalles;
+            const adjuntos = JSON.parse(btn.dataset.solAdjuntos || '[]');
+
+            document.getElementById('modal_solicitud_id').textContent   = '#' + shortId;
+            document.getElementById('modal_cliente_nombre').textContent = cliente;
+            document.getElementById('modal_detalles').value             = detalles;
+            document.getElementById('modal_estado').value               = estadoId;
 
             const form = document.getElementById('edit_request_form');
             form.action = '/admin/requests/' + id;
+
+            // Adjuntos
+            const fieldset = document.getElementById('modal_adjuntos_fieldset');
+            const list     = document.getElementById('modal_adjuntos_list');
+            list.innerHTML = '';
+
+            if (adjuntos.length > 0) {
+                fieldset.classList.remove('hidden');
+                adjuntos.forEach(function (adj) {
+                    const url = downloadBaseUrl.replace('__ADJUNTO_ID__', adj.id);
+                    const li  = document.createElement('li');
+                    li.innerHTML = `
+                        <a href="${url}" target="_blank"
+                           class="flex items-center gap-2 text-sm text-primary hover:underline">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            ${adj.nombre}
+                        </a>`;
+                    list.appendChild(li);
+                });
+            } else {
+                fieldset.classList.add('hidden');
+            }
 
             document.getElementById('edit_request_modal').showModal();
         }

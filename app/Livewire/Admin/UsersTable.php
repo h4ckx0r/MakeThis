@@ -30,7 +30,7 @@ class UsersTable extends Component
     public string $password = '';
     public string $password_confirmation = '';
     public string $direccion = '';
-    public bool $isAdmin = false;
+    public $isAdmin = '0';
 
     // ── Edit modal ────────────────────────────────────────────────────────────
     public bool $showEditModal = false;
@@ -40,7 +40,7 @@ class UsersTable extends Component
     public string $editTelefono = '';
     public string $editEmail = '';
     public string $editDireccion = '';
-    public bool $editIsAdmin = false;
+    public $editIsAdmin = '0';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -188,7 +188,7 @@ class UsersTable extends Component
         $this->password = '';
         $this->password_confirmation = '';
         $this->direccion = '';
-        $this->isAdmin = false;
+        $this->isAdmin = '0';
     }
 
     // ── Edit ──────────────────────────────────────────────────────────────────
@@ -203,7 +203,7 @@ class UsersTable extends Component
         $this->editTelefono = $user->telefono ?? '';
         $this->editEmail = $user->email;
         $this->editDireccion = $user->direccion ?? '';
-        $this->editIsAdmin = (bool)$user->isAdmin;
+        $this->editIsAdmin = $user->isAdmin ? '1' : '0';
 
         $this->resetValidation();
         $this->showEditModal = true;
@@ -222,10 +222,9 @@ class UsersTable extends Component
 
         $user = User::findOrFail($this->editingUserId);
 
-        // Prevent removing your own admin role
-        if ($user->id === auth()->id() && !$this->editIsAdmin) {
-            $this->addError('editIsAdmin', 'No puedes quitarte el rol de administrador.');
-            return;
+        // Prevent changing your own role
+        if ($user->id === auth()->id()) {
+            $this->editIsAdmin = $user->isAdmin ? '1' : '0';
         }
 
         $user->update([

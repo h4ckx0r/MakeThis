@@ -336,10 +336,14 @@
                     <div>
                         <label class="label label-text text-base-content/70">Rol</label>
                         <select wire:model="editIsAdmin"
-                                class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 max-w-xs">
+                                @disabled($editingUserId === auth()->id())
+                                class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 max-w-xs disabled:opacity-50 disabled:cursor-not-allowed">
                             <option value="0">Usuario</option>
                             <option value="1">Administrador</option>
                         </select>
+                        @if ($editingUserId === auth()->id())
+                        <p class="text-xs text-base-content/50 mt-1">No puedes cambiar tu propio rol.</p>
+                        @endif
                         @error('editIsAdmin') <p class="text-error text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </fieldset>

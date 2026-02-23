@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PasswordResetOtpController;
+use App\Http\Controllers\PiezaCatalogoController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\SolicitudController;
@@ -93,8 +94,14 @@ Route::prefix('prints')->group(function () {
 Route::prefix('admin')->middleware(EnsureIsAdmin::class)
     ->group(function () {
         // Rutas para catálogo
-        Route::view('catalog', 'admin.catalog')
+        Route::get('catalog', [PiezaCatalogoController::class, 'adminIndex'])
             ->name('admin.catalog');
+        Route::post('piezas', [PiezaCatalogoController::class, 'adminStore'])
+            ->name('admin.piezas.store');
+        Route::put('piezas/{pieza}', [PiezaCatalogoController::class, 'adminUpdate'])
+            ->name('admin.piezas.update');
+        Route::delete('piezas/{pieza}', [PiezaCatalogoController::class, 'adminDestroy'])
+            ->name('admin.piezas.destroy');
 
         // Rutas para usuarios
         Route::view('users', 'admin.users')
@@ -105,6 +112,10 @@ Route::prefix('admin')->middleware(EnsureIsAdmin::class)
             ->name('admin.requests');
         Route::put('requests/{solicitud}', [SolicitudController::class, 'update'])
             ->name('admin.requests.update');
+
+        // Descarga de adjuntos
+        Route::get('adjuntos/{adjunto}/download', [SolicitudController::class, 'downloadAdjunto'])
+            ->name('admin.adjunto.download');
 
         // Rutas para reportes
         Route::get('reports', [ReporteController::class, 'adminIndex'])
