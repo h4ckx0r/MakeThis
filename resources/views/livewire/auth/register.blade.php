@@ -1,4 +1,4 @@
-<div class="min-h-screen flex flex-col">
+<div class="min-h-screen flex flex-col" wire:poll.4000ms="checkVerification">
     {{-- Header simple con logo --}}
     <header class="border-b border-base-300">
         <div class="navbar mx-auto max-w-7xl px-6 py-4">
@@ -62,8 +62,36 @@
 
                 {{-- Campo Email --}}
                 <input type="email" wire:model="email" placeholder="Email"
-                    class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal" required />
+                    class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
+                    :class="$wire.emailVerified ? 'input-success' : ''"
+                    :readonly="$wire.emailVerified" required />
                 @error('email') <span class="text-error text-sm">{{ $message }}</span> @enderror
+
+                {{-- Verificación de correo --}}
+                <div class="flex items-center gap-3 min-h-8">
+                    <button type="button"
+                        wire:click="sendVerificationEmail"
+                        wire:loading.attr="disabled"
+                        wire:target="sendVerificationEmail"
+                        x-show="!$wire.emailVerified"
+                        class="btn btn-outline btn-sm rounded-full normal-case text-[13px]">
+                        <span wire:loading.remove wire:target="sendVerificationEmail">Verificar correo</span>
+                        <span wire:loading wire:target="sendVerificationEmail" class="loading loading-spinner loading-xs"></span>
+                    </button>
+
+                    @if($verificationStatus === 'sent')
+                        <span class="text-info text-sm">Correo enviado. Revisa tu bandeja de entrada.</span>
+                    @endif
+
+                    @if($verificationStatus === 'verified')
+                        <span class="text-success text-sm flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Correo verificado
+                        </span>
+                    @endif
+                </div>
 
                 {{-- Campo Contraseña --}}
                 <div class="relative" x-data="{ show: false }">
@@ -128,6 +156,8 @@
 
                 {{-- Botón Registrarse --}}
                 <button type="submit"
+                    :disabled="!$wire.emailVerified"
+                    :class="!$wire.emailVerified ? 'opacity-50 cursor-not-allowed' : ''"
                     class="btn btn-primary rounded-full w-full h-13.25 normal-case text-[15px] font-normal mt-6">
                     <span wire:loading.remove wire:target="register">REGISTRARSE</span>
                     <span wire:loading wire:target="register" class="loading loading-spinner loading-sm"></span>

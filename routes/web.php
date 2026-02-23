@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PasswordResetOtpController;
+use App\Http\Controllers\RegisterEmailVerificationController;
 use App\Http\Controllers\PiezaCatalogoController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReporteController;
@@ -32,7 +33,7 @@ Route::prefix('auth')->group(function () {
         ->name('auth.login-options');
 });
 
-// Flujo OTP de recuperación de contraseña
+// Flujo OTP de recuperación de contraseña + verificación de email en registro
 Route::prefix('auth')->middleware('guest')->group(function () {
     Route::get('forgot-password', [PasswordResetOtpController::class, 'showRequestForm'])
         ->name('password.request');
@@ -40,6 +41,9 @@ Route::prefix('auth')->middleware('guest')->group(function () {
         ->name('password.verifyForm');
     Route::get('reset-password', [PasswordResetOtpController::class, 'showResetForm'])
         ->name('password.resetForm');
+
+    Route::get('register/verify/{token}', [RegisterEmailVerificationController::class, 'verify'])
+        ->name('register.verify-email');
 });
 
 Route::prefix('client')->middleware('auth')->group(function () {
