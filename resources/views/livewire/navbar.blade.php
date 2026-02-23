@@ -67,9 +67,9 @@
                 </button>
 
                 <flux:menu class="bg-zinc-900! border-white/10! text-white!">
-                    <flux:menu.item :href="route('auth.login')" wire:navigate
+                    <flux:menu.item :href="route('login')" wire:navigate
                         class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Iniciar sesión') }}</flux:menu.item>
-                    <flux:menu.item :href="route('auth.register')" wire:navigate
+                    <flux:menu.item :href="route('register')" wire:navigate
                         class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Registrarse') }}</flux:menu.item>
                 </flux:menu>
             </flux:dropdown>

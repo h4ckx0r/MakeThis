@@ -28,11 +28,6 @@ Route::prefix('about')->group(function () {
 });
 
 Route::prefix('auth')->group(function () {
-    Route::view('login', 'auth.login')
-        ->name('auth.login');
-    Route::get('register', function () {
-        return view('auth.register');
-    })->name('auth.register');
     Route::view('login-options', 'auth.login-options')
         ->name('auth.login-options');
 });
@@ -41,25 +36,20 @@ Route::prefix('auth')->group(function () {
 Route::prefix('auth')->middleware('guest')->group(function () {
     Route::get('forgot-password', [PasswordResetOtpController::class, 'showRequestForm'])
         ->name('password.request');
-    Route::post('forgot-password', [PasswordResetOtpController::class, 'sendOtp'])
-        ->name('password.sendOtp');
     Route::get('verify-code', [PasswordResetOtpController::class, 'showVerifyForm'])
         ->name('password.verifyForm');
-    Route::post('verify-code', [PasswordResetOtpController::class, 'verifyOtp'])
-        ->name('password.verifyOtp');
-    Route::post('resend-code', [PasswordResetOtpController::class, 'resendOtp'])
-        ->name('password.resendOtp');
     Route::get('reset-password', [PasswordResetOtpController::class, 'showResetForm'])
         ->name('password.resetForm');
-    Route::post('reset-password', [PasswordResetOtpController::class, 'resetPassword'])
-        ->name('password.reset');
 });
 
-Route::prefix('client')->group(function () {
-    Route::view('requests', 'client.requests')
-        ->name('client.requests');
-    Route::view('likes', 'client.likes')
-        ->name('client.likes');
+Route::prefix('client')->middleware('auth')->group(function () {
+    Route::get('requests', function () {
+        $solicitudes = auth()->user()->solicitudes()
+            ->with(['estado', 'threeDModel.color'])
+            ->latest()
+            ->get();
+        return view('client.requests', compact('solicitudes'));
+    })->name('client.requests');
 });
 
 Route::prefix('prints')->group(function () {
