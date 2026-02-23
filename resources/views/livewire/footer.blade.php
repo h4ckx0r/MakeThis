@@ -57,9 +57,7 @@
                 <a href="{{ route('about-us.team') }}" wire:navigate
                     class="text-sm font-medium text-white/70 hover:text-celeste transition-colors duration-200">{{
                     __('Equipo') }}</a>
-                <a href="{{ route('about-us') }}" wire:navigate
-                    class="text-sm font-medium text-white/70 hover:text-celeste transition-colors duration-200">{{
-                    __('Sobre nosotros') }}</a>
+
             </div>
 
             {{-- Legal Column --}}
