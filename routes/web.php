@@ -114,6 +114,14 @@ Route::prefix('admin')->middleware(EnsureIsAdmin::class)
         // Rutas para reportes
         Route::get('reports', [ReporteController::class, 'adminIndex'])
             ->name('admin.reports');
+
+        // Gestión de API keys
+        Route::post('api-key/generate', [ReporteController::class, 'generateApiKey'])
+            ->name('admin.api-key.generate');
+        Route::post('api-key/{apiKey}/toggle', [ReporteController::class, 'toggleApiKey'])
+            ->name('admin.api-key.toggle');
+        Route::delete('api-key/{apiKey}', [ReporteController::class, 'deleteApiKey'])
+            ->name('admin.api-key.delete');
     });
 
 
