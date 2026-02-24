@@ -2,12 +2,21 @@
 
 <x-layouts::admin :title="$title">
 
-    {{-- Page Title + Add Button --}}
+    {{-- Page Title + Buttons --}}
     <div class="mb-8 flex items-center justify-between">
         <h1 class="text-3xl font-semibold tracking-wide text-base-content">Catálogo de Piezas</h1>
-        <button class="btn btn-primary btn-sm" onclick="add_piece_modal.showModal()">
-            + Añadir Pieza
-        </button>
+        <div class="flex gap-2">
+            <button class="btn btn-ghost btn-sm border-sky-500/30 text-base-content/70"
+                    onclick="tags_modal.showModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                Gestionar Categorías
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="add_piece_modal.showModal()">
+                + Añadir Pieza
+            </button>
+        </div>
     </div>
 
     {{-- Flash alerts --}}
@@ -28,7 +37,7 @@
     </div>
     @endif
 
-    {{-- Search (join + GET form) --}}
+    {{-- Search --}}
     <form method="GET" action="{{ route('admin.catalog') }}" class="mb-8">
         <div class="join w-full max-w-md">
             <input
@@ -57,6 +66,7 @@
         <table class="table table-zebra table-pin-rows w-full">
             <thead class="bg-base-300">
                 <tr class="text-primary text-sm">
+                    <th class="w-16">Imagen</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Tags</th>
@@ -66,7 +76,22 @@
             </thead>
             <tbody>
                 @forelse ($piezas as $pieza)
+                @php
+                    $imagenUrl = $pieza->adjunto ? asset('storage/' . $pieza->adjunto->fichero) : null;
+                @endphp
                 <tr class="hover:bg-base-200/50 transition-colors">
+                    <td>
+                        @if ($imagenUrl)
+                        <img src="{{ $imagenUrl }}" alt="{{ $pieza->nombre }}"
+                             class="h-10 w-10 rounded-lg object-cover border border-sky-500/20" />
+                        @else
+                        <div class="h-10 w-10 rounded-lg bg-base-300 border border-sky-500/10 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        @endif
+                    </td>
                     <td class="font-medium text-sm text-base-content">{{ $pieza->nombre }}</td>
                     <td class="text-sm text-base-content/60 max-w-xs">
                         <span class="line-clamp-2">{{ $pieza->descripcion ?? '—' }}</span>
@@ -94,19 +119,21 @@
                         <div class="flex gap-2 justify-center">
                             <button
                                 class="btn btn-ghost btn-sm text-primary hover:text-primary/80"
-                                onclick="openEditModal(
-                                    '{{ $pieza->id }}',
-                                    '{{ addslashes($pieza->nombre) }}',
-                                    '{{ addslashes($pieza->descripcion ?? '') }}',
-                                    {{ $pieza->visible_catalogo ? 'true' : 'false' }},
-                                    {{ json_encode($pieza->tags->pluck('id')->toArray()) }}
-                                )"
+                                data-pieza-id="{{ $pieza->id }}"
+                                data-pieza-nombre="{{ $pieza->nombre }}"
+                                data-pieza-descripcion="{{ $pieza->descripcion ?? '' }}"
+                                data-pieza-visible="{{ $pieza->visible_catalogo ? '1' : '0' }}"
+                                data-pieza-tags="{{ json_encode($pieza->tags->pluck('id')->toArray()) }}"
+                                data-pieza-imagen="{{ $imagenUrl ?? '' }}"
+                                onclick="openEditModal(this)"
                             >
                                 Editar
                             </button>
                             <button
                                 class="btn btn-ghost btn-sm text-error hover:text-red-400"
-                                onclick="openDeleteModal('{{ $pieza->id }}', '{{ addslashes($pieza->nombre) }}')"
+                                data-pieza-id="{{ $pieza->id }}"
+                                data-pieza-nombre="{{ $pieza->nombre }}"
+                                onclick="openDeleteModal(this)"
                             >
                                 Eliminar
                             </button>
@@ -115,7 +142,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center py-16 text-base-content/50">
+                    <td colspan="6" class="text-center py-16 text-base-content/50">
                         <div class="flex flex-col items-center gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -160,12 +187,12 @@
     </div>
     @endif
 
-    {{-- ADD PIEZA MODAL --}}
+    {{-- ── ADD PIEZA MODAL ─────────────────────────────────────────────────── --}}
     <dialog id="add_piece_modal" class="modal">
         <div class="modal-box max-w-2xl bg-base-200 border border-sky-500/30 text-base-content">
             <h3 class="text-xl font-semibold mb-6">Añadir Pieza</h3>
 
-            <form action="{{ route('admin.piezas.store') }}" method="POST">
+            <form action="{{ route('admin.piezas.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <fieldset class="fieldset mb-4">
@@ -194,8 +221,11 @@
                 </fieldset>
 
                 <fieldset class="fieldset mb-4">
-                    <legend class="fieldset-legend text-base-content/60">Tags <span class="text-xs text-base-content/50 font-normal">(Ctrl/Cmd + clic para selección múltiple)</span></legend>
-                    <select name="tags[]" multiple size="5"
+                    <legend class="fieldset-legend text-base-content/60">
+                        Tags
+                        <span class="text-xs text-base-content/50 font-normal">(Ctrl/Cmd + clic para selección múltiple)</span>
+                    </legend>
+                    <select name="tags[]" multiple size="4"
                             class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 h-auto @error('tags') border-error @enderror">
                         @foreach ($availableTags as $tag)
                         <option value="{{ $tag->id }}" @if(in_array($tag->id, old('tags', []))) selected @endif>
@@ -204,6 +234,18 @@
                         @endforeach
                     </select>
                     @error('tags')
+                    <p class="text-error text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </fieldset>
+
+                <fieldset class="fieldset mb-4">
+                    <legend class="fieldset-legend text-base-content/60">Imagen</legend>
+                    <input type="file" name="imagen" accept="image/*"
+                           class="file-input file-input-bordered w-full bg-base-300 border-sky-500/30 text-base-content" />
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/40">Opcional · JPG, PNG, WebP · máx. 5 MB</span>
+                    </label>
+                    @error('imagen')
                     <p class="text-error text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </fieldset>
@@ -219,9 +261,8 @@
                 </fieldset>
 
                 <div class="modal-action gap-3">
-                    <form method="dialog">
-                        <button class="btn btn-ghost border-base-300 text-base-content/60">Cancelar</button>
-                    </form>
+                    <button type="button" onclick="add_piece_modal.close()"
+                            class="btn btn-ghost border-base-300 text-base-content/60">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar Pieza</button>
                 </div>
             </form>
@@ -231,12 +272,12 @@
         </form>
     </dialog>
 
-    {{-- EDIT PIEZA MODAL --}}
+    {{-- ── EDIT PIEZA MODAL ────────────────────────────────────────────────── --}}
     <dialog id="edit_piece_modal" class="modal">
         <div class="modal-box max-w-2xl bg-base-200 border border-sky-500/30 text-base-content">
             <h3 class="text-xl font-semibold mb-6">Editar Pieza</h3>
 
-            <form id="edit_form" method="POST">
+            <form id="edit_form" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -246,27 +287,47 @@
                     <div class="mb-3">
                         <label class="label label-text text-base-content/70">Nombre *</label>
                         <input type="text" id="edit_nombre" name="nombre" required
-                               class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 @error('nombre') border-error @enderror" />
-                        @error('nombre') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                               class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400" />
                     </div>
 
                     <div>
                         <label class="label label-text text-base-content/70">Descripción</label>
                         <textarea id="edit_descripcion" name="descripcion" rows="3"
-                                  class="textarea textarea-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 resize-none @error('descripcion') border-error @enderror"></textarea>
-                        @error('descripcion') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                                  class="textarea textarea-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 resize-none"></textarea>
                     </div>
                 </fieldset>
 
                 <fieldset class="fieldset mb-4">
-                    <legend class="fieldset-legend text-base-content/60">Tags <span class="text-xs text-base-content/50 font-normal">(Ctrl/Cmd + clic para selección múltiple)</span></legend>
-                    <select id="edit_tags" name="tags[]" multiple size="5"
-                            class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 h-auto @error('tags') border-error @enderror">
+                    <legend class="fieldset-legend text-base-content/60">
+                        Tags
+                        <span class="text-xs text-base-content/50 font-normal">(Ctrl/Cmd + clic para selección múltiple)</span>
+                    </legend>
+                    <select id="edit_tags" name="tags[]" multiple size="4"
+                            class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 h-auto">
                         @foreach ($availableTags as $tag)
                         <option value="{{ $tag->id }}">{{ $tag->nombre }}</option>
                         @endforeach
                     </select>
-                    @error('tags') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                </fieldset>
+
+                <fieldset class="fieldset mb-4">
+                    <legend class="fieldset-legend text-base-content/60">Imagen</legend>
+
+                    {{-- Current image preview (shown when pieza has an image) --}}
+                    <div id="edit_imagen_preview" class="mb-3 hidden">
+                        <img id="edit_imagen_img" src="" alt="Imagen actual"
+                             class="h-24 rounded-lg object-cover border border-sky-500/20" />
+                        <p class="text-xs text-base-content/40 mt-1">Imagen actual</p>
+                    </div>
+
+                    <label class="label label-text text-base-content/70">
+                        Subir nueva imagen <span class="text-base-content/40 font-normal">(reemplaza la actual)</span>
+                    </label>
+                    <input type="file" name="imagen" id="edit_imagen_input" accept="image/*"
+                           class="file-input file-input-bordered w-full bg-base-300 border-sky-500/30 text-base-content" />
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/40">Opcional · JPG, PNG, WebP · máx. 5 MB</span>
+                    </label>
                 </fieldset>
 
                 <fieldset class="fieldset mb-6">
@@ -279,9 +340,8 @@
                 </fieldset>
 
                 <div class="modal-action gap-3">
-                    <form method="dialog">
-                        <button class="btn btn-ghost border-base-300 text-base-content/60">Cancelar</button>
-                    </form>
+                    <button type="button" onclick="edit_piece_modal.close()"
+                            class="btn btn-ghost border-base-300 text-base-content/60">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>
             </form>
@@ -291,7 +351,7 @@
         </form>
     </dialog>
 
-    {{-- DELETE PIEZA MODAL --}}
+    {{-- ── DELETE PIEZA MODAL ──────────────────────────────────────────────── --}}
     <dialog id="delete_piece_modal" class="modal">
         <div class="modal-box bg-base-200 border border-error/40 text-base-content text-center">
             <div class="flex justify-center mb-4 text-error">
@@ -320,13 +380,36 @@
         </form>
     </dialog>
 
+    {{-- ── TAGS MODAL ──────────────────────────────────────────────────────── --}}
+    <dialog id="tags_modal" class="modal">
+        <div class="modal-box max-w-lg bg-base-200 border border-sky-500/30 text-base-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold">Gestionar Categorías</h3>
+                <button type="button" onclick="tags_modal.close()"
+                        class="btn btn-ghost btn-sm btn-circle text-base-content/60">✕</button>
+            </div>
+
+            @livewire('admin.tags-manager')
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button></button>
+        </form>
+    </dialog>
+
     <script>
-        // BUG FIX: firma corregida a 5 parámetros (descripcion y visible ahora se reciben correctamente)
-        function openEditModal(id, nombre, descripcion, visible, tags) {
+        function openEditModal(btn) {
+            const id          = btn.dataset.piezaId;
+            const nombre      = btn.dataset.piezaNombre;
+            const descripcion = btn.dataset.piezaDescripcion;
+            const visible     = btn.dataset.piezaVisible === '1';
+            const tags        = JSON.parse(btn.dataset.piezaTags  || '[]');
+            const imagenUrl   = btn.dataset.piezaImagen;
+
             document.getElementById('edit_nombre').value      = nombre;
             document.getElementById('edit_descripcion').value = descripcion;
             document.getElementById('edit_visible').checked   = visible;
 
+            // Sync tag selection
             const tagsSelect = document.getElementById('edit_tags');
             Array.from(tagsSelect.options).forEach(opt => opt.selected = false);
             tags.forEach(tagId => {
@@ -334,16 +417,30 @@
                 if (opt) opt.selected = true;
             });
 
-            const form = document.getElementById('edit_form');
-            form.action = `/admin/piezas/${id}`;
+            // Show/hide current image preview
+            const preview = document.getElementById('edit_imagen_preview');
+            const img     = document.getElementById('edit_imagen_img');
+            if (imagenUrl) {
+                img.src = imagenUrl;
+                preview.classList.remove('hidden');
+            } else {
+                img.src = '';
+                preview.classList.add('hidden');
+            }
 
+            // Reset file input so previous selection doesn't carry over
+            document.getElementById('edit_imagen_input').value = '';
+
+            document.getElementById('edit_form').action = `/admin/piezas/${id}`;
             document.getElementById('edit_piece_modal').showModal();
         }
 
-        function openDeleteModal(id, nombre) {
+        function openDeleteModal(btn) {
+            const id     = btn.dataset.piezaId;
+            const nombre = btn.dataset.piezaNombre;
+
             document.getElementById('delete_title').textContent = `Vas a eliminar: "${nombre}"`;
-            const form = document.getElementById('delete_form');
-            form.action = `/admin/piezas/${id}`;
+            document.getElementById('delete_form').action       = `/admin/piezas/${id}`;
             document.getElementById('delete_piece_modal').showModal();
         }
     </script>
