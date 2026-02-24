@@ -127,6 +127,7 @@
                         </svg>
                     </button>
                 </div>
+                @error('password_confirmation') <span class="text-error text-sm">{{ $message }}</span> @enderror
 
                 {{-- Texto legal --}}
                 <div class="text-[15px] font-normal leading-relaxed py-1">
@@ -140,12 +141,27 @@
                 </div>
 
                 {{-- Cloudflare Turnstile --}}
+                {{-- Pre-registrar callback para evitar race condition con Turnstile async --}}
+                <script>
+                    window.captchaCallback = function(token) {
+                        window.__captchaToken = token;
+                    };
+                </script>
                 <div class="flex justify-center">
                     <x-turnstile wire:model="turnstileResponse" />
                 </div>
                 @error('cf-turnstile-response')
                     <span class="text-error text-sm text-center block">{{ $message }}</span>
                 @enderror
+                {{-- Sincronizar token pendiente cuando Livewire inicialice --}}
+                <script>
+                    document.addEventListener('livewire:initialized', () => {
+                        if (window.__captchaToken) {
+                            @this.set('turnstileResponse', window.__captchaToken);
+                            delete window.__captchaToken;
+                        }
+                    });
+                </script>
 
                 {{-- Link iniciar sesión --}}
                 <div class="text-center pt-2">

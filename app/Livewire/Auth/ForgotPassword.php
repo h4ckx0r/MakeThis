@@ -33,6 +33,7 @@ class ForgotPassword extends Component
         }
 
         session()->put('password_reset_email', $email);
+        Cache::put($sendsKey, $sends + 1, self::SENDS_TTL);
 
         $user = User::where('email', $email)->first();
 
@@ -41,7 +42,6 @@ class ForgotPassword extends Component
 
             Cache::put("password_reset_otp:{$email}", $code, self::OTP_TTL);
             Cache::forget("password_reset_attempts:{$email}");
-            Cache::put($sendsKey, $sends + 1, self::SENDS_TTL);
 
             Mail::to($email)->send(new PasswordResetOtpMail($code, $user->nombre));
         }

@@ -45,6 +45,12 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div class="text-center font-medium text-sm text-error">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             {{-- Formulario --}}
             <form wire:submit="login" class="space-y-4">
                 {{-- Campo Email --}}
