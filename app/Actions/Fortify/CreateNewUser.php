@@ -29,21 +29,22 @@ class CreateNewUser implements CreatesNewUsers
             'cf-turnstile-response' => 'La verificación de seguridad ha fallado. Inténtalo de nuevo.',
         ])->validate();
 
-        if (User::query()->count() < 1) {
-            $firstUser = true;
-        }
-        else {
-            $firstUser = false;
-        }
+        $isFirstUser = User::query()->count() < 1;
 
-        return User::create([
+        $user = User::create([
             'nombre' => $input['nombre'],
             'apellidos' => $input['apellidos'],
             'telefono' => $input['telefono'],
-            'isAdmin' => $firstUser,
             'direccion' => $input['direccion'] ?? null,
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
+
+        if ($isFirstUser) {
+            $user->isAdmin = true;
+            $user->save();
+        }
+
+        return $user;
     }
 }

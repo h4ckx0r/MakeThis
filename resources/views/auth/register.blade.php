@@ -8,6 +8,7 @@
 <body class="bg-base-100 text-base-content">
     <livewire:auth.register />
     <x-turnstile.scripts />
+    @livewireScripts
     @fluxScripts
 </body>
 

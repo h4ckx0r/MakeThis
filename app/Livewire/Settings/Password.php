@@ -37,6 +37,8 @@ class Password extends Component
             'password' => $validated['password'],
         ]);
 
+        session()->regenerate();
+
         $this->reset('current_password', 'password', 'password_confirmation');
 
         $this->dispatch('password-updated');

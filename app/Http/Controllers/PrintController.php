@@ -10,6 +10,7 @@ use App\Models\PiezaCatalogo;
 use App\Models\Solicitud;
 use App\Models\Tag;
 use App\Models\ThreeDModel;
+use App\Http\Requests\StorePreviewRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -64,30 +65,9 @@ class PrintController extends Controller
     /**
      * Valida los datos del formulario y los guarda en sesión para el preview.
      */
-    public function storePreview(Request $request)
+    public function storePreview(StorePreviewRequest $request)
     {
-        $tipo = $request->input('tipo');
-
-        $rules = [
-            'tipo'         => 'required|in:propia,personalizada',
-            'materialId'   => 'required|uuid|exists:materials,id',
-            'colorId'      => 'required|uuid|exists:colors,id',
-            'indicaciones' => 'nullable|string|max:2000',
-        ];
-
-        if ($tipo === 'propia') {
-            $rules['archivo_path']   = 'required|string';
-            $rules['archivo_nombre'] = 'required|string';
-            $rules['altura_capa']         = 'nullable|numeric|min:0.05|max:0.5';
-            $rules['porcentaje_relleno']  = 'nullable|integer|min:0|max:100';
-            $rules['patron_relleno']      = 'nullable|in:linear,grid,gyroid,honeycomb';
-        } else {
-            $rules['archivo_path']   = 'nullable|string';
-            $rules['archivo_nombre'] = 'nullable|string';
-            $rules['indicaciones']   = 'required|string|max:2000';
-        }
-
-        $validated = $request->validate($rules);
+        $validated = $request->validated();
 
         $material = Material::find($validated['materialId']);
         $color    = Color::find($validated['colorId']);

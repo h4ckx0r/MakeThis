@@ -48,7 +48,7 @@ class VerifyOtp extends Component
 
         $storedCode = Cache::get("password_reset_otp:{$this->email}");
 
-        if (! $storedCode || $storedCode !== $this->code) {
+        if (! $storedCode || ! hash_equals($storedCode, $this->code)) {
             Cache::put($attemptsKey, $attempts + 1, self::ATTEMPTS_TTL);
             $remaining = self::MAX_ATTEMPTS - $attempts - 1;
             $this->addError('code', "Código incorrecto. Te quedan {$remaining} intentos.");
@@ -57,7 +57,7 @@ class VerifyOtp extends Component
 
         Cache::forget("password_reset_otp:{$this->email}");
         Cache::forget("password_reset_attempts:{$this->email}");
-        session()->put('password_reset_verified', true);
+        session()->put('password_reset_verified', now()->timestamp);
 
         return $this->redirect(route('password.resetForm'), navigate: false);
     }

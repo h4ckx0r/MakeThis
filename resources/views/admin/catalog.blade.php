@@ -246,24 +246,27 @@
                     <div class="mb-3">
                         <label class="label label-text text-base-content/70">Nombre *</label>
                         <input type="text" id="edit_nombre" name="nombre" required
-                               class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400" />
+                               class="input input-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 @error('nombre') border-error @enderror" />
+                        @error('nombre') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="label label-text text-base-content/70">Descripción</label>
                         <textarea id="edit_descripcion" name="descripcion" rows="3"
-                                  class="textarea textarea-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 resize-none"></textarea>
+                                  class="textarea textarea-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 resize-none @error('descripcion') border-error @enderror"></textarea>
+                        @error('descripcion') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                 </fieldset>
 
                 <fieldset class="fieldset mb-4">
                     <legend class="fieldset-legend text-base-content/60">Tags <span class="text-xs text-base-content/50 font-normal">(Ctrl/Cmd + clic para selección múltiple)</span></legend>
                     <select id="edit_tags" name="tags[]" multiple size="5"
-                            class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 h-auto">
+                            class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 h-auto @error('tags') border-error @enderror">
                         @foreach ($availableTags as $tag)
                         <option value="{{ $tag->id }}">{{ $tag->nombre }}</option>
                         @endforeach
                     </select>
+                    @error('tags') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                 </fieldset>
 
                 <fieldset class="fieldset mb-6">
