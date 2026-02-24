@@ -40,6 +40,7 @@ class Login extends Component
 
         // Si el usuario tiene 2FA habilitado, redirigir al challenge
         if ($user->two_factor_secret && $user->two_factor_confirmed_at) {
+            session()->regenerate();
             session(['login.id' => $user->getKey(), 'login.remember' => $this->remember]);
             return $this->redirect(route('two-factor.login'), navigate: false);
         }

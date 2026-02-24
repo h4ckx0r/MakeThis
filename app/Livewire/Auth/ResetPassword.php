@@ -15,7 +15,10 @@ class ResetPassword extends Component
 
     public function mount()
     {
-        if (! session('password_reset_verified')) {
+        $verifiedAt = session('password_reset_verified');
+
+        if (! $verifiedAt || (now()->timestamp - $verifiedAt) > 600) {
+            session()->forget(['password_reset_email', 'password_reset_verified']);
             return $this->redirect(route('password.request'), navigate: false);
         }
     }
@@ -37,8 +40,10 @@ class ResetPassword extends Component
             'password' => Hash::make($this->password),
         ])->save();
 
-        session()->forget(['password_reset_email', 'password_reset_verified']);
         Cache::forget("password_reset_sends:{$email}");
+
+        session()->invalidate();
+        session()->regenerateToken();
 
         session()->flash('status', 'Tu contraseña ha sido actualizada correctamente. Inicia sesión con tu nueva contraseña.');
         return $this->redirect(route('login'), navigate: false);

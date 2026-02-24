@@ -67,6 +67,7 @@
                         </svg>
                     </button>
                 </div>
+                @error('password_confirmation') <span class="text-error text-sm">{{ $message }}</span> @enderror
 
                 {{-- Botón --}}
                 <button type="submit"

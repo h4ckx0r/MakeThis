@@ -21,6 +21,10 @@
                     class="px-3 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('prints.request') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
                     {{ __('Solicitar Pieza') }}
                 </a>
+                <a href="{{ route('about-us') }}" wire:navigate
+                    class="px-3 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('about-us.about-us') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
+                    {{ __('Sobre nosotros') }}
+                </a>
             </nav>
         </div>
 
@@ -30,7 +34,8 @@
             <flux:dropdown position="bottom" align="end">
                 <button
                     class="flex items-center gap-2 rounded-full bg-white/10 p-1 pr-3 transition-colors hover:bg-white/20">
-                    <flux:avatar :initials="auth()->user()->initials()" size="sm" class="bg-celeste! text-black! rounded-full!" />
+                    <flux:avatar :initials="auth()->user()->initials()" size="sm"
+                        class="bg-celeste! text-black! rounded-full!" />
                     <span class="hidden text-sm font-medium text-white sm:block">{{ auth()->user()->nombre }}</span>
                     <flux:icon.chevron-down class="size-3 text-white/50" />
                 </button>
@@ -45,7 +50,8 @@
                         @endif
                     </flux:menu.item>
                     <flux:menu.item :href="route('profile.edit')" wire:navigate
-                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Ajustes') }}</flux:menu.item>
+                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Ajustes') }}
+                    </flux:menu.item>
 
                     <flux:menu.separator class=" bg-white/50! dark:bg-white/10!" />
 
@@ -68,9 +74,11 @@
 
                 <flux:menu class="bg-zinc-900! border-white/10! text-white!">
                     <flux:menu.item :href="route('login')" wire:navigate
-                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Iniciar sesión') }}</flux:menu.item>
+                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Iniciar
+                        sesión') }}</flux:menu.item>
                     <flux:menu.item :href="route('register')" wire:navigate
-                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Registrarse') }}</flux:menu.item>
+                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Registrarse')
+                        }}</flux:menu.item>
                 </flux:menu>
             </flux:dropdown>
             @endauth

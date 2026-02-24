@@ -47,6 +47,12 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div class="text-center font-medium text-sm text-error">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             {{-- Formulario --}}
             <form wire:submit="sendOtp" class="space-y-6">
                 {{-- Campo Email --}}

@@ -271,19 +271,21 @@
                 <fieldset class="fieldset mb-4">
                     <legend class="fieldset-legend text-base-content/60">Estado</legend>
                     <select id="modal_estado" name="estado_id"
-                            class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400">
+                            class="select select-bordered w-full bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 @error('estado_id') border-error @enderror">
                         @foreach ($estados as $estado)
                         <option value="{{ $estado->id }}">{{ $estado->nombreEstado }}</option>
                         @endforeach
                     </select>
+                    @error('estado_id') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                 </fieldset>
 
                 {{-- Notas / Detalles --}}
                 <fieldset class="fieldset mb-4">
                     <legend class="fieldset-legend text-base-content/60">Notas / Detalles</legend>
                     <textarea id="modal_detalles" name="detalles"
-                              class="textarea textarea-bordered w-full h-28 bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 resize-none"
+                              class="textarea textarea-bordered w-full h-28 bg-base-300 border-sky-500/30 text-base-content focus:border-sky-400 resize-none @error('detalles') @enderror"
                               placeholder="Detalles adicionales..."></textarea>
+                    @error('detalles') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                 </fieldset>
 
                 {{-- Archivos adjuntos --}}
