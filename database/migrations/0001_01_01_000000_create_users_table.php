@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('nombre', 64);
             $table->string('apellidos', 64);
             $table->string('telefono', 21);
-            $table->boolean('isAdmin');
+            $table->boolean('isAdmin')->default(false);
             $table->string('direccion')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
