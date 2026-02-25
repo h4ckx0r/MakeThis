@@ -23,6 +23,10 @@ class Solicitud extends Model
         'porcentajeRelleno',
         'alturaCapa',
         'patronRelleno',
+        'tipo',
+        'incluye_modelo_3d',
+        'incluye_pieza',
+        'piezaCatalogoId',
     ];
 
     public function user(): BelongsTo
@@ -43,5 +47,10 @@ class Solicitud extends Model
     public function adjuntos(): HasMany
     {
         return $this->hasMany(Adjunto::class, 'idSolicitud');
+    }
+
+    public function piezaCatalogo(): BelongsTo
+    {
+        return $this->belongsTo(PiezaCatalogo::class, 'piezaCatalogoId');
     }
 }

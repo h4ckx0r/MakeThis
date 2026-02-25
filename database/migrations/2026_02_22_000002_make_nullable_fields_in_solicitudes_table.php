@@ -20,9 +20,11 @@ return new class extends Migration
 
     public function down(): void
     {
+        // No se puede revertir a NOT NULL de forma segura si hay registros con null.
+        // Se mantiene nullable para evitar errores en migrate:refresh.
         Schema::table('solicitudes', function (Blueprint $table) {
-            $table->uuid('3dModelId')->nullable(false)->change();
-            $table->string('patronRelleno')->nullable(false)->change();
+            $table->uuid('3dModelId')->nullable()->change();
+            $table->string('patronRelleno')->nullable()->change();
         });
     }
 };

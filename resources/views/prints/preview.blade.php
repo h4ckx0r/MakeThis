@@ -14,13 +14,19 @@
                 <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">Tipo de Pieza</label>
                 <div class="bg-base-200 rounded-lg p-4">
                     <p class="text-lg font-semibold">
-                        {{ $preview['tipo'] === 'propia' ? 'Tu Modelo 3D' : 'Diseño Personalizado' }}
+                        @if($preview['tipo'] === 'propia')
+                            Tu Modelo 3D
+                        @elseif($preview['tipo'] === 'catalogo')
+                            Pieza del Catálogo
+                        @else
+                            Diseño Personalizado
+                        @endif
                     </p>
                 </div>
             </div>
 
-            <!-- Archivo subido -->
-            @if(!empty($preview['archivo_nombre']))
+            <!-- Archivo subido (propia/personalizada) o imagen de pieza (catálogo) -->
+            @if($preview['tipo'] !== 'catalogo' && !empty($preview['archivo_nombre']))
             <div class="space-y-2">
                 <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">
                     {{ $preview['tipo'] === 'propia' ? 'Modelo 3D' : 'Imagen de Referencia' }}
@@ -31,6 +37,18 @@
                               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <p class="font-medium break-all">{{ $preview['archivo_nombre'] }}</p>
+                </div>
+            </div>
+            @elseif($preview['tipo'] === 'catalogo')
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">Pieza</label>
+                <div class="bg-base-200 rounded-lg p-4 flex items-center gap-4">
+                    @if(!empty($preview['piezaImagen']))
+                    <img src="{{ asset('storage/' . $preview['piezaImagen']) }}"
+                         alt="{{ $preview['piezaNombre'] ?? '' }}"
+                         class="w-16 h-16 rounded-lg object-cover flex-shrink-0 border border-base-300" />
+                    @endif
+                    <p class="text-lg font-semibold">{{ $preview['piezaNombre'] ?? '' }}</p>
                 </div>
             </div>
             @endif
@@ -73,11 +91,28 @@
             </div>
             @endif
 
+            <!-- ¿Qué incluye? (solo personalizada) -->
+            @if($preview['tipo'] === 'personalizada')
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">¿Qué incluye?</label>
+                <div class="bg-base-200 rounded-lg p-4 space-y-1">
+                    <p>
+                        <span class="font-medium">Modelo 3D:</span>
+                        {{ ($preview['incluye_modelo_3d'] ?? false) ? 'Sí, incluir' : 'No' }}
+                    </p>
+                    <p>
+                        <span class="font-medium">Pieza impresa:</span>
+                        {{ ($preview['incluye_pieza'] ?? false) ? 'Sí, incluir en entrega' : 'No' }}
+                    </p>
+                </div>
+            </div>
+            @endif
+
             <!-- Indicaciones -->
             @if(!empty($preview['indicaciones']))
             <div class="space-y-2">
                 <label class="block text-sm font-semibold uppercase tracking-wide text-base-content/60">
-                    {{ $preview['tipo'] === 'propia' ? 'Indicaciones Especiales' : 'Descripción de la Idea' }}
+                    {{ $preview['tipo'] === 'propia' ? 'Indicaciones Especiales' : 'Descripción / Indicaciones' }}
                 </label>
                 <div class="bg-base-200 rounded-lg p-4">
                     <p class="whitespace-pre-line">{{ $preview['indicaciones'] }}</p>

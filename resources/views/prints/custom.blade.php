@@ -3,8 +3,6 @@
           x-data="{
               materialId: '',
               colorId: '',
-              archivoPath: '',
-              archivoNombre: '',
               materiales: {{ $materiales->map(fn($m) => [
                   'id'      => $m->id,
                   'nombre'  => $m->nombre,
@@ -18,26 +16,18 @@
                   const mat = this.materiales.find(m => m.id === this.materialId);
                   return mat ? mat.colores : [];
               }
-          }"
-          @file-uploaded.window="
-              if ($event.detail.tipo === 'imagen') {
-                  archivoPath   = $event.detail.path;
-                  archivoNombre = $event.detail.name;
-              }
-          ">
+          }">
 
         <div class="mb-12">
             <h1 class="text-4xl font-bold mb-2">Pieza Personalizada</h1>
             <p class="text-base-content/60">Cuéntanos tu idea y nuestros diseñadores crearán el modelo perfecto para ti</p>
         </div>
 
-        <form action="{{ route('prints.preview.store') }}" method="POST" class="space-y-8">
+        <form action="{{ route('prints.preview.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
             <input type="hidden" name="tipo" value="personalizada">
-            <input type="hidden" name="archivo_path"   x-model="archivoPath">
-            <input type="hidden" name="archivo_nombre" x-model="archivoNombre">
-            <input type="hidden" name="materialId"     x-model="materialId">
-            <input type="hidden" name="colorId"        x-model="colorId">
+            <input type="hidden" name="materialId" x-model="materialId">
+            <input type="hidden" name="colorId"    x-model="colorId">
 
             @if ($errors->any())
             <div class="alert alert-error">
@@ -53,9 +43,28 @@
                 <!-- Columna Izquierda: Drag & Drop de Imágenes -->
                 <div>
                     <label class="block text-lg font-semibold mb-4">Imagen de Referencia (opcional)</label>
-                    @livewire('piezas.file-uploader', ['tipo' => 'imagen'])
-                    <p x-show="archivoNombre" class="mt-2 text-sm text-success font-medium"
-                       x-text="'Imagen lista: ' + archivoNombre"></p>
+                    <div x-data="{ archivoNombre: '' }"
+                         class="border-2 border-dashed border-base-content/30 rounded-3xl h-80 flex flex-col items-center justify-center gap-4 cursor-pointer bg-base-200 hover:bg-base-300 transition-colors"
+                         @dragover.prevent
+                         @drop.prevent="
+                             const f = $event.dataTransfer.files[0];
+                             if (f) { $refs.fileInput.files = $event.dataTransfer.files; archivoNombre = f.name; }
+                         "
+                         @click="$refs.fileInput.click()">
+                        <svg class="w-16 h-16 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-base-content/60 text-center px-4"
+                           x-text="archivoNombre ? 'Imagen lista: ' + archivoNombre : 'Arrastra tu imagen aquí o haz clic para seleccionar'"></p>
+                        <p class="text-sm text-base-content/40">JPG, PNG, GIF, WEBP — máx. 10MB</p>
+                        <input type="file" name="file_imagen" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden"
+                               x-ref="fileInput"
+                               @change="archivoNombre = $event.target.files[0]?.name || ''">
+                    </div>
+                    @error('file_imagen')
+                        <span class="text-error text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <!-- Columna Derecha: Formulario -->
