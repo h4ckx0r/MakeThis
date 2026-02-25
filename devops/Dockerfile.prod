@@ -83,9 +83,12 @@ COPY . .
 # (sobreescribe cualquier public/build que pudiera venir del COPY anterior)
 COPY --from=node-builder /app/public/build ./public/build
 
-# Ejecutar optimizaciones de Laravel seguras en build time
-# view:cache se omite aquí porque requiere todos los service providers registrados
-# (se ejecuta en entrypoint.prod.sh junto con config:cache)
+# Descubrir paquetes: genera bootstrap/cache/packages.php con los providers/namespaces
+# de todos los paquetes instalados (equivale al post-autoload-dump de Composer,
+# omitido al usar --no-scripts para evitar ejecutar artisan sin .env)
+RUN php artisan package:discover --ansi
+
+# Optimizaciones de build time (seguros sin .env)
 RUN php artisan route:cache \
  && php artisan event:cache
 
@@ -93,11 +96,12 @@ RUN php artisan route:cache \
 RUN chown -R www-data:www-data storage bootstrap/cache \
  && chmod -R 775 storage bootstrap/cache
 
+# Copiar Caddyfile de producción (reemplaza el default de la imagen base)
+# Escucha explícitamente en :8000 HTTP — el TLS lo gestiona el Caddy externo
+COPY devops/Caddyfile.prod /etc/caddy/Caddyfile
+
 # Copiar y activar entrypoint de producción
 COPY devops/entrypoint.prod.sh /usr/local/bin/entrypoint.prod.sh
 RUN chmod +x /usr/local/bin/entrypoint.prod.sh
-
-# FrankenPHP escucha en este puerto (configurable via env)
-ENV SERVER_NAME=:8000
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.prod.sh"]
