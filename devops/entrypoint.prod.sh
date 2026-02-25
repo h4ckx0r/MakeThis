@@ -17,4 +17,4 @@ if [ ! -L "/app/public/storage" ]; then
 fi
 
 echo "[entrypoint.prod] Iniciando FrankenPHP..."
-exec frankenphp run
+exec frankenphp run --config /etc/frankenphp/Caddyfile
