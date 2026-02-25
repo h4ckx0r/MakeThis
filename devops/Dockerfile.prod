@@ -96,11 +96,12 @@ RUN php artisan route:cache \
 RUN chown -R www-data:www-data storage bootstrap/cache \
  && chmod -R 775 storage bootstrap/cache
 
+# Copiar Caddyfile de producción (reemplaza el default de la imagen base)
+# Escucha explícitamente en :8000 HTTP — el TLS lo gestiona el Caddy externo
+COPY devops/Caddyfile.prod /etc/caddy/Caddyfile
+
 # Copiar y activar entrypoint de producción
 COPY devops/entrypoint.prod.sh /usr/local/bin/entrypoint.prod.sh
 RUN chmod +x /usr/local/bin/entrypoint.prod.sh
-
-# FrankenPHP escucha en este puerto (configurable via env)
-ENV SERVER_NAME=:8000
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.prod.sh"]
