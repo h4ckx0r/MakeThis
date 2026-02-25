@@ -98,7 +98,7 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 
 # Copiar Caddyfile de producción (reemplaza el default de la imagen base)
 # Escucha explícitamente en :8000 HTTP — el TLS lo gestiona el Caddy externo
-COPY devops/Caddyfile.prod /etc/caddy/Caddyfile
+COPY devops/Caddyfile.prod /etc/frankenphp/Caddyfile
 
 # Copiar y activar entrypoint de producción
 COPY devops/entrypoint.prod.sh /usr/local/bin/entrypoint.prod.sh
