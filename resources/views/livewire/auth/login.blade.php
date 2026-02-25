@@ -18,8 +18,7 @@
         {{-- Flecha de retroceso --}}
         <a href="{{ route('home') }}" class="absolute top-8 left-8 text-2xl hover:opacity-70 transition-opacity">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
         </a>
 
@@ -40,32 +39,31 @@
 
             {{-- Estado de sesión --}}
             @if (session('status'))
-                <div class="text-center font-medium text-sm text-success">
-                    {{ session('status') }}
-                </div>
+            <div class="text-center font-medium text-sm text-success">
+                {{ session('status') }}
+            </div>
             @endif
 
             @if (session('error'))
-                <div class="text-center font-medium text-sm text-error">
-                    {{ session('error') }}
-                </div>
+            <div class="text-center font-medium text-sm text-error">
+                {{ session('error') }}
+            </div>
             @endif
 
             {{-- Formulario --}}
             <form wire:submit="login" class="space-y-4">
                 {{-- Campo Email --}}
                 <input type="email" wire:model="email" placeholder="Email"
-                    class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
-                    required autofocus autocomplete="email" />
+                    class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal" required autofocus
+                    autocomplete="email" />
                 @error('email') <span class="text-error text-sm">{{ $message }}</span> @enderror
 
                 {{-- Campo Contraseña --}}
                 <div class="relative" x-data="{ show: false }">
                     <input x-bind:type="show ? 'text' : 'password'" wire:model="password" placeholder="Contraseña"
-                        class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12"
-                        required autocomplete="current-password" />
-                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2"
-                        x-on:click="show = !show">
+                        class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12" required
+                        autocomplete="current-password" />
+                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" x-on:click="show = !show">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -78,20 +76,21 @@
 
                 {{-- Link olvidaste contraseña --}}
                 @if (Route::has('password.request'))
-                    <div class="flex justify-end">
-                        <a href="{{ route('password.request') }}" class="text-[15px] font-normal underline hover:text-primary">
-                            ¿Has olvidado tu contraseña?
-                        </a>
-                    </div>
+                <div class="flex justify-end">
+                    <a href="{{ route('password.request') }}"
+                        class="text-[15px] font-normal underline hover:text-primary">
+                        ¿Has olvidado tu contraseña?
+                    </a>
+                </div>
                 @endif
 
                 {{-- Link crear cuenta --}}
                 @if (Route::has('register'))
-                    <div class="text-center pt-2">
-                        <a href="{{ route('register') }}" class="text-[15px] font-normal underline hover:text-primary">
-                            ¿No tienes una cuenta? Regístrate aquí
-                        </a>
-                    </div>
+                <div class="text-center pt-2">
+                    <a href="{{ route('register') }}" class="text-[15px] font-normal underline hover:text-primary">
+                        ¿No tienes una cuenta? Regístrate aquí
+                    </a>
+                </div>
                 @endif
 
                 {{-- Botón Iniciar Sesión --}}
@@ -103,7 +102,4 @@
             </form>
         </div>
     </main>
-
-    {{-- Footer --}}
-    <x-home-footer />
 </div>

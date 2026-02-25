@@ -190,30 +190,5 @@
                 </div>
             </div>
         </section>
-
-        <section class="border-b border-base-300">
-            <div class="mx-auto max-w-7xl px-6 py-12">
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    @foreach (range(1, 12) as $index)
-                    <div class="card border border-base-300 bg-base-200 shadow-none">
-                        <div class="card-body items-center justify-center py-8">
-                            <h2 class="text-xl font-medium">Producto</h2>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                <div class="mt-10 flex justify-center">
-                    <div class="join">
-                        <button class="btn btn-xs join-item btn-outline" type="button">‹</button>
-                        <button class="btn btn-xs join-item btn-active" type="button">•</button>
-                        <button class="btn btn-xs join-item btn-outline" type="button">•</button>
-                        <button class="btn btn-xs join-item btn-outline" type="button">•</button>
-                        <button class="btn btn-xs join-item btn-outline" type="button">•</button>
-                        <button class="btn btn-xs join-item btn-outline" type="button">•</button>
-                        <button class="btn btn-xs join-item btn-outline" type="button">›</button>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 </x-layouts::home>

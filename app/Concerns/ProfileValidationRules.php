@@ -16,7 +16,7 @@ trait ProfileValidationRules
     {
         return [
             'nombre' => $this->nameRules(),
-            'apellidos' => ['required', 'string', 'max:64'],
+            'apellidos' => ['required', 'string', 'max:64', 'regex:/^[\pL\s\-]+$/u'],
             'telefono' => ['required', 'string', 'max:21'],
             'email' => $this->emailRules($userId),
         ];
@@ -29,7 +29,7 @@ trait ProfileValidationRules
      */
     protected function nameRules(): array
     {
-        return ['required', 'string', 'max:255'];
+        return ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'];
     }
 
     /**

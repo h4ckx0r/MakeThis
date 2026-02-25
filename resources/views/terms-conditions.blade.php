@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<x-layouts::home title="Términos y Condiciones">
 
-<head>
-    @include('partials.head')
-    <livewire:navbar />
-</head>
 
 <body class="bg-gray-50 text-gray-800">
 
@@ -134,8 +129,4 @@
         </section>
 
     </div>
-    <livewire:footer />
-    @fluxScripts
-</body>
-
-</html>
+</x-layouts::home>

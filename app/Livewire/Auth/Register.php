@@ -10,10 +10,13 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Concerns\PasswordValidationRules;
+use App\Concerns\ProfileValidationRules;
 use Livewire\Component;
 
 class Register extends Component
 {
+    use PasswordValidationRules, ProfileValidationRules;
     public string $nombre = '';
     public string $apellidos = '';
     public string $telefono = '';
@@ -27,6 +30,19 @@ class Register extends Component
     public bool $verificationSent = false;
     public string $verificationStatus = '';
     public bool $polling = false;
+
+    protected function rules(): array
+    {
+        return [
+            ...$this->profileRules(),
+            'password' => $this->passwordRules(),
+        ];
+    }
+
+    public function updated($propertyName): void
+    {
+        $this->validateOnly($propertyName);
+    }
 
     public function sendVerificationEmail(): void
     {
