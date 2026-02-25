@@ -1,4 +1,4 @@
-<x-layout::home title="Recuperar contraseña">
+<x-layouts::home title="Recuperar contraseña">
 <div class="min-h-screen flex flex-col">
     {{-- Header simple con logo --}}
     <header class="border-b border-base-300">
@@ -81,4 +81,4 @@
         </div>
     </main>
 </div>
-</x-layout::home>
+</x-layouts::home>
