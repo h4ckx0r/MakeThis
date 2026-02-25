@@ -39,4 +39,7 @@
             </button>
         </div>
     @endif
+    @error('file')
+        <p class="mt-3 text-sm text-error text-center">{{ $message }}</p>
+    @enderror
 </div>

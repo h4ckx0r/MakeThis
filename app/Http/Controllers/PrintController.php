@@ -84,7 +84,7 @@ class PrintController extends Controller
             'archivo_nombre' => $validated['archivo_nombre'] ?? null,
         ];
 
-        if ($tipo === 'propia') {
+        if ($validated['tipo'] === 'propia') {
             $previewData['altura_capa']        = $validated['altura_capa'] ?? null;
             $previewData['porcentaje_relleno'] = $validated['porcentaje_relleno'] ?? null;
             $previewData['patron_relleno']     = $validated['patron_relleno'] ?? null;
