@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libzip-dev \
     procps \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && docker-php-ext-install pdo pdo_pgsql pgsql opcache intl zip bcmath soap pcntl
+    && docker-php-ext-install pdo pdo_pgsql pgsql opcache intl zip bcmath soap pcntl fileinfo
 
 # Install NVM (Node Version Manager)
 RUN export NVM_DIR="/root/.nvm" && \

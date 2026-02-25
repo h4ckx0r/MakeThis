@@ -13,8 +13,10 @@ class Profile extends Component
 {
     use ProfileValidationRules;
 
-    public string $name = '';
-
+    public string $nombre = '';
+    public string $apellidos = '';
+    public string $telefono = '';
+    public string $direccion = '';
     public string $email = '';
 
     /**
@@ -22,8 +24,22 @@ class Profile extends Component
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+        $this->nombre = $user->nombre;
+        $this->apellidos = $user->apellidos ?? '';
+        $this->telefono = $user->telefono ?? '';
+        $this->direccion = $user->direccion ?? '';
+        $this->email = $user->email;
+    }
+
+    protected function rules(): array
+    {
+        return $this->profileRules(Auth::id());
+    }
+
+    public function updated($propertyName): void
+    {
+        $this->validateOnly($propertyName);
     }
 
     /**
@@ -33,7 +49,7 @@ class Profile extends Component
     {
         $user = Auth::user();
 
-        $validated = $this->validate($this->profileRules($user->id));
+        $validated = $this->validate();
 
         $user->fill($validated);
 
@@ -43,7 +59,7 @@ class Profile extends Component
 
         $user->save();
 
-        $this->dispatch('profile-updated', name: $user->name);
+        $this->dispatch('profile-updated');
     }
 
     /**

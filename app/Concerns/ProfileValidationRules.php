@@ -12,11 +12,14 @@ trait ProfileValidationRules
      *
      * @return array<string, array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>>
      */
-    protected function profileRules(?int $userId = null): array
+    protected function profileRules(?string $userId = null): array
     {
         return [
-            'name' => $this->nameRules(),
+            'nombre' => $this->nameRules(),
+            'apellidos' => ['required', 'string', 'max:64', 'regex:/^[\pL\s\-]+$/u'],
+            'telefono' => ['required', 'string', 'digits:9'],
             'email' => $this->emailRules($userId),
+            'direccion' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -27,7 +30,7 @@ trait ProfileValidationRules
      */
     protected function nameRules(): array
     {
-        return ['required', 'string', 'max:255'];
+        return ['required', 'string', 'max:255', 'regex:/^[\pL\s\-]+$/u'];
     }
 
     /**
@@ -35,7 +38,7 @@ trait ProfileValidationRules
      *
      * @return array<int, \Illuminate\Contracts\Validation\Rule|array<mixed>|string>
      */
-    protected function emailRules(?int $userId = null): array
+    protected function emailRules(?string $userId = null): array
     {
         return [
             'required',
@@ -43,8 +46,8 @@ trait ProfileValidationRules
             'email',
             'max:255',
             $userId === null
-                ? Rule::unique(User::class)
-                : Rule::unique(User::class)->ignore($userId),
+            ?Rule::unique(User::class)
+            : Rule::unique(User::class)->ignore($userId, 'id'),
         ];
     }
 }

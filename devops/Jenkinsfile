@@ -1,6 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        REGISTRY   = 'git.h4ckdata.es'
+        // Configura GITEA_IMAGE como variable de entorno del job en Jenkins
+        // (ej: git.h4ckdata.es/h4ckx0r/makethis) o modifica el valor por defecto aquí
+        IMAGE_NAME = "${env.GITEA_IMAGE ?: "${REGISTRY}/usuario/makethis"}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,17 +15,57 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Set Build Variables') {
             steps {
-                sh 'composer install --no-interaction --prefer-dist --no-progress'
-                sh 'npm ci'
+                script {
+                    // Primeros 7 caracteres del SHA del commit
+                    env.IMAGE_TAG = env.GIT_COMMIT.take(7)
+                    echo "Construyendo imagen: ${IMAGE_NAME}:${env.IMAGE_TAG}"
+                }
             }
         }
 
-        stage('Format Check') {
+        stage('Build Production Image') {
             steps {
-                sh 'composer test:lint'
+                sh """
+                    docker build \
+                        --file devops/Dockerfile.prod \
+                        --tag ${IMAGE_NAME}:${env.IMAGE_TAG} \
+                        --tag ${IMAGE_NAME}:latest \
+                        .
+                """
             }
+        }
+
+        stage('Push to Gitea Registry') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'gitea-registry',
+                        usernameVariable: 'REGISTRY_USER',
+                        passwordVariable: 'REGISTRY_PASS'
+                    )
+                ]) {
+                    sh """
+                        echo "${REGISTRY_PASS}" | docker login ${REGISTRY} \
+                            --username "${REGISTRY_USER}" \
+                            --password-stdin
+
+                        docker push ${IMAGE_NAME}:${env.IMAGE_TAG}
+                        docker push ${IMAGE_NAME}:latest
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh """
+                docker rmi ${IMAGE_NAME}:${env.IMAGE_TAG} || true
+                docker rmi ${IMAGE_NAME}:latest            || true
+                docker logout ${REGISTRY}                  || true
+            """
         }
     }
 }

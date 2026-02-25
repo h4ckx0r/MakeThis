@@ -1,13 +1,212 @@
 <?php
 
+use App\Http\Controllers\PasswordResetOtpController;
+use App\Http\Controllers\RegisterEmailVerificationController;
+use App\Http\Controllers\PiezaCatalogoController;
+use App\Http\Controllers\PrintController;
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\SolicitudController;
+use App\Http\Middleware\EnsureIsAdmin;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// VISTAS
+Route::view('/', 'home')
+    ->name('home');
 
-require __DIR__.'/settings.php';
+Route::view('terms-conditions', 'terms-conditions')
+    ->name('terms-conditions');
+
+Route::prefix('about')->group(function () {
+    Route::view('', 'about-us.about-us')
+        ->name('about-us');
+    Route::view('machinery', 'about-us.machinery.machinery')
+        ->name('about-us.machinery');
+    Route::view('team', 'about-us.team.team')
+        ->name('about-us.team');
+    Route::view('collaborations', 'about-us.collaborations.collaborations')
+        ->name('about-us.collaborations');
+});
+
+Route::prefix('auth')->group(function () {
+    Route::view('login-options', 'auth.login-options')
+        ->name('auth.login-options');
+});
+
+// Flujo OTP de recuperación de contraseña + verificación de email en registro
+Route::prefix('auth')->middleware('guest')->group(function () {
+    Route::get('forgot-password', [PasswordResetOtpController::class , 'showRequestForm'])
+        ->name('password.request');
+    Route::get('verify-code', [PasswordResetOtpController::class , 'showVerifyForm'])
+        ->name('password.verifyForm');
+    Route::get('reset-password', [PasswordResetOtpController::class , 'showResetForm'])
+        ->name('password.resetForm');
+
+    Route::get('register/verify/{token}', [RegisterEmailVerificationController::class , 'verify'])
+        ->name('register.verify-email');
+});
+
+Route::prefix('client')->middleware('auth')->group(function () {
+    Route::get('requests', function () {
+            $solicitudes = auth()->user()->solicitudes()
+                ->with(['estado', 'threeDModel.color', 'adjuntos', 'piezaCatalogo'])
+                ->latest()
+                ->get();
+            return view('client.requests', compact('solicitudes'));
+        }
+        )->name('client.requests');
+
+        Route::view('ajustes', 'client.ajustes')->name('client.ajustes');
+    });
+
+Route::prefix('prints')->group(function () {
+    // Catálogo público con filtros
+    Route::get('catalog', [PrintController::class , 'catalog'])
+        ->name('prints.catalog');
+
+    Route::prefix('request')->group(function () {
+            // Selección de tipo (no necesita datos del controller)
+            Route::view('', 'prints.request')
+                ->name('prints.request');
+
+            // Formularios con datos de BD (materiales + colores)
+            Route::get('own', [PrintController::class , 'ownForm'])
+                ->name('prints.own');
+            Route::get('custom', [PrintController::class , 'customForm'])
+                ->name('prints.custom');
+
+            // Formulario para pieza del catálogo
+        Route::get('catalog/{pieza}', [PrintController::class, 'catalogItemForm'])
+            ->name('prints.catalog.form');
+
+        // Preview: POST válida y guarda en sesión, GET muestra el resumen
+            Route::post('preview', [PrintController::class , 'storePreview'])
+                ->name('prints.preview.store');
+            Route::get('preview', [PrintController::class , 'showPreview'])
+                ->name('prints.preview');
+        }
+        );
+
+        // Crear solicitud (requiere autenticación)
+        Route::post('store', [PrintController::class , 'store'])
+            ->name('prints.store')
+            ->middleware('auth');
+    });
+
+Route::prefix('admin')->middleware(EnsureIsAdmin::class)
+    ->group(function () {
+        // Rutas para catálogo
+        Route::get('catalog', [PiezaCatalogoController::class , 'adminIndex'])
+            ->name('admin.catalog');
+        Route::post('piezas', [PiezaCatalogoController::class , 'adminStore'])
+            ->name('admin.piezas.store');
+        Route::put('piezas/{pieza}', [PiezaCatalogoController::class , 'adminUpdate'])
+            ->name('admin.piezas.update');
+        Route::delete('piezas/{pieza}', [PiezaCatalogoController::class , 'adminDestroy'])
+            ->name('admin.piezas.destroy');
+
+        // Rutas para usuarios
+        Route::view('users', 'admin.users')
+            ->name('admin.users');
+
+        // Rutas para solicitudes
+        Route::get('requests', [SolicitudController::class , 'index'])
+            ->name('admin.requests');
+        Route::put('requests/{solicitud}', [SolicitudController::class , 'update'])
+            ->name('admin.requests.update');
+
+        // Descarga de adjuntos
+        Route::get('adjuntos/{adjunto}/download', [SolicitudController::class , 'downloadAdjunto'])
+            ->name('admin.adjunto.download');
+
+        // Descarga de modelos 3D
+        Route::get('models/{model}/download', [SolicitudController::class, 'downloadModel'])
+            ->name('admin.model.download');
+
+        // Rutas para reportes
+        Route::get('reports', [ReporteController::class , 'adminIndex'])
+            ->name('admin.reports');
+
+        // Gestión de API keys
+        Route::post('api-key/generate', [ReporteController::class , 'generateApiKey'])
+            ->name('admin.api-key.generate');
+        Route::post('api-key/{apiKey}/toggle', [ReporteController::class , 'toggleApiKey'])
+            ->name('admin.api-key.toggle');
+        Route::delete('api-key/{apiKey}', [ReporteController::class , 'deleteApiKey'])
+            ->name('admin.api-key.delete');
+    });
+
+
+// CONTROLADORES
+
+
+require __DIR__ . '/settings.php';
+
+// DEPRECADO ;)
+
+/*
+Route::post('/forgot-password', function () {
+    // TODO: Implementar lógica de recuperación de contraseña
+    return back()->with('status', 'Email enviado correctamente');
+})->name('forgot-password.send');
+
+Route::get('/login-options', function () {
+    return view('auth.login-options');
+})->name('login-options');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::post('/register', function () {
+    // TODO: Implementar lógica de registro
+    return redirect()->route('home')->with('status', 'Registro completado correctamente');
+})->name('register.store');
+
+Route::view('reportes', 'reportes')
+    ->name('reportes');
+
+Route::view('usuarios', 'usuarios')
+    ->name('usuarios');
+
+Route::view('solicitudes', 'solicitudes')
+    ->name('solicitudes');
+
+// Rutas administrativas de piezas (protegidas)
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+    Route::get('/piezas', [PiezaController::class, 'adminIndex'])
+        ->name('admin.piezas.index');
+    Route::post('/piezas', [PiezaController::class, 'adminStore'])
+        ->name('admin.piezas.store');
+    Route::put('/piezas/{pieza}', [PiezaController::class, 'adminUpdate'])
+        ->name('admin.piezas.update');
+    Route::delete('/piezas/{pieza}', [PiezaController::class, 'adminDestroy'])
+        ->name('admin.piezas.destroy');
+});
+
+// Rutas para Catálogo de Piezas (públicas)
+Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
+    ->name('piezas.catalogo');
+
+// Selección de tipo
+Route::get('/piezas/solicitar', fn () => view('piezas.solicitar'))
+    ->name('piezas.solicitar');
+
+// Formularios
+Route::get('/piezas/propia', fn () => view('piezas.propia'))
+    ->name('piezas.propia');
+
+Route::get('/piezas/personalizada', fn () => view('piezas.personalizada'))
+    ->name('piezas.personalizada');
+
+// Preview (público para permitir edición antes de registrarse)
+Route::post('/piezas/preview', [PiezaController::class, 'preview'])
+    ->name('piezas.preview');
+
+// Store (autenticado)
+Route::middleware('auth')->group(function () {
+    Route::post('/piezas/store', [PiezaController::class, 'store'])
+        ->name('piezas.store');
+});
+
+*/

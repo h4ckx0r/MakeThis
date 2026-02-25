@@ -1,0 +1,42 @@
+# Dependencias del host — se instalan dentro de la imagen
+node_modules/
+vendor/
+
+# Entorno local — las env vars se inyectan en runtime
+.env
+.env.*
+!.env.example
+
+# Assets compilados del host — se regeneran en el stage node-builder
+public/build/
+public/hot
+
+# Storage de runtime — debe ser un volumen externo
+storage/framework/sessions/
+storage/framework/cache/
+storage/logs/
+storage/app/livewire-tmp/
+
+# Archivos de desarrollo (no necesarios en imagen de producción)
+devops/docker-compose.yaml
+devops/Dockerfile
+devops/entrypoint.sh
+devops/Caddyfile
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Cache de herramientas de desarrollo
+.phpunit.cache/
+.phpunit.result.cache
+
+# IDEs y editores
+.idea/
+.vscode/
+.zed/
+
+# Logs
+npm-debug.log
+yarn-error.log
