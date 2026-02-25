@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+# Garantizar que los directorios de runtime existen
+# (necesario si /app/storage está montado como volumen externo vacío)
+mkdir -p storage/framework/views \
+         storage/framework/cache/data \
+         storage/framework/sessions \
+         storage/logs
+
 echo "[entrypoint.prod] Cacheando configuración..."
 php artisan config:cache
 
