@@ -41,15 +41,18 @@
                 </button>
 
                 <flux:menu class="bg-zinc-900! border-white/10! text-white!">
-                    <flux:menu.item :href="auth()->user()->isAdmin ? route('admin.reports') : route('client.requests')"
-                        wire:navigate class="active:bg-celeste! text-white! hover:text-black! active:text-black!">
-                        @if(auth()->user()->isAdmin)
+                    @if(auth()->user()->isAdmin)
+                    <flux:menu.item :href="route('admin.reports')" wire:navigate
+                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">
                         {{ __('Panel de Control') }}
-                        @else
-                        {{ __('Mis Solicitudes') }}
-                        @endif
                     </flux:menu.item>
-                    <flux:menu.item :href="route('profile.edit')" wire:navigate
+                    @endif
+
+                    <flux:menu.item :href="route('client.requests')" wire:navigate
+                        class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Perfil') }}
+                    </flux:menu.item>
+
+                    <flux:menu.item :href="route('client.ajustes')" wire:navigate
                         class="active:bg-celeste! text-white! hover:text-black! active:text-black!">{{ __('Ajustes') }}
                     </flux:menu.item>
 
