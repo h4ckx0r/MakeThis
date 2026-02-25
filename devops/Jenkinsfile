@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'nodejs'
+    }
 
     environment {
         REGISTRY   = 'git.h4ckdata.es'
