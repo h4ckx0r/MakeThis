@@ -11,6 +11,9 @@ mkdir -p storage/framework/views \
 echo "[entrypoint.prod] Cacheando configuración..."
 php artisan config:cache
 
+echo "[entrypoint.prod] Cacheando rutas..."
+php artisan route:cache
+
 echo "[entrypoint.prod] Cacheando vistas..."
 php artisan view:cache
 
