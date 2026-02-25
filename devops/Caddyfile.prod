@@ -1,0 +1,17 @@
+# Caddyfile de producción para FrankenPHP
+# Escucha en HTTP puro en el puerto 8000 — TLS lo gestiona el Caddy externo
+{
+	frankenphp
+	order php_server before file_server
+
+	# La API de admin solo es accesible localmente dentro del contenedor
+	admin localhost:2019
+}
+
+:8000 {
+	root * /app/public
+
+	encode zstd br gzip
+
+	php_server
+}
