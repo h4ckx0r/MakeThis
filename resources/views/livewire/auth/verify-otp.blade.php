@@ -1,3 +1,4 @@
+<x-layout::home title="Verificar Código de Recuperación">
 <div class="min-h-screen flex flex-col">
     {{-- Header simple con logo --}}
     <header class="border-b border-base-300">
@@ -81,10 +82,8 @@
             </div>
         </div>
     </main>
-
-    {{-- Footer --}}
-    <x-home-footer />
 </div>
+
 
 <script>
 function otpInput() {
@@ -120,3 +119,4 @@ function otpInput() {
     };
 }
 </script>
+</x-layout::home>
