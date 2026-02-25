@@ -139,10 +139,11 @@
                             <select id="patron_relleno" name="patron_relleno"
                                     class="select select-bordered w-full bg-base-200">
                                 <option value="">Selecciona un patrón</option>
-                                <option value="linear">Lineal</option>
-                                <option value="grid">Cuadrícula</option>
-                                <option value="gyroid">Gyroid</option>
-                                <option value="honeycomb">Panal</option>
+                                <option value="rejilla">Rejilla</option>
+                                <option value="giroide">Giroide</option>
+                                <option value="cubico">Cubico</option>
+                                <option value="panal_de_abeja">Panal de Abeja</option>
+                                <option value="panal_de_abeja_3d">Panal de Abeja 3D</option>
                             </select>
                         </div>
                     </div>

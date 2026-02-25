@@ -26,7 +26,7 @@ class StorePreviewRequest extends FormRequest
             $rules['file_3d']             = 'required|file|max:51200|extensions:obj,stl,3mf';
             $rules['altura_capa']         = 'nullable|numeric|min:0.05|max:0.5';
             $rules['porcentaje_relleno']  = 'nullable|integer|min:0|max:100';
-            $rules['patron_relleno']      = 'nullable|in:linear,grid,gyroid,honeycomb';
+            $rules['patron_relleno']      = 'nullable|in:rejilla,giroide,cubico,panal_de_abeja,panal_de_abeja_3d';
         } elseif ($tipo === 'personalizada') {
             $rules['file_imagen']  = 'nullable|file|max:10240|mimes:jpg,jpeg,png,gif,webp';
             $rules['indicaciones'] = 'required|string|max:2000';
