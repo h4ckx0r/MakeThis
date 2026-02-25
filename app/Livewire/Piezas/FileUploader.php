@@ -36,8 +36,8 @@ class FileUploader extends Component
 
         $this->validate([
             'file' => $this->tipo === '3d'
-                ? 'required|file|max:51200|mimes:obj,stl,3mf'
-                : 'required|file|max:10240|mimes:jpg,jpeg,png,webp',
+                ? 'required|file|max:51200|extensions:obj,stl,3mf'
+                : 'required|file|max:10240|extensions:jpg,jpeg,png,webp',
         ]);
 
         $extension = $this->file->getClientOriginalExtension();
