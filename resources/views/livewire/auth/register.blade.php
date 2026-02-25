@@ -38,7 +38,10 @@
             </div>
 
             {{-- Formulario --}}
-            <form wire:submit="register" class="space-y-4" novalidate>
+            <form @submit.prevent="
+                    $wire.turnstileResponse = window.turnstile?.getResponse() || $wire.turnstileResponse;
+                    $wire.register();
+                " class="space-y-4">
                 {{-- Campo Nombre --}}
                 <input type="text" wire:model.blur="nombre" placeholder="Nombre"
                     class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal" required />
@@ -135,7 +138,7 @@
                 </div>
 
                 {{-- Cloudflare Turnstile --}}
-                {{-- Pre-registrar callback para evitar race condition con Turnstile async --}}
+                {{-- Pre-registrar callback: guarda el token aunque Livewire no esté listo aún --}}
                 <script>
                     window.captchaCallback = function  (token) {
                         window.__captchaToken = token;
@@ -147,14 +150,16 @@
                 @error('cf-turnstile-response')
                 <span class="text-error text-sm text-center block">{{ $message }}</span>
                 @enderror
-                {{-- Sincronizar token pendiente cuando Livewire inicialice --}}
+                {{-- Sincronizar token pendiente en carga inicial y en navegación SPA --}}
                 <script>
-                    document.addEventListener('livewire:initialized', () => {
+                    function _syncCaptchaToken() {
                         if (window.__captchaToken) {
                             @this.set('turnstileResponse', window.__captchaToken);
                             delete window.__captchaToken;
                         }
-                    });
+                    }
+                    document.addEventListener('livewire:initialized', _syncCaptchaToken);
+                    document.addEventListener('livewire:navigated', _syncCaptchaToken);
                 </script>
 
                 {{-- Link iniciar sesión --}}

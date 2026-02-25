@@ -49,6 +49,7 @@ services:
       - ../.env
     volumes:
       - ../:/var/www
+      - ./php-uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
     ports:
       # Laravel development server
       - "8000:8000"
