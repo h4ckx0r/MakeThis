@@ -18,8 +18,7 @@
         {{-- Flecha de retroceso --}}
         <a href="{{ route('home') }}" class="absolute top-8 left-8 text-2xl hover:opacity-70 transition-opacity">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
         </a>
 
@@ -39,14 +38,14 @@
             </div>
 
             {{-- Formulario --}}
-            <form wire:submit="register" class="space-y-4">
+            <form wire:submit="register" class="space-y-4" novalidate>
                 {{-- Campo Nombre --}}
-                <input type="text" wire:model="nombre" placeholder="Nombre"
+                <input type="text" wire:model.blur="nombre" placeholder="Nombre"
                     class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal" required />
                 @error('nombre') <span class="text-error text-sm">{{ $message }}</span> @enderror
 
                 {{-- Campo Apellidos --}}
-                <input type="text" wire:model="apellidos" placeholder="Apellidos"
+                <input type="text" wire:model.blur="apellidos" placeholder="Apellidos"
                     class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal" required />
                 @error('apellidos') <span class="text-error text-sm">{{ $message }}</span> @enderror
 
@@ -63,44 +62,40 @@
                 {{-- Campo Email --}}
                 <input type="email" wire:model="email" placeholder="Email"
                     class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal"
-                    :class="$wire.emailVerified ? 'input-success' : ''"
-                    :readonly="$wire.emailVerified" required />
+                    :class="$wire.emailVerified ? 'input-success' : ''" :readonly="$wire.emailVerified" required />
                 @error('email') <span class="text-error text-sm">{{ $message }}</span> @enderror
 
                 {{-- Verificación de correo --}}
                 <div class="flex items-center gap-3 min-h-8">
-                    <button type="button"
-                        wire:click="sendVerificationEmail"
-                        wire:loading.attr="disabled"
-                        wire:target="sendVerificationEmail"
-                        x-show="!$wire.emailVerified"
+                    <button type="button" wire:click="sendVerificationEmail" wire:loading.attr="disabled"
+                        wire:target="sendVerificationEmail" x-show="!$wire.emailVerified"
                         class="btn btn-outline btn-sm rounded-full normal-case text-[13px]">
                         <span wire:loading.remove wire:target="sendVerificationEmail">Verificar correo</span>
-                        <span wire:loading wire:target="sendVerificationEmail" class="loading loading-spinner loading-xs"></span>
+                        <span wire:loading wire:target="sendVerificationEmail"
+                            class="loading loading-spinner loading-xs"></span>
                     </button>
 
                     @if($verificationStatus === 'sent')
-                        <span class="text-info text-sm">Correo enviado. Revisa tu bandeja de entrada.</span>
+                    <span class="text-info text-sm">Correo enviado. Revisa tu bandeja de entrada.</span>
                     @endif
 
                     @if($verificationStatus === 'verified')
-                        <span class="text-success text-sm flex items-center gap-1">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            Correo verificado
-                        </span>
+                    <span class="text-success text-sm flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Correo verificado
+                    </span>
                     @endif
                 </div>
 
                 {{-- Campo Contraseña --}}
                 <div class="relative" x-data="{ show: false }">
-                    <input x-bind:type="show ? 'text' : 'password'" wire:model="password"
+                    <input x-bind:type="show ? 'text' : 'password'" wire:model.blur="password"
                         placeholder="Contraseña (mín. 8 caracteres)"
                         class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12"
                         minlength="8" required />
-                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2"
-                        x-on:click="show = !show">
+                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" x-on:click="show = !show">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -117,8 +112,7 @@
                         placeholder="Confirmar Contraseña"
                         class="input input-bordered rounded-lg w-full h-13.25 text-[15px] font-normal pr-12"
                         minlength="8" required />
-                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2"
-                        x-on:click="show = !show">
+                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2" x-on:click="show = !show">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -143,7 +137,7 @@
                 {{-- Cloudflare Turnstile --}}
                 {{-- Pre-registrar callback para evitar race condition con Turnstile async --}}
                 <script>
-                    window.captchaCallback = function(token) {
+                    window.captchaCallback = function  (token) {
                         window.__captchaToken = token;
                     };
                 </script>
@@ -151,7 +145,7 @@
                     <x-turnstile wire:model="turnstileResponse" />
                 </div>
                 @error('cf-turnstile-response')
-                    <span class="text-error text-sm text-center block">{{ $message }}</span>
+                <span class="text-error text-sm text-center block">{{ $message }}</span>
                 @enderror
                 {{-- Sincronizar token pendiente cuando Livewire inicialice --}}
                 <script>
@@ -171,8 +165,7 @@
                 </div>
 
                 {{-- Botón Registrarse --}}
-                <button type="submit"
-                    :disabled="!$wire.emailVerified"
+                <button type="submit" :disabled="!$wire.emailVerified"
                     :class="!$wire.emailVerified ? 'opacity-50 cursor-not-allowed' : ''"
                     class="btn btn-primary rounded-full w-full h-13.25 normal-case text-[15px] font-normal mt-6">
                     <span wire:loading.remove wire:target="register">REGISTRARSE</span>
