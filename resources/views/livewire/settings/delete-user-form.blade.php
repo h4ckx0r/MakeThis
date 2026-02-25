@@ -1,34 +1,56 @@
 <section class="mt-10 space-y-6">
-    <div class="relative mb-5">
-        <flux:heading>{{ __('Delete account') }}</flux:heading>
-        <flux:subheading>{{ __('Delete your account and all of its resources') }}</flux:subheading>
+    {{-- Encabezado --}}
+    <div class="space-y-1">
+        <h3 class="text-lg font-bold text-error">{{ __('Eliminar cuenta') }}</h3>
+        <p class="text-sm text-base-content/70">
+            {{ __('Una vez que se elimine tu cuenta, todos sus recursos y datos se borrarán de forma permanente.') }}
+        </p>
     </div>
 
-    <flux:modal.trigger name="confirm-user-deletion">
-        <flux:button variant="danger" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')">
-            {{ __('Delete account') }}
-        </flux:button>
-    </flux:modal.trigger>
+    {{-- Botón de disparo --}}
+    <button class="btn btn-error" onclick="delete_account_modal.showModal()">
+        {{ __('Eliminar cuenta') }}
+    </button>
 
-    <flux:modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable class="max-w-lg">
-        <form method="POST" wire:submit="deleteUser" class="space-y-6">
-            <div>
-                <flux:heading size="lg">{{ __('Are you sure you want to delete your account?') }}</flux:heading>
+    {{-- Modal de DaisyUI --}}
+    <dialog id="delete_account_modal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <form method="POST" wire:submit="deleteUser" class="space-y-6">
+                <h3 class="font-bold text-lg text-error">
+                    {{ __('¿Estás seguro de que quieres eliminar tu cuenta?') }}
+                </h3>
 
-                <flux:subheading>
-                    {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-                </flux:subheading>
-            </div>
+                <p class="py-4 text-sm text-base-content/70 italic">
+                    {{ __('Por favor, introduce tu contraseña para confirmar que deseas eliminar permanentemente tu
+                    cuenta.') }}
+                </p>
 
-            <flux:input wire:model="password" :label="__('Password')" type="password" />
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold">{{ __('Contraseña') }}</span>
+                    </label>
+                    <input wire:model="password" type="password"
+                        class="input input-bordered w-full @error('password') input-error @enderror bg-base-100"
+                        placeholder="Contraseña de confirmación" />
+                    @error('password')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                    @enderror
+                </div>
 
-            <div class="flex justify-end space-x-2 rtl:space-x-reverse">
-                <flux:modal.close>
-                    <flux:button variant="filled">{{ __('Cancel') }}</flux:button>
-                </flux:modal.close>
-
-                <flux:button variant="danger" type="submit">{{ __('Delete account') }}</flux:button>
-            </div>
+                <div class="modal-action">
+                    <form method="dialog">
+                        <button class="btn btn-ghost">{{ __('Cancelar') }}</button>
+                    </form>
+                    <button type="submit" class="btn btn-error">
+                        {{ __('Eliminar cuenta') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
         </form>
-    </flux:modal>
+    </dialog>
 </section>

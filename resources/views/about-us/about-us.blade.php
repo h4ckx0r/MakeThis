@@ -28,7 +28,8 @@
                                     <h2 class="text-3xl font-medium">
                                         Maquinaria
                                     </h2>
-                                    <img src="{{ asset('images/about-us/images.jpeg') }}" alt="3D card" class="rounded-t-2xl" />
+                                    <img src="{{ asset('images/about-us/images.jpeg') }}" alt="3D card"
+                                        class="rounded-t-2xl" />
 
                                 </figure>
                                 <!-- 8 empty divs needed for the 3D effect -->
@@ -51,7 +52,8 @@
                                     <h2 class="text-3xl font-medium">
                                         Equipo
                                     </h2>
-                                    <img src="{{ asset('images/about-us/unnamed.jpg') }}" alt="3D card" class="rounded-t-2xl" />
+                                    <img src="{{ asset('images/about-us/unnamed.jpg') }}" alt="3D card"
+                                        class="rounded-t-2xl" />
                                 </figure>
                                 <!-- 8 empty divs needed for the 3D effect -->
                                 <div></div>
@@ -69,9 +71,11 @@
                             <div class="hover-3d">
                                 <!-- content -->
                                 <figure class="max-w-100 rounded-2xl">
-                                    <img src="{{ asset('images/about-us/colaboraciones.webp') }}" alt="3D card" class="rounded-t-2xl" />
                                     <h2 class="text-3xl font-medium">
                                         Colaboraciones</h2>
+                                    <img src="{{ asset('images/about-us/colaboraciones.webp') }}" alt="3D card"
+                                        class="rounded-t-2xl" />
+
                                 </figure>
                                 <!-- 8 empty divs needed for the 3D effect -->
                                 <div></div>
