@@ -103,7 +103,4 @@
             </form>
         </div>
     </main>
-
-    {{-- Footer --}}
-    <x-home-footer />
 </div>
