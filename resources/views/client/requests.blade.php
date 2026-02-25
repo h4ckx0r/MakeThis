@@ -83,6 +83,16 @@
                                 'rechazada'  => 'Rechazada',
                                 default      => ucfirst($estadoNombre),
                             };
+                            $tipoSolicitud = $sol->tipo
+                                ?? ($sol->{'3dModelId'} ? 'propia' : ($sol->piezaCatalogoId ? 'catalogo' : 'personalizada'));
+                            [$tipoLabel, $tipoBadgeClass] = match($tipoSolicitud) {
+                                'propia'    => ['Modelo propio', 'badge-info'],
+                                'catalogo'  => ['Del catálogo', 'badge-accent'],
+                                default     => ['Personalizada', 'badge-secondary'],
+                            };
+                            $tituloCard = $sol->threeDModel->nombreModelo
+                                ?? $sol->piezaCatalogo?->nombre
+                                ?? 'Pieza Personalizada';
                             $adjuntosData = $sol->adjuntos->map(fn($a) => [
                                 'nombre' => $a->nombreFichero,
                                 'url' => \Illuminate\Support\Facades\Storage::url($a->fichero),
@@ -95,7 +105,10 @@
                             data-estado-nombre="{{ $estadoNombre }}"
                             data-estado-label="{{ $estadoLabel }}"
                             data-badge-class="{{ $badgeClass }}"
-                            data-nombre-modelo="{{ $sol->threeDModel->nombreModelo ?? 'Modelo sin nombre' }}"
+                            data-tipo="{{ $tipoSolicitud }}"
+                            data-tipo-label="{{ $tipoLabel }}"
+                            data-tipo-badge-class="{{ $tipoBadgeClass }}"
+                            data-nombre-modelo="{{ $tituloCard }}"
                             data-color="{{ $sol->threeDModel->color->nombre ?? '' }}"
                             data-altura-capa="{{ $sol->alturaCapa ?? '' }}"
                             data-porcentaje-relleno="{{ $sol->porcentajeRelleno ?? '' }}"
@@ -104,12 +117,15 @@
                             data-fecha="{{ $sol->created_at->format('d/m/Y') }}"
                             data-adjuntos='@json($adjuntosData)'
                         >
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
                                 <span class="font-mono text-xs text-primary">#{{ substr($sol->id, 24) }}</span>
-                                <span class="badge badge-soft {{ $badgeClass }} badge-sm">{{ $estadoLabel }}</span>
+                                <div class="flex gap-1.5 flex-wrap justify-end">
+                                    <span class="badge badge-soft {{ $tipoBadgeClass }} badge-sm">{{ $tipoLabel }}</span>
+                                    <span class="badge badge-soft {{ $badgeClass }} badge-sm">{{ $estadoLabel }}</span>
+                                </div>
                             </div>
                             <h3 class="text-lg font-medium truncate">
-                                {{ $sol->threeDModel->nombreModelo ?? 'Modelo sin nombre' }}
+                                {{ $tituloCard }}
                             </h3>
                             <span class="text-xs text-base-content/50">
                                 {{ $sol->created_at->format('d/m/Y') }}
@@ -142,8 +158,9 @@
             <h3 class="font-semibold text-lg mb-1">
                 Solicitud <span id="modal-id" class="font-mono text-primary"></span>
             </h3>
-            <div class="flex items-center gap-3 mb-4">
+            <div class="flex items-center gap-3 mb-4 flex-wrap">
                 <span class="text-sm text-base-content/50" id="modal-fecha"></span>
+                <span id="modal-tipo-badge" class="badge badge-soft badge-sm"></span>
                 <span id="modal-badge" class="badge badge-soft badge-sm"></span>
             </div>
 
@@ -199,6 +216,10 @@
             const badge = document.getElementById('modal-badge');
             badge.textContent = btn.dataset.estadoLabel;
             badge.className = 'badge badge-soft badge-sm ' + btn.dataset.badgeClass;
+
+            const tipoBadge = document.getElementById('modal-tipo-badge');
+            tipoBadge.textContent = btn.dataset.tipoLabel;
+            tipoBadge.className = 'badge badge-soft badge-sm ' + btn.dataset.tipoBadgeClass;
 
             document.getElementById('modal-nombre-modelo').textContent = btn.dataset.nombreModelo;
 

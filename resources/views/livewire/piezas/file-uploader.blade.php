@@ -1,4 +1,4 @@
-<div class="border-2 border-dashed border-base-300 rounded-[50px] h-[500px]
+<div class="border-2 border-dashed border-base-300 rounded-[50px] h-125
             flex items-center justify-center"
      x-data="{ dragging: false }"
      @dragover.prevent="dragging = true"

@@ -63,6 +63,17 @@ class PrintController extends Controller
     }
 
     /**
+     * Formulario para solicitar una pieza del catálogo.
+     */
+    public function catalogItemForm(PiezaCatalogo $pieza)
+    {
+        $pieza->load(['adjunto', 'tags']);
+        $materiales = Material::with('colores')->get();
+
+        return view('prints.catalog-form', compact('pieza', 'materiales'));
+    }
+
+    /**
      * Valida los datos del formulario y los guarda en sesión para el preview.
      */
     public function storePreview(StorePreviewRequest $request)
@@ -72,6 +83,19 @@ class PrintController extends Controller
         $material = Material::find($validated['materialId']);
         $color    = Color::find($validated['colorId']);
 
+        $archivoPath   = null;
+        $archivoNombre = null;
+
+        if ($validated['tipo'] === 'propia' && $request->hasFile('file_3d')) {
+            $file          = $request->file('file_3d');
+            $archivoPath   = $file->store('livewire-tmp', 'public');
+            $archivoNombre = $file->getClientOriginalName();
+        } elseif ($validated['tipo'] === 'personalizada' && $request->hasFile('file_imagen')) {
+            $file          = $request->file('file_imagen');
+            $archivoPath   = $file->store('livewire-tmp', 'public');
+            $archivoNombre = $file->getClientOriginalName();
+        }
+
         $previewData = [
             'tipo'           => $validated['tipo'],
             'materialId'     => $validated['materialId'],
@@ -80,17 +104,22 @@ class PrintController extends Controller
             'colorNombre'    => $color?->nombre,
             'colorHex'       => $color?->hexColor,
             'indicaciones'   => $validated['indicaciones'] ?? null,
-            'archivo_path'   => $validated['archivo_path'] ?? null,
-            'archivo_nombre' => $validated['archivo_nombre'] ?? null,
+            'archivo_path'   => $archivoPath,
+            'archivo_nombre' => $archivoNombre,
         ];
 
         if ($validated['tipo'] === 'propia') {
             $previewData['altura_capa']        = $validated['altura_capa'] ?? null;
             $previewData['porcentaje_relleno'] = $validated['porcentaje_relleno'] ?? null;
             $previewData['patron_relleno']     = $validated['patron_relleno'] ?? null;
-        } else {
+        } elseif ($validated['tipo'] === 'personalizada') {
             $previewData['incluye_modelo_3d'] = $request->boolean('incluye_modelo_3d');
             $previewData['incluye_pieza']     = $request->boolean('incluye_pieza');
+        } elseif ($validated['tipo'] === 'catalogo') {
+            $pieza = PiezaCatalogo::with('adjunto')->findOrFail($validated['piezaId']);
+            $previewData['piezaId']     = $pieza->id;
+            $previewData['piezaNombre'] = $pieza->nombre;
+            $previewData['piezaImagen'] = $pieza->adjunto?->fichero;
         }
 
         session(['preview' => $previewData]);
@@ -134,6 +163,8 @@ class PrintController extends Controller
             'porcentajeRelleno' => $preview['porcentaje_relleno'] ?? 20,
             'alturaCapa'        => $preview['altura_capa'] ?? 0.2,
             'patronRelleno'     => $preview['patron_relleno'] ?? null,
+            'tipo'              => $tipo,
+            'piezaCatalogoId'   => null,
         ];
 
         if ($tipo === 'propia' && !empty($preview['archivo_path'])) {
@@ -154,6 +185,15 @@ class PrintController extends Controller
             ]);
 
             $solicitudData['3dModelId'] = $threeDModel->id;
+        }
+
+        if ($tipo === 'personalizada') {
+            $solicitudData['incluye_modelo_3d'] = $preview['incluye_modelo_3d'] ?? false;
+            $solicitudData['incluye_pieza']     = $preview['incluye_pieza'] ?? true;
+        }
+
+        if ($tipo === 'catalogo') {
+            $solicitudData['piezaCatalogoId'] = $preview['piezaId'];
         }
 
         $solicitud = Solicitud::create($solicitudData);

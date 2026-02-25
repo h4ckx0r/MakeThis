@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Adjunto;
 use App\Models\Estado;
 use App\Models\Solicitud;
+use App\Models\ThreeDModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +13,7 @@ class SolicitudController extends Controller
 {
     public function index(Request $request)
     {
-        $solicitudes = Solicitud::with(['user', 'estado', 'adjuntos', 'threeDModel.color'])
+        $solicitudes = Solicitud::with(['user', 'estado', 'adjuntos', 'threeDModel.color', 'piezaCatalogo'])
             ->when($request->search, function ($q) use ($request) {
                 $q->where('id', 'like', '%' . $request->search . '%')
                   ->orWhereHas('user', function ($uq) use ($request) {
@@ -70,5 +71,14 @@ class SolicitudController extends Controller
         }
 
         return Storage::disk('public')->download($adjunto->fichero, $adjunto->nombreFichero);
+    }
+
+    public function downloadModel(ThreeDModel $model)
+    {
+        if (!Storage::disk('public')->exists($model->modelo)) {
+            abort(404, 'Archivo no encontrado.');
+        }
+
+        return Storage::disk('public')->download($model->modelo, $model->nombreModelo);
     }
 }

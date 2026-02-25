@@ -69,6 +69,7 @@
                     <th>Nº Solicitud</th>
                     <th>Fecha</th>
                     <th>Cliente</th>
+                    <th>Tipo</th>
                     <th>Estado</th>
                     <th class="text-center">Acciones</th>
                 </tr>
@@ -91,10 +92,20 @@
                             'nombre' => $a->nombreFichero,
                         ])->toArray()
                     );
-                    $tipoSolicitud  = $sol->{'3dModelId'} ? 'propia' : 'personalizada';
+                    $tipoSolicitud  = $sol->tipo
+                        ?? ($sol->{'3dModelId'} ? 'propia' : ($sol->piezaCatalogoId ? 'catalogo' : 'personalizada'));
                     $modeloNombre   = $sol->threeDModel->nombreModelo ?? '';
                     $modeloExt      = strtoupper($sol->threeDModel->tipo ?? '');
+                    $modeloId       = $sol->threeDModel->id ?? '';
                     $colorNombre    = $sol->threeDModel->color->nombre ?? '';
+                    $incluyeModelo  = $sol->incluye_modelo_3d;
+                    $incluyePieza   = $sol->incluye_pieza;
+                    $piezaNombre    = $sol->piezaCatalogo->nombre ?? '';
+                    [$tipoLabel, $tipoBadgeClass] = match($tipoSolicitud) {
+                        'propia'        => ['Propia', 'badge-info'],
+                        'catalogo'      => ['Del Catálogo', 'badge-accent'],
+                        default         => ['Personalizada', 'badge-secondary'],
+                    };
                 @endphp
                 <tr
                     class="hover:bg-base-200/50 transition-colors cursor-pointer"
@@ -108,10 +119,14 @@
                     data-sol-tipo="{{ $tipoSolicitud }}"
                     data-sol-modelo-nombre="{{ $modeloNombre }}"
                     data-sol-modelo-ext="{{ $modeloExt }}"
+                    data-sol-modelo-id="{{ $modeloId }}"
                     data-sol-color="{{ $colorNombre }}"
                     data-sol-altura-capa="{{ $sol->alturaCapa ?? '' }}"
                     data-sol-porcentaje-relleno="{{ $sol->porcentajeRelleno ?? '' }}"
                     data-sol-patron-relleno="{{ $sol->patronRelleno ?? '' }}"
+                    data-sol-incluye-modelo="{{ $incluyeModelo !== null ? ($incluyeModelo ? '1' : '0') : '' }}"
+                    data-sol-incluye-pieza="{{ $incluyePieza !== null ? ($incluyePieza ? '1' : '0') : '' }}"
+                    data-sol-pieza-nombre="{{ $piezaNombre }}"
                 >
                     <td class="font-mono text-xs text-primary">
                         #{{ substr($sol->id, 24) }}
@@ -136,6 +151,9 @@
                         </div>
                     </td>
                     <td>
+                        <span class="badge badge-soft {{ $tipoBadgeClass }} badge-sm">{{ $tipoLabel }}</span>
+                    </td>
+                    <td>
                         <span class="badge badge-soft {{ $badgeClass }} badge-sm">{{ $estadoNombre ?: 'Sin estado' }}</span>
                     </td>
                     <td class="text-center">
@@ -152,7 +170,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center py-16 text-base-content/50">
+                    <td colspan="6" class="text-center py-16 text-base-content/50">
                         <div class="flex flex-col items-center gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -226,14 +244,38 @@
                     <legend class="fieldset-legend text-base-content/60">Modelo 3D</legend>
                     <div class="flex items-center gap-2 px-1 py-1">
                         <span id="modal_modelo_nombre" class="text-sm text-base-content font-medium"></span>
-                        <span id="modal_modelo_ext" class="badge badge-ghost badge-xs font-mono uppercase"></span>
+                        <a id="modal_modelo_download_btn"
+                           href="#"
+                           target="_blank"
+                           class="btn btn-ghost btn-xs text-primary hidden ml-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Descargar
+                        </a>
                     </div>
+                </fieldset>
+
+                {{-- Pieza del catálogo (solo tipo=catalogo) --}}
+                <fieldset id="modal_pieza_fieldset" class="fieldset mb-4 hidden">
+                    <legend class="fieldset-legend text-base-content/60">Pieza del Catálogo</legend>
+                    <p id="modal_pieza_nombre" class="text-sm text-base-content px-1 py-1"></p>
                 </fieldset>
 
                 {{-- Color (solo si tiene) --}}
                 <fieldset id="modal_color_fieldset" class="fieldset mb-4 hidden">
                     <legend class="fieldset-legend text-base-content/60">Color</legend>
                     <p id="modal_color_nombre" class="text-sm text-base-content px-1 py-1"></p>
+                </fieldset>
+
+                {{-- ¿Qué incluye? (solo tipo=personalizada) --}}
+                <fieldset id="modal_incluye_fieldset" class="fieldset mb-4 hidden">
+                    <legend class="fieldset-legend text-base-content/60">¿Qué incluye?</legend>
+                    <div class="px-1 py-1 space-y-1 text-sm text-base-content">
+                        <p><span class="font-medium">Modelo 3D: </span><span id="modal_incluye_modelo"></span></p>
+                        <p><span class="font-medium">Pieza impresa: </span><span id="modal_incluye_pieza"></span></p>
+                    </div>
                 </fieldset>
 
                 {{-- Configuración de impresión (solo si es propia) --}}
@@ -307,7 +349,8 @@
     </dialog>
 
     <script>
-        const downloadBaseUrl = '{{ route('admin.adjunto.download', ['adjunto' => '__ADJUNTO_ID__']) }}';
+        const downloadBaseUrl      = '{{ route('admin.adjunto.download', ['adjunto' => '__ADJUNTO_ID__']) }}';
+        const downloadModelBaseUrl = '{{ route('admin.model.download', ['model' => '__MODEL_ID__']) }}';
 
         const PATRON_LABELS = {
             'rejilla':          'Rejilla',
@@ -327,10 +370,14 @@
             const tipo               = btn.dataset.solTipo;
             const modeloNombre       = btn.dataset.solModeloNombre;
             const modeloExt          = btn.dataset.solModeloExt;
+            const modeloId           = btn.dataset.solModeloId;
             const colorNombre        = btn.dataset.solColor;
             const alturaCapa         = btn.dataset.solAlturaCapa;
             const porcentajeRelleno  = btn.dataset.solPorcentajeRelleno;
             const patronRelleno      = btn.dataset.solPatronRelleno;
+            const incluyeModelo      = btn.dataset.solIncluyeModelo;
+            const incluyePieza       = btn.dataset.solIncluyePieza;
+            const piezaNombre        = btn.dataset.solPiezaNombre;
 
             // Cabecera
             document.getElementById('modal_solicitud_id').textContent   = '#' + shortId;
@@ -344,21 +391,40 @@
             // Tipo de solicitud
             const tipoBadge = document.getElementById('modal_tipo_badge');
             if (tipo === 'propia') {
-                tipoBadge.textContent  = 'Pieza propia';
-                tipoBadge.className    = 'badge badge-soft badge-info badge-sm';
+                tipoBadge.textContent = 'Pieza propia';
+                tipoBadge.className   = 'badge badge-soft badge-info badge-sm';
+            } else if (tipo === 'catalogo') {
+                tipoBadge.textContent = 'Del Catálogo';
+                tipoBadge.className   = 'badge badge-soft badge-accent badge-sm';
             } else {
-                tipoBadge.textContent  = 'Personalizada';
-                tipoBadge.className    = 'badge badge-soft badge-secondary badge-sm';
+                tipoBadge.textContent = 'Personalizada';
+                tipoBadge.className   = 'badge badge-soft badge-secondary badge-sm';
             }
 
-            // Modelo 3D
+            // Modelo 3D (solo propia)
             const modeloFieldset = document.getElementById('modal_modelo_fieldset');
             if (modeloNombre) {
                 document.getElementById('modal_modelo_nombre').textContent = modeloNombre;
-                document.getElementById('modal_modelo_ext').textContent    = modeloExt;
+
+                const dlBtn = document.getElementById('modal_modelo_download_btn');
+                if (modeloId) {
+                    dlBtn.href = downloadModelBaseUrl.replace('__MODEL_ID__', modeloId);
+                    dlBtn.classList.remove('hidden');
+                } else {
+                    dlBtn.classList.add('hidden');
+                }
                 modeloFieldset.classList.remove('hidden');
             } else {
                 modeloFieldset.classList.add('hidden');
+            }
+
+            // Pieza del catálogo
+            const piezaFieldset = document.getElementById('modal_pieza_fieldset');
+            if (tipo === 'catalogo' && piezaNombre) {
+                document.getElementById('modal_pieza_nombre').textContent = piezaNombre;
+                piezaFieldset.classList.remove('hidden');
+            } else {
+                piezaFieldset.classList.add('hidden');
             }
 
             // Color
@@ -368,6 +434,18 @@
                 colorFieldset.classList.remove('hidden');
             } else {
                 colorFieldset.classList.add('hidden');
+            }
+
+            // ¿Qué incluye? (solo personalizada)
+            const incluyeFieldset = document.getElementById('modal_incluye_fieldset');
+            if (tipo === 'personalizada' && (incluyeModelo !== '' || incluyePieza !== '')) {
+                document.getElementById('modal_incluye_modelo').textContent =
+                    incluyeModelo === '1' ? 'Sí, incluir' : 'No';
+                document.getElementById('modal_incluye_pieza').textContent =
+                    incluyePieza === '1' ? 'Sí, incluir en entrega' : 'No';
+                incluyeFieldset.classList.remove('hidden');
+            } else {
+                incluyeFieldset.classList.add('hidden');
             }
 
             // Configuración de impresión (editable, solo para pieza propia)
