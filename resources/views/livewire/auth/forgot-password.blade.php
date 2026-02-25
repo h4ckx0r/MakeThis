@@ -1,3 +1,4 @@
+<x-layout::home title="Recuperar contraseña">
 <div class="min-h-screen flex flex-col">
     {{-- Header simple con logo --}}
     <header class="border-b border-base-300">
@@ -79,7 +80,5 @@
             </form>
         </div>
     </main>
-
-    {{-- Footer --}}
-    <x-home-footer />
 </div>
+</x-layout::home>
