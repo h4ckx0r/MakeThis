@@ -6,9 +6,12 @@
 
 	# La API de admin solo es accesible localmente dentro del contenedor
 	admin localhost:2019
+
+	# Deshabilitar HTTPS automático — TLS lo gestiona el proxy externo
+	auto_https off
 }
 
-:8000 {
+http://:8000 {
 	root * /app/public
 
 	encode zstd br gzip
