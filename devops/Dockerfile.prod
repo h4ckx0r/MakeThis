@@ -1,8 +1,31 @@
 # devops/Dockerfile.prod
 # Imagen de producción multi-stage para MakeThis (Laravel + FrankenPHP)
+#
+# Stages:
+#   1. composer-deps  — instala dependencias PHP (genera vendor/)
+#   2. node-builder   — compila assets con Vite (necesita vendor/ para Flux CSS)
+#   3. production     — imagen final con FrankenPHP
 
 # =============================================================================
-# Stage 1: Node builder — compila assets con Vite
+# Stage 1: Composer — instala dependencias PHP
+# =============================================================================
+FROM composer:latest AS composer-deps
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction \
+    --no-scripts \
+    --prefer-dist
+
+
+# =============================================================================
+# Stage 2: Node builder — compila assets con Vite
+# Necesita vendor/ porque app.css importa vendor/livewire/flux/dist/flux.css
 # =============================================================================
 # Nota: si los binarios nativos *-gnu fallan en Alpine (musl libc),
 # cambiar a node:22 (Debian/glibc)
@@ -13,8 +36,11 @@ WORKDIR /app
 # Copiar manifiestos de dependencias primero para aprovechar caché de capas
 COPY package.json package-lock.json ./
 
-# Instalar dependencias (resuelve binarios nativos para la arquitectura del runner)
+# Instalar dependencias Node (resuelve binarios nativos para la arquitectura del runner)
 RUN npm ci
+
+# Copiar vendor/ desde el stage de Composer para que Vite resuelva los imports de Flux
+COPY --from=composer-deps /app/vendor ./vendor
 
 # Copiar solo lo necesario para el build de assets
 COPY resources/ ./resources/
@@ -26,7 +52,7 @@ RUN npm run build
 
 
 # =============================================================================
-# Stage 2: Producción con FrankenPHP
+# Stage 3: Producción con FrankenPHP
 # =============================================================================
 FROM dunglas/frankenphp AS production
 
@@ -45,21 +71,10 @@ RUN install-php-extensions \
 # Copiar configuración de PHP para límites de subida de archivos
 COPY devops/php-uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 
-# Obtener Composer desde su imagen oficial
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 WORKDIR /app
 
-# Copiar manifiestos de dependencias primero para caché de capas
-COPY composer.json composer.lock ./
-
-# Instalar dependencias PHP de producción (sin dev, autoloader optimizado)
-RUN composer install \
-    --no-dev \
-    --optimize-autoloader \
-    --no-interaction \
-    --no-scripts \
-    --prefer-dist
+# Copiar vendor/ ya instalado desde el stage de Composer
+COPY --from=composer-deps /app/vendor ./vendor
 
 # Copiar el código de la aplicación
 COPY . .
