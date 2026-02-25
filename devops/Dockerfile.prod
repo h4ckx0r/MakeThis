@@ -83,10 +83,10 @@ COPY . .
 # (sobreescribe cualquier public/build que pudiera venir del COPY anterior)
 COPY --from=node-builder /app/public/build ./public/build
 
-# Ejecutar optimizaciones de Laravel que NO dependen de env vars de runtime
-# config:cache se omite aquí — se ejecuta en entrypoint.prod.sh con las vars inyectadas
+# Ejecutar optimizaciones de Laravel seguras en build time
+# view:cache se omite aquí porque requiere todos los service providers registrados
+# (se ejecuta en entrypoint.prod.sh junto con config:cache)
 RUN php artisan route:cache \
- && php artisan view:cache \
  && php artisan event:cache
 
 # Configurar permisos de directorios necesarios en runtime

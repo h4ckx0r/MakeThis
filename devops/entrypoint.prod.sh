@@ -4,6 +4,9 @@ set -e
 echo "[entrypoint.prod] Cacheando configuración..."
 php artisan config:cache
 
+echo "[entrypoint.prod] Cacheando vistas..."
+php artisan view:cache
+
 echo "[entrypoint.prod] Ejecutando migraciones..."
 php artisan migrate --force
 
