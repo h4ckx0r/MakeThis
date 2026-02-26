@@ -6,6 +6,32 @@
 </head>
 
 <body class="bg-base-100 text-base-content">
+    {{-- Flash alerts --}}
+    @if (session('success'))
+    <div class="mx-auto max-w-7xl px-6 mt-28 -mb-20">
+        <div role="alert" class="alert alert-success">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('success') }}</span>
+        </div>
+    </div>
+    @endif
+    @if (session('error'))
+    <div class="mx-auto max-w-7xl px-6 mt-28 -mb-20">
+        <div role="alert" class="alert alert-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('error') }}</span>
+        </div>
+    </div>
+    @endif
+
     <div class="min-h-screen flex flex-col">
         {{-- Navbar --}}
         <livewire:navbar />
@@ -16,9 +42,12 @@
                 <div class="flex items-center justify-between gap-8">
                     {{-- Avatar y nombre del usuario --}}
                     <div class="flex-shrink-0 flex flex-col items-center gap-3">
-                        <flux:avatar :initials="auth()->user()->initials()" circle size="xl" class="bg-celeste! text-black! w-[200px]! h-[200px]! text-6xl! after:hidden!" />
-                        <div class="flex items-center justify-center rounded-[10px] border border-base-300 px-4 h-[27px] overflow-hidden">
-                            <span class="text-[14px] font-normal whitespace-nowrap">{{ '@' . str_replace(' ', '', auth()->user()->nombre) }}</span>
+                        <flux:avatar :initials="auth()->user()->initials()" circle size="xl"
+                            class="bg-celeste! text-black! w-[200px]! h-[200px]! text-6xl! after:hidden!" />
+                        <div
+                            class="flex items-center justify-center rounded-[10px] border border-base-300 px-4 h-[27px] overflow-hidden">
+                            <span class="text-[14px] font-normal whitespace-nowrap">{{ '@' . str_replace(' ', '',
+                                auth()->user()->nombre) }}</span>
                         </div>
                     </div>
 
@@ -26,28 +55,27 @@
                     <div class="flex-1">
                         <div class="scene">
                             @php
-                                $data = [
-                                    '30640195',
-                                    '30415869',
-                                    '30620861',
-                                    '9242916',
-                                    '35595049',
-                                    '33800640',
-                                    '17509941',
-                                    '14158951',
-                                    '3861437',
-                                    '19278850',
-                                    '31137405',
-                                    '7869233',
-                                ];
-                                $n = count($data);
+                            $data = [
+                            '30640195',
+                            '30415869',
+                            '30620861',
+                            '9242916',
+                            '35595049',
+                            '33800640',
+                            '17509941',
+                            '14158951',
+                            '3861437',
+                            '19278850',
+                            '31137405',
+                            '7869233',
+                            ];
+                            $n = count($data);
                             @endphp
                             <div class="a3d -mt-10" style="--n: {{ $n }}">
                                 @foreach($data as $i => $id)
-                                    <img class="landing-card"
-                                         src="https://images.pexels.com/photos/{{ $id }}/pexels-photo-{{ $id }}.jpeg?auto=compress&cs=tinysrgb&h=350"
-                                         style="--i: {{ $i }}"
-                                         alt="Pieza impresa en 3d de muestra">
+                                <img class="landing-card"
+                                    src="https://images.pexels.com/photos/{{ $id }}/pexels-photo-{{ $id }}.jpeg?auto=compress&cs=tinysrgb&h=350"
+                                    style="--i: {{ $i }}" alt="Pieza impresa en 3d de muestra">
                                 @endforeach
                             </div>
                         </div>
@@ -67,77 +95,73 @@
                 {{-- Grid de solicitudes --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @forelse ($solicitudes as $sol)
-                        @php
-                            $estadoNombre = $sol->estado->nombreEstado ?? 'pendiente';
-                            $badgeClass = match($estadoNombre) {
-                                'pendiente'  => 'badge-warning',
-                                'en_proceso' => 'badge-info',
-                                'completada' => 'badge-success',
-                                'rechazada'  => 'badge-error',
-                                default      => 'badge-neutral',
-                            };
-                            $estadoLabel = match($estadoNombre) {
-                                'pendiente'  => 'Pendiente',
-                                'en_proceso' => 'En Proceso',
-                                'completada' => 'Completada',
-                                'rechazada'  => 'Rechazada',
-                                default      => ucfirst($estadoNombre),
-                            };
-                            $tipoSolicitud = $sol->tipo
-                                ?? ($sol->{'3dModelId'} ? 'propia' : ($sol->piezaCatalogoId ? 'catalogo' : 'personalizada'));
-                            [$tipoLabel, $tipoBadgeClass] = match($tipoSolicitud) {
-                                'propia'    => ['Modelo propio', 'badge-info'],
-                                'catalogo'  => ['Del catálogo', 'badge-accent'],
-                                default     => ['Personalizada', 'badge-secondary'],
-                            };
-                            $tituloCard = $sol->threeDModel->nombreModelo
-                                ?? $sol->piezaCatalogo?->nombre
-                                ?? 'Pieza Personalizada';
-                            $adjuntosData = $sol->adjuntos->map(fn($a) => [
-                                'nombre' => $a->nombreFichero,
-                                'url' => \Illuminate\Support\Facades\Storage::url($a->fichero),
-                            ])->toArray();
-                        @endphp
-                        <button
-                            onclick="openSolicitudModal(this)"
-                            class="flex flex-col rounded-[10px] border border-base-300 bg-base-200 p-5 gap-3 cursor-pointer hover:border-primary/40 hover:bg-base-300/50 transition-colors text-left w-full"
-                            data-id="{{ substr($sol->id, 24) }}"
-                            data-estado-nombre="{{ $estadoNombre }}"
-                            data-estado-label="{{ $estadoLabel }}"
-                            data-badge-class="{{ $badgeClass }}"
-                            data-tipo="{{ $tipoSolicitud }}"
-                            data-tipo-label="{{ $tipoLabel }}"
-                            data-tipo-badge-class="{{ $tipoBadgeClass }}"
-                            data-nombre-modelo="{{ $tituloCard }}"
-                            data-color="{{ $sol->threeDModel->color->nombre ?? '' }}"
-                            data-altura-capa="{{ $sol->alturaCapa ?? '' }}"
-                            data-porcentaje-relleno="{{ $sol->porcentajeRelleno ?? '' }}"
-                            data-patron-relleno="{{ $sol->patronRelleno ?? '' }}"
-                            data-detalles="{{ $sol->detalles ?? '' }}"
-                            data-fecha="{{ $sol->created_at->format('d/m/Y') }}"
-                            data-adjuntos='@json($adjuntosData)'
-                        >
-                            <div class="flex items-center justify-between gap-2 flex-wrap">
-                                <span class="font-mono text-xs text-primary">#{{ substr($sol->id, 24) }}</span>
-                                <div class="flex gap-1.5 flex-wrap justify-end">
-                                    <span class="badge badge-soft {{ $tipoBadgeClass }} badge-sm">{{ $tipoLabel }}</span>
-                                    <span class="badge badge-soft {{ $badgeClass }} badge-sm">{{ $estadoLabel }}</span>
-                                </div>
+                    @php
+                    $estadoNombreRaw = $sol->estado->nombreEstado ?? 'Pendiente';
+                    $estadoNombre = strtolower($estadoNombreRaw);
+                    $badgeClass = match($estadoNombre) {
+                    'pendiente' => 'badge-warning',
+                    'en revision', 'en impresion', 'en proceso' => 'badge-info',
+                    'completada' => 'badge-success',
+                    'rechazada', 'cancelada' => 'badge-error',
+                    default => 'badge-neutral',
+                    };
+                    $estadoLabel = match($estadoNombre) {
+                    'pendiente' => 'Pendiente',
+                    'en revision', 'en impresion', 'en proceso' => 'En Proceso',
+                    'completada' => 'Completada',
+                    'rechazada' => 'Rechazada',
+                    'cancelada' => 'Cancelada',
+                    default => $estadoNombreRaw,
+                    };
+                    $tipoSolicitud = $sol->tipo
+                    ?? ($sol->{'3dModelId'} ? 'propia' : ($sol->piezaCatalogoId ? 'catalogo' : 'personalizada'));
+                    [$tipoLabel, $tipoBadgeClass] = match($tipoSolicitud) {
+                    'propia' => ['Modelo propio', 'badge-info'],
+                    'catalogo' => ['Del catálogo', 'badge-accent'],
+                    default => ['Personalizada', 'badge-secondary'],
+                    };
+                    $tituloCard = $sol->threeDModel->nombreModelo
+                    ?? $sol->piezaCatalogo?->nombre
+                    ?? 'Pieza Personalizada';
+                    $adjuntosData = $sol->adjuntos->map(fn($a) => [
+                    'nombre' => $a->nombreFichero,
+                    'url' => \Illuminate\Support\Facades\Storage::url($a->fichero),
+                    ])->toArray();
+                    @endphp
+                    <button onclick="openSolicitudModal(this)"
+                        class="flex flex-col rounded-[10px] border border-base-300 bg-base-200 p-5 gap-3 cursor-pointer hover:border-primary/40 hover:bg-base-300/50 transition-colors text-left w-full"
+                        data-id="{{ $sol->id }}" data-short-id="{{ substr($sol->id, 24) }}"
+                        data-estado-nombre="{{ $estadoNombre }}" data-estado-label="{{ $estadoLabel }}"
+                        data-badge-class="{{ $badgeClass }}" data-tipo="{{ $tipoSolicitud }}"
+                        data-tipo-label="{{ $tipoLabel }}" data-tipo-badge-class="{{ $tipoBadgeClass }}"
+                        data-nombre-modelo="{{ $tituloCard }}" data-color="{{ $sol->threeDModel->color->nombre ?? '' }}"
+                        data-altura-capa="{{ $sol->alturaCapa ?? '' }}"
+                        data-porcentaje-relleno="{{ $sol->porcentajeRelleno ?? '' }}"
+                        data-patron-relleno="{{ $sol->patronRelleno ?? '' }}" data-detalles="{{ $sol->detalles ?? '' }}"
+                        data-fecha="{{ $sol->created_at->format('d/m/Y') }}" data-adjuntos='@json($adjuntosData)'>
+                        <div class="flex items-center justify-between gap-2 flex-wrap">
+                            <span class="font-mono text-xs text-primary">#{{ substr($sol->id, 24) }}</span>
+                            <div class="flex gap-1.5 flex-wrap justify-end">
+                                <span class="badge badge-soft {{ $tipoBadgeClass }} badge-sm">{{ $tipoLabel }}</span>
+                                <span class="badge badge-soft {{ $badgeClass }} badge-sm">{{ $estadoLabel }}</span>
                             </div>
-                            <h3 class="text-lg font-medium truncate">
-                                {{ $tituloCard }}
-                            </h3>
-                            <span class="text-xs text-base-content/50">
-                                {{ $sol->created_at->format('d/m/Y') }}
-                            </span>
-                        </button>
-                    @empty
-                        <div class="col-span-full flex flex-col items-center justify-center py-16 text-base-content/50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 text-base-content/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                            </svg>
-                            <span>No tienes solicitudes todavía</span>
                         </div>
+                        <h3 class="text-lg font-medium truncate">
+                            {{ $tituloCard }}
+                        </h3>
+                        <span class="text-xs text-base-content/50">
+                            {{ $sol->created_at->format('d/m/Y') }}
+                        </span>
+                    </button>
+                    @empty
+                    <div class="col-span-full flex flex-col items-center justify-center py-16 text-base-content/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 text-base-content/20" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span>No tienes solicitudes todavía</span>
+                    </div>
                     @endforelse
                 </div>
             </div>
@@ -202,6 +226,39 @@
                     <ul class="space-y-1" id="modal-adjuntos-list"></ul>
                 </div>
             </div>
+
+            <div class="modal-action mt-8">
+                <button type="button" id="btn-cancelar" onclick="confirmCancel()"
+                    class="btn btn-error btn-outline btn-sm hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Cancelar Solicitud
+                </button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
+    </dialog>
+
+    {{-- Modal de confirmación de cancelación --}}
+    <dialog id="confirm-cancel-modal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">¿Estás seguro?</h3>
+            <p class="py-4 text-base-content/70">
+                ¿Estás seguro de que deseas cancelar esta solicitud? Esta acción no se puede deshacer y la solicitud
+                pasará a estar cancelada permanentemente.
+            </p>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn btn-ghost">Volver</button>
+                </form>
+                <form id="final-cancel-form" method="POST" action="">
+                    @csrf
+                    <button type="submit" class="btn btn-error">Confirmar Cancelación</button>
+                </form>
+            </div>
         </div>
         <form method="dialog" class="modal-backdrop"><button>cerrar</button></form>
     </dialog>
@@ -210,12 +267,21 @@
         function openSolicitudModal(btn) {
             const modal = document.getElementById('solicitud-modal');
 
-            document.getElementById('modal-id').textContent = '#' + btn.dataset.id;
+            document.getElementById('modal-id').textContent = '#' + btn.dataset.shortId;
             document.getElementById('modal-fecha').textContent = btn.dataset.fecha;
 
             const badge = document.getElementById('modal-badge');
             badge.textContent = btn.dataset.estadoLabel;
             badge.className = 'badge badge-soft badge-sm ' + btn.dataset.badgeClass;
+
+            // Lógica botón cancelar
+            const btnCancelar = document.getElementById('btn-cancelar');
+            if (btn.dataset.estadoNombre.toLowerCase() === 'pendiente') {
+                btnCancelar.onclick = () => confirmCancel(btn.dataset.id);
+                btnCancelar.classList.remove('hidden');
+            } else {
+                btnCancelar.classList.add('hidden');
+            }
 
             const tipoBadge = document.getElementById('modal-tipo-badge');
             tipoBadge.textContent = btn.dataset.tipoLabel;
@@ -275,6 +341,12 @@
             }
 
             modal.showModal();
+        }
+
+        function confirmCancel(solicitudId) {
+            const form = document.getElementById('final-cancel-form');
+            form.action = `/client/requests/${solicitudId}/cancel`;
+            document.getElementById('confirm-cancel-modal').showModal();
         }
     </script>
 </body>
