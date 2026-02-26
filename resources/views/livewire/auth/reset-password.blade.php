@@ -1,5 +1,5 @@
-<div class="min-h-screen flex flex-col">
-    {{-- Header simple con logo --}}
+
+<x-layouts::home title="Nueva Contraseña">
     <header class="border-b border-base-300">
         <div class="navbar mx-auto max-w-7xl px-6 py-4">
             <div class="flex-1">
@@ -78,7 +78,4 @@
             </form>
         </div>
     </main>
-
-    {{-- Footer --}}
-    <x-home-footer />
-</div>
+</x-layouts::home>

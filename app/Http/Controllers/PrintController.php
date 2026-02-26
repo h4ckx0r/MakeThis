@@ -47,6 +47,12 @@ class PrintController extends Controller
      */
     public function ownForm()
     {
+        if (!auth()->check()) {
+            session(['url.intended' => url()->current()]);
+            return redirect()->route('register')
+                ->with('info', 'Debes crear una cuenta para solicitar la impresión de una pieza.');
+        }
+
         $materiales = Material::with('colores')->get();
 
         return view('prints.own', compact('materiales'));
@@ -57,6 +63,12 @@ class PrintController extends Controller
      */
     public function customForm()
     {
+        if (!auth()->check()) {
+            session(['url.intended' => url()->current()]);
+            return redirect()->route('register')
+                ->with('info', 'Debes crear una cuenta para solicitar la impresión de una pieza.');
+        }
+
         $materiales = Material::with('colores')->get();
 
         return view('prints.custom', compact('materiales'));
@@ -67,6 +79,12 @@ class PrintController extends Controller
      */
     public function catalogItemForm(PiezaCatalogo $pieza)
     {
+        if (!auth()->check()) {
+            session(['url.intended' => url()->current()]);
+            return redirect()->route('register')
+                ->with('info', 'Debes crear una cuenta para solicitar la impresión de una pieza.');
+        }
+
         $pieza->load(['adjunto', 'tags']);
         $materiales = Material::with('colores')->get();
 

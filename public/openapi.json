@@ -1,0 +1,467 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MakeThis Reports API",
+    "description": "API REST para gestión de reportes de solicitudes de impresión 3D. Todos los endpoints requieren autenticación mediante el header `X-API-Key`.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "MakeThis"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Servidor principal"
+    }
+  ],
+  "security": [
+    { "ApiKeyAuth": [] }
+  ],
+  "tags": [
+    {
+      "name": "Reportes",
+      "description": "Operaciones sobre reportes de solicitudes de impresión 3D."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key generada desde el panel de administración. Se valida contra su hash SHA-256 almacenado en base de datos."
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000" },
+          "nombre": { "type": "string", "example": "Juan" },
+          "apellidos": { "type": "string", "example": "García López" },
+          "email": { "type": "string", "format": "email", "example": "juan@example.com" },
+          "telefono": { "type": "string", "example": "+34 612 345 678" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Solicitud": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "userId": { "type": "string", "format": "uuid" },
+          "estadoId": { "type": "string", "format": "uuid" },
+          "detalles": { "type": "string" },
+          "tipo": {
+            "type": "string",
+            "enum": ["propia", "personalizada", "catalogo"],
+            "nullable": true
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "user": { "$ref": "#/components/schemas/User" }
+        }
+      },
+      "Reporte": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "solicitudId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-02-26"
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 255,
+            "example": "Reporte mensual de impresiones"
+          },
+          "descripcion": {
+            "type": "string",
+            "example": "Descripción detallada del estado de la solicitud."
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ReporteWithRelations": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Reporte" },
+          {
+            "type": "object",
+            "properties": {
+              "solicitud": { "$ref": "#/components/schemas/Solicitud" }
+            }
+          }
+        ]
+      },
+      "PaginatedReportes": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReporteWithRelations" }
+          },
+          "current_page": { "type": "integer", "example": 1 },
+          "last_page": { "type": "integer", "example": 5 },
+          "per_page": { "type": "integer", "example": 15 },
+          "total": { "type": "integer", "example": 72 },
+          "from": { "type": "integer", "example": 1, "nullable": true },
+          "to": { "type": "integer", "example": 15, "nullable": true },
+          "path": { "type": "string", "example": "http://localhost/api/reportes" },
+          "first_page_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "http://localhost/api/reportes?page=1"
+          },
+          "last_page_url": {
+            "type": "string",
+            "format": "uri",
+            "example": "http://localhost/api/reportes?page=5"
+          },
+          "next_page_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "http://localhost/api/reportes?page=2"
+          },
+          "prev_page_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": null
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": { "type": "string", "nullable": true },
+                "label": { "type": "string" },
+                "active": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      },
+      "StoreReporteRequest": {
+        "type": "object",
+        "required": ["solicitudId", "fecha", "titulo", "descripcion"],
+        "properties": {
+          "solicitudId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID de la solicitud a la que pertenece este reporte.",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha del reporte en formato YYYY-MM-DD.",
+            "example": "2026-02-26"
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Título descriptivo del reporte.",
+            "example": "Reporte de inicio de impresión"
+          },
+          "descripcion": {
+            "type": "string",
+            "description": "Descripción detallada del reporte.",
+            "example": "La impresión comenzó correctamente con un 20% de relleno."
+          }
+        }
+      },
+      "UpdateReporteRequest": {
+        "type": "object",
+        "properties": {
+          "solicitudId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID de la solicitud. Debe existir en la tabla solicitudes.",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          "fecha": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-02-26"
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 255,
+            "example": "Reporte actualizado"
+          },
+          "descripcion": {
+            "type": "string",
+            "example": "Descripción actualizada del reporte."
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "example": "API key inválida o ausente." }
+        }
+      },
+      "NotFoundError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "No query results for model [App\\Models\\Reporte]."
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "The solicitudId field is required."
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "example": {
+              "solicitudId": ["The solicitudId field is required."],
+              "fecha": ["The fecha field must be a valid date."]
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "API key inválida o no proporcionada.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/UnauthorizedError" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Recurso no encontrado.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/NotFoundError" }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Error de validación (uno o más campos incorrectos).",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ValidationError" }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/reportes": {
+      "get": {
+        "operationId": "listReportes",
+        "summary": "Listar reportes",
+        "description": "Devuelve una lista paginada de reportes, opcionalmente filtrada por rango de fechas. Incluye la relación `solicitud.user`.",
+        "tags": ["Reportes"],
+        "parameters": [
+          {
+            "name": "fecha_desde",
+            "in": "query",
+            "description": "Filtrar reportes desde esta fecha (inclusive). Formato: YYYY-MM-DD.",
+            "required": false,
+            "schema": { "type": "string", "format": "date", "example": "2026-01-01" }
+          },
+          {
+            "name": "fecha_hasta",
+            "in": "query",
+            "description": "Filtrar reportes hasta esta fecha (inclusive). Formato: YYYY-MM-DD.",
+            "required": false,
+            "schema": { "type": "string", "format": "date", "example": "2026-02-28" }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Número de elementos por página. Por defecto: 15.",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 15, "example": 15 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número de página.",
+            "required": false,
+            "schema": { "type": "integer", "minimum": 1, "default": 1, "example": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de reportes.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PaginatedReportes" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      },
+      "post": {
+        "operationId": "createReporte",
+        "summary": "Crear un reporte",
+        "description": "Crea un nuevo reporte asociado a una solicitud existente. Devuelve el reporte creado con la relación `solicitud` incluida.",
+        "tags": ["Reportes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StoreReporteRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reporte creado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    { "$ref": "#/components/schemas/Reporte" },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "solicitud": { "$ref": "#/components/schemas/Solicitud" }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/reportes/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "UUID del reporte.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "getReporte",
+        "summary": "Obtener un reporte",
+        "description": "Devuelve el detalle de un reporte específico incluyendo la relación `solicitud.user`.",
+        "tags": ["Reportes"],
+        "responses": {
+          "200": {
+            "description": "Detalle del reporte.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReporteWithRelations" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "operationId": "replaceReporte",
+        "summary": "Actualizar un reporte (completo)",
+        "description": "Actualiza un reporte. Todos los campos son opcionales (`sometimes`), por lo que se puede enviar cualquier subconjunto de campos a modificar.",
+        "tags": ["Reportes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateReporteRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reporte actualizado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    { "$ref": "#/components/schemas/Reporte" },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "solicitud": { "$ref": "#/components/schemas/Solicitud" }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "patch": {
+        "operationId": "updateReporte",
+        "summary": "Actualizar un reporte (parcial)",
+        "description": "Actualiza parcialmente un reporte. Implementación idéntica a PUT: todos los campos son opcionales. Envía solo los campos que deseas modificar.",
+        "tags": ["Reportes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateReporteRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reporte actualizado exitosamente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    { "$ref": "#/components/schemas/Reporte" },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "solicitud": { "$ref": "#/components/schemas/Solicitud" }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    }
+  }
+}
