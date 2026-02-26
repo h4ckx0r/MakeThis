@@ -3,7 +3,7 @@
   "info": {
     "title": "MakeThis Reports API",
     "description": "API REST para gestión de reportes de solicitudes de impresión 3D. Todos los endpoints requieren autenticación mediante el header `X-API-Key`.",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "contact": {
       "name": "MakeThis"
     }
@@ -71,9 +71,7 @@
             "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
           },
           "solicitudId": {
-            "type": "string",
-            "format": "uuid",
-            "example": "550e8400-e29b-41d4-a716-446655440001"
+            "$ref": "#/components/schemas/SolicitudId"
           },
           "fecha": {
             "type": "string",
@@ -158,10 +156,10 @@
         "required": ["solicitudId", "fecha", "titulo", "descripcion"],
         "properties": {
           "solicitudId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "UUID de la solicitud a la que pertenece este reporte.",
-            "example": "550e8400-e29b-41d4-a716-446655440001"
+            "allOf": [
+              { "$ref": "#/components/schemas/SolicitudId" },
+              { "description": "UUID completo o short ID (12 chars) de la solicitud a la que pertenece este reporte." }
+            ]
           },
           "fecha": {
             "type": "string",
@@ -186,10 +184,10 @@
         "type": "object",
         "properties": {
           "solicitudId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "UUID de la solicitud. Debe existir en la tabla solicitudes.",
-            "example": "550e8400-e29b-41d4-a716-446655440001"
+            "allOf": [
+              { "$ref": "#/components/schemas/SolicitudId" },
+              { "description": "UUID completo o short ID (12 chars) de la solicitud. Debe existir en la base de datos." }
+            ]
           },
           "fecha": {
             "type": "string",
@@ -207,6 +205,38 @@
           }
         }
       },
+      "ReporteId": {
+        "oneOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID completo del reporte.",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          {
+            "type": "string",
+            "pattern": "^[0-9a-f]{12}$",
+            "description": "Short ID del reporte (últimos 12 caracteres del UUID, visible en la interfaz como #ef1234567890).",
+            "example": "ef1234567890"
+          }
+        ]
+      },
+      "SolicitudId": {
+        "oneOf": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID completo de la solicitud.",
+            "example": "550e8400-e29b-41d4-a716-446655440001"
+          },
+          {
+            "type": "string",
+            "pattern": "^[0-9a-f]{12}$",
+            "description": "Short ID de la solicitud (últimos 12 caracteres del UUID, visible en la interfaz como #446655440001).",
+            "example": "446655440001"
+          }
+        ]
+      },
       "UnauthorizedError": {
         "type": "object",
         "properties": {
@@ -218,7 +248,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "example": "No query results for model [App\\Models\\Reporte]."
+            "example": "Recurso no encontrado."
           }
         }
       },
@@ -362,12 +392,8 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "UUID del reporte.",
-          "schema": {
-            "type": "string",
-            "format": "uuid",
-            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-          }
+          "description": "Identificador del reporte: UUID completo (`a1b2c3d4-e5f6-7890-abcd-ef1234567890`) o short ID de 12 caracteres hexadecimales (`ef1234567890`), visible en la interfaz como `#ef1234567890`.",
+          "schema": { "$ref": "#/components/schemas/ReporteId" }
         }
       ],
       "get": {

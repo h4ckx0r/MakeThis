@@ -23,4 +23,17 @@ class Reporte extends Model
     {
         return $this->belongsTo(Solicitud::class, 'solicitudId');
     }
+
+    public function resolveRouteBinding($value, $field = null): ?self
+    {
+        if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $value)) {
+            return static::where('id', $value)->first();
+        }
+
+        if (preg_match('/^[0-9a-f]{12}$/i', $value)) {
+            return static::whereRaw('RIGHT(id::text, 12) = ?', [strtolower($value)])->first();
+        }
+
+        return null;
+    }
 }
