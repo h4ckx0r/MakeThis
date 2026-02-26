@@ -22,12 +22,20 @@ class ReporteController extends Controller
         if ($request->fecha_hasta) {
             $query->whereDate('fecha', '<=', $request->fecha_hasta);
         }
+        if ($request->estado) {
+            $query->whereHas('solicitud.estado', function ($q) use ($request) {
+                $q->where('nombreEstado', $request->estado);
+            });
+        }
 
-        $reportesRecientes = $query->with('solicitud.user')->latest()->take(20)->get();
+        $reportesRecientes = $query->with('solicitud.user', 'solicitud.estado')->latest()->take(20)->get();
 
         $totalSolicitudes = Solicitud::count();
-        $solicitudesCompletadas = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'completada'))->count();
-        $solicitudesPendientes = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'pendiente'))->count();
+        $solicitudesCompletadas = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'Completada'))->count();
+        $solicitudesCanceladas = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'Cancelada'))->count();
+        $solicitudesRechazadas = Solicitud::whereHas('estado', fn($q) => $q->where('nombreEstado', 'Rechazada'))->count();
+        $solicitudesCanceladas = $solicitudesCanceladas + $solicitudesRechazadas;
+        $solicitudesPendientes = $totalSolicitudes - $solicitudesCompletadas - $solicitudesCanceladas;
         $totalUsuarios = User::count();
         $apiKeys = ApiKey::latest()->get();
 
@@ -36,6 +44,7 @@ class ReporteController extends Controller
             'totalSolicitudes',
             'solicitudesCompletadas',
             'solicitudesPendientes',
+            'solicitudesCanceladas',
             'totalUsuarios',
             'apiKeys'
         ));
@@ -50,18 +59,18 @@ class ReporteController extends Controller
         ]);
 
         $plainKey = bin2hex(random_bytes(32));
-        $keyHash  = hash('sha256', $plainKey);
+        $keyHash = hash('sha256', $plainKey);
 
         $apiKey = ApiKey::create([
-            'key_hash'    => $keyHash,
+            'key_hash' => $keyHash,
             'descripcion' => $request->nombre,
-            'activa'      => true,
+            'activa' => true,
         ]);
 
         return response()->json([
-            'key'        => $plainKey,
-            'id'         => $apiKey->id,
-            'nombre'     => $apiKey->descripcion,
+            'key' => $plainKey,
+            'id' => $apiKey->id,
+            'nombre' => $apiKey->descripcion,
             'created_at' => $apiKey->created_at->format('d/m/Y H:i'),
         ]);
     }
@@ -71,7 +80,7 @@ class ReporteController extends Controller
         $apiKey->update(['activa' => !$apiKey->activa]);
 
         return response()->json([
-            'id'     => $apiKey->id,
+            'id' => $apiKey->id,
             'activa' => $apiKey->activa,
         ]);
     }

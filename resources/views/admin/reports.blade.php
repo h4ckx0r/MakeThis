@@ -8,10 +8,11 @@
             <h1 class="text-3xl font-semibold tracking-wide text-base-content">Reportes</h1>
             <p class="text-sm text-base-content/50 mt-1">Resumen general de actividad del sistema</p>
         </div>
-        <button class="btn btn-ghost btn-sm border-sky-500/30 text-base-content/70"
-                onclick="api_key_modal.showModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+        <button class="btn btn-ghost btn-sm border-sky-500/30 text-base-content/70" onclick="api_key_modal.showModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
             </svg>
             Gestionar API Key
         </button>
@@ -21,25 +22,27 @@
     <div class="overflow-x-auto mb-10">
         <div class="stats stats-horizontal shadow w-full bg-base-200 border border-sky-500/20">
 
-            <div class="stat">
+            <a href="{{ route('admin.reports', array_merge(request()->query(), ['estado' => null])) }}"
+                class="stat hover:bg-base-300 transition-colors {{ !request('estado') ? 'bg-base-300' : '' }}">
                 <div class="stat-figure text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                 </div>
                 <div class="stat-title text-base-content/60">Total Solicitudes</div>
                 <div class="stat-value text-base-content">{{ $totalSolicitudes }}</div>
                 <div class="stat-desc text-base-content/50">Desde el inicio</div>
-            </div>
+            </a>
 
-            <div class="stat">
+            <a href="{{ route('admin.reports', array_merge(request()->query(), ['estado' => 'Completada'])) }}"
+                class="stat hover:bg-base-300 transition-colors {{ request('estado') === 'Completada' ? 'bg-base-300' : '' }}">
                 <div class="stat-figure text-success">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div class="stat-title text-base-content/60">Completadas</div>
@@ -48,27 +51,45 @@
                     {{ $totalSolicitudes > 0 ? round(($solicitudesCompletadas / $totalSolicitudes) * 100) : 0 }}% del
                     total
                 </div>
-            </div>
+            </a>
 
-            <div class="stat">
+            <a href="{{ route('admin.reports', array_merge(request()->query(), ['estado' => 'Pendiente'])) }}"
+                class="stat hover:bg-base-300 transition-colors {{ request('estado') === 'Pendiente' ? 'bg-base-300' : '' }}">
                 <div class="stat-figure text-warning">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div class="stat-title text-base-content/60">Pendientes</div>
                 <div class="stat-value text-warning">{{ $solicitudesPendientes }}</div>
                 <div class="stat-desc text-base-content/50">En espera de proceso</div>
-            </div>
+            </a>
+
+            <a href="{{ route('admin.reports', array_merge(request()->query(), ['estado' => 'Cancelada'])) }}"
+                class="stat hover:bg-base-300 transition-colors {{ request('estado') === 'Cancelada' ? 'bg-base-300' : '' }}">
+                <div class="stat-figure text-error">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="stat-title text-base-content/60">Canceladas</div>
+                <div class="stat-value text-error">{{ $solicitudesCanceladas }}</div>
+                <div class="stat-desc text-base-content/50">
+                    {{ $totalSolicitudes > 0 ? round(($solicitudesCanceladas / $totalSolicitudes) * 100) : 0 }}% del
+                    total
+                </div>
+            </a>
 
             <div class="stat">
                 <div class="stat-figure text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 </div>
                 <div class="stat-title text-base-content/60">Usuarios</div>
@@ -81,29 +102,31 @@
 
     {{-- Date Range Filter --}}
     <form method="GET" action="{{ route('admin.reports') }}" class="mb-8 flex items-end gap-4 flex-wrap">
+        @if(request('estado'))
+        <input type="hidden" name="estado" value="{{ request('estado') }}">
+        @endif
+
         <div class="flex flex-col gap-1">
             <label class="label label-text text-base-content/60 text-xs">Desde</label>
-            <input type="date" name="fecha_desde"
-                   value="{{ request('fecha_desde') }}"
-                   class="input input-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 focus:outline-none"/>
+            <input type="date" name="fecha_desde" value="{{ request('fecha_desde') }}"
+                class="input input-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 focus:outline-none" />
         </div>
 
         <div class="flex flex-col gap-1">
             <label class="label label-text text-base-content/60 text-xs">Hasta</label>
-            <input type="date" name="fecha_hasta"
-                   value="{{ request('fecha_hasta') }}"
-                   class="input input-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 focus:outline-none"/>
+            <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta') }}"
+                class="input input-bordered bg-base-200 border-sky-500/30 text-base-content focus:border-sky-400 focus:outline-none" />
         </div>
 
         <button type="submit" class="btn btn-primary btn-sm self-end">
             Aplicar filtro
         </button>
 
-        @if(request('fecha_desde') || request('fecha_hasta'))
-            <a href="{{ route('admin.reports') }}"
-               class="btn btn-ghost btn-sm border-base-300 text-base-content/60 self-end">
-                Limpiar
-            </a>
+        @if(request('fecha_desde') || request('fecha_hasta') || request('estado'))
+        <a href="{{ route('admin.reports') }}"
+            class="btn btn-ghost btn-sm border-base-300 text-base-content/60 self-end">
+            Limpiar filtros
+        </a>
         @endif
     </form>
 
@@ -111,8 +134,10 @@
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-medium text-base-content/70">
             Reportes recientes
-            @if(request('fecha_desde') || request('fecha_hasta'))
-                <span class="text-sm text-base-content/50 ml-2">(filtrado)</span>
+            @if(request('fecha_desde') || request('fecha_hasta') || request('estado'))
+            <span class="text-sm text-base-content/50 ml-2">
+                (filtrado{{ request('estado') ? ' por ' . strtolower(request('estado')) : '' }})
+            </span>
             @endif
         </h2>
         <span class="text-sm text-base-content/50">{{ $reportesRecientes->count() }} resultado(s)</span>
@@ -121,31 +146,26 @@
     <div class="rounded-xl border border-sky-500/20 overflow-hidden">
         <table class="table table-zebra table-pin-rows w-full">
             <thead class="bg-base-300">
-            <tr class="text-primary text-sm">
-                <th>Título</th>
-                <th>Solicitud</th>
-                <th>Fecha</th>
-                <th>Descripción</th>
-            </tr>
+                <tr class="text-primary text-sm">
+                    <th>Título</th>
+                    <th>Solicitud</th>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                </tr>
             </thead>
             <tbody>
-            @forelse ($reportesRecientes as $reporte)
+                @forelse ($reportesRecientes as $reporte)
                 @php
-                    $fechaFormateada = $reporte->fecha
-                        ? Carbon::parse($reporte->fecha)->format('d/m/Y')
-                        : ($reporte->created_at ? $reporte->created_at->format('d/m/Y') : '');
-                    $solicitudRef = $reporte->solicitudId ? substr($reporte->solicitudId, 24) : '';
-                    $clienteNombre = $reporte->solicitud?->user?->nombre ?? '';
+                $fechaFormateada = $reporte->fecha
+                ? Carbon::parse($reporte->fecha)->format('d/m/Y')
+                : ($reporte->created_at ? $reporte->created_at->format('d/m/Y') : '');
+                $solicitudRef = $reporte->solicitudId ? substr($reporte->solicitudId, 24) : '';
+                $clienteNombre = $reporte->solicitud?->user?->nombre ?? '';
                 @endphp
-                <tr
-                    class="hover:bg-base-200/50 transition-colors cursor-pointer"
-                    onclick="openReporteModal(this)"
-                    data-titulo="{{ $reporte->titulo ?? '' }}"
-                    data-descripcion="{{ $reporte->descripcion ?? '' }}"
-                    data-fecha="{{ $fechaFormateada }}"
-                    data-solicitud-id="{{ $solicitudRef }}"
-                    data-cliente="{{ $clienteNombre }}"
-                >
+                <tr class="hover:bg-base-200/50 transition-colors cursor-pointer" onclick="openReporteModal(this)"
+                    data-titulo="{{ $reporte->titulo ?? '' }}" data-descripcion="{{ $reporte->descripcion ?? '' }}"
+                    data-fecha="{{ $fechaFormateada }}" data-solicitud-id="{{ $solicitudRef }}"
+                    data-cliente="{{ $clienteNombre }}">
                     <td class="font-medium text-sm text-base-content">{{ $reporte->titulo ?? '—' }}</td>
                     <td>
                         <span class="font-mono text-xs text-primary">
@@ -157,20 +177,21 @@
                         <span class="line-clamp-2">{{ $reporte->descripcion ?? '—' }}</span>
                     </td>
                 </tr>
-            @empty
+                @empty
                 <tr>
                     <td colspan="4" class="text-center py-16 text-base-content/50">
                         <div class="flex flex-col items-center gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content/20" fill="none"
-                                 viewBox="0 0 24 24" stroke="currentColor">
+                                viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                      d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <span>No hay reportes disponibles{{ (request('fecha_desde') || request('fecha_hasta')) ? ' en el rango de fechas seleccionado' : '' }}</span>
+                            <span>No hay reportes disponibles{{ (request('fecha_desde') || request('fecha_hasta')) ? '
+                                en el rango de fechas seleccionado' : '' }}</span>
                         </div>
                     </td>
                 </tr>
-            @endforelse
+                @endforelse
             </tbody>
         </table>
     </div>
@@ -210,23 +231,18 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-semibold">Gestionar API Keys</h3>
                 <button type="button" onclick="api_key_modal.close()"
-                        class="btn btn-ghost btn-sm btn-circle text-base-content/60">✕</button>
+                    class="btn btn-ghost btn-sm btn-circle text-base-content/60">✕</button>
             </div>
 
             {{-- Formulario para crear nueva key --}}
             <div class="bg-base-300 rounded-xl p-4 border border-sky-500/10 mb-5">
                 <p class="text-xs text-base-content/50 uppercase tracking-wide mb-3">Nueva API Key</p>
                 <div class="flex gap-2">
-                    <input
-                        id="new-key-nombre"
-                        type="text"
-                        maxlength="100"
-                        placeholder="Nombre de la key (ej. Integración ERP)..."
-                        class="input input-sm flex-1 bg-base-200 border-sky-500/30 text-base-content
-                               placeholder-base-content/40 focus:border-sky-400 focus:outline-none"
-                    />
+                    <input id="new-key-nombre" type="text" maxlength="100"
+                        placeholder="Nombre de la key (ej. Integración ERP)..." class="input input-sm flex-1 bg-base-200 border-sky-500/30 text-base-content
+                               placeholder-base-content/40 focus:border-sky-400 focus:outline-none" />
                     <button type="button" id="generate-btn" onclick="generateApiKey()"
-                            class="btn btn-primary btn-sm shrink-0">
+                        class="btn btn-primary btn-sm shrink-0">
                         Generar
                     </button>
                 </div>
@@ -236,17 +252,21 @@
             {{-- Zona para mostrar nueva key tras generación --}}
             <div id="new-key-display" class="hidden mb-5">
                 <div role="alert" class="alert alert-warning text-sm py-2 mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                     <span>Copia esta key ahora. No se volverá a mostrar.</span>
                 </div>
                 <div class="flex items-center gap-2 bg-base-300 rounded-lg px-4 py-3 border border-success/30">
                     <code id="new-key-value" class="font-mono text-xs text-success flex-1 break-all"></code>
                     <button type="button" id="copy-btn" onclick="copyNewKey()"
-                            class="btn btn-ghost btn-xs text-base-content/60 hover:text-base-content shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        class="btn btn-ghost btn-xs text-base-content/60 hover:text-base-content shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                         Copiar
                     </button>
@@ -259,7 +279,7 @@
                 <div id="api-keys-list" class="space-y-2 max-h-64 overflow-y-auto pr-1">
                     @forelse($apiKeys as $key)
                     <div class="flex items-center gap-2 rounded-lg bg-base-300 px-3 py-2.5 border border-sky-500/10"
-                         id="api-key-row-{{ $key->id }}">
+                        id="api-key-row-{{ $key->id }}">
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-base-content truncate">
                                 {{ $key->descripcion ?? 'Sin nombre' }}
@@ -269,18 +289,16 @@
                             </p>
                         </div>
                         <span id="badge-{{ $key->id }}"
-                              class="badge badge-soft {{ $key->activa ? 'badge-success' : 'badge-neutral' }} badge-xs shrink-0">
+                            class="badge badge-soft {{ $key->activa ? 'badge-success' : 'badge-neutral' }} badge-xs shrink-0">
                             {{ $key->activa ? 'Activa' : 'Inactiva' }}
                         </span>
-                        <button type="button"
-                                id="toggle-btn-{{ $key->id }}"
-                                onclick="toggleApiKey('{{ $key->id }}', this)"
-                                class="btn btn-ghost btn-xs text-base-content/60 hover:text-base-content shrink-0">
+                        <button type="button" id="toggle-btn-{{ $key->id }}"
+                            onclick="toggleApiKey('{{ $key->id }}', this)"
+                            class="btn btn-ghost btn-xs text-base-content/60 hover:text-base-content shrink-0">
                             {{ $key->activa ? 'Desactivar' : 'Activar' }}
                         </button>
-                        <button type="button"
-                                onclick="deleteApiKey('{{ $key->id }}')"
-                                class="btn btn-ghost btn-xs text-error hover:text-red-400 shrink-0">
+                        <button type="button" onclick="deleteApiKey('{{ $key->id }}')"
+                            class="btn btn-ghost btn-xs text-error hover:text-red-400 shrink-0">
                             Eliminar
                         </button>
                     </div>
@@ -427,7 +445,7 @@
         }
 
         function escHtml(str) {
-            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
     </script>
 

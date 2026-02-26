@@ -56,6 +56,9 @@ Route::prefix('client')->middleware('auth')->group(function () {
         }
         )->name('client.requests');
 
+        Route::post('requests/{solicitud}/cancel', [SolicitudController::class , 'cancel'])
+            ->name('client.requests.cancel');
+
         Route::view('ajustes', 'client.ajustes')->name('client.ajustes');
     });
 
@@ -76,10 +79,10 @@ Route::prefix('prints')->group(function () {
                 ->name('prints.custom');
 
             // Formulario para pieza del catálogo
-        Route::get('catalog/{pieza}', [PrintController::class, 'catalogItemForm'])
-            ->name('prints.catalog.form');
+            Route::get('catalog/{pieza}', [PrintController::class , 'catalogItemForm'])
+                ->name('prints.catalog.form');
 
-        // Preview: POST válida y guarda en sesión, GET muestra el resumen
+            // Preview: POST válida y guarda en sesión, GET muestra el resumen
             Route::post('preview', [PrintController::class , 'storePreview'])
                 ->name('prints.preview.store');
             Route::get('preview', [PrintController::class , 'showPreview'])
@@ -120,7 +123,7 @@ Route::prefix('admin')->middleware(EnsureIsAdmin::class)
             ->name('admin.adjunto.download');
 
         // Descarga de modelos 3D
-        Route::get('models/{model}/download', [SolicitudController::class, 'downloadModel'])
+        Route::get('models/{model}/download', [SolicitudController::class , 'downloadModel'])
             ->name('admin.model.download');
 
         // Rutas para reportes
@@ -145,68 +148,54 @@ require __DIR__ . '/settings.php';
 // DEPRECADO ;)
 
 /*
-Route::post('/forgot-password', function () {
-    // TODO: Implementar lógica de recuperación de contraseña
-    return back()->with('status', 'Email enviado correctamente');
-})->name('forgot-password.send');
-
-Route::get('/login-options', function () {
-    return view('auth.login-options');
-})->name('login-options');
-
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-
-Route::post('/register', function () {
-    // TODO: Implementar lógica de registro
-    return redirect()->route('home')->with('status', 'Registro completado correctamente');
-})->name('register.store');
-
-Route::view('reportes', 'reportes')
-    ->name('reportes');
-
-Route::view('usuarios', 'usuarios')
-    ->name('usuarios');
-
-Route::view('solicitudes', 'solicitudes')
-    ->name('solicitudes');
-
-// Rutas administrativas de piezas (protegidas)
-Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
-    Route::get('/piezas', [PiezaController::class, 'adminIndex'])
-        ->name('admin.piezas.index');
-    Route::post('/piezas', [PiezaController::class, 'adminStore'])
-        ->name('admin.piezas.store');
-    Route::put('/piezas/{pieza}', [PiezaController::class, 'adminUpdate'])
-        ->name('admin.piezas.update');
-    Route::delete('/piezas/{pieza}', [PiezaController::class, 'adminDestroy'])
-        ->name('admin.piezas.destroy');
-});
-
-// Rutas para Catálogo de Piezas (públicas)
-Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
-    ->name('piezas.catalogo');
-
-// Selección de tipo
-Route::get('/piezas/solicitar', fn () => view('piezas.solicitar'))
-    ->name('piezas.solicitar');
-
-// Formularios
-Route::get('/piezas/propia', fn () => view('piezas.propia'))
-    ->name('piezas.propia');
-
-Route::get('/piezas/personalizada', fn () => view('piezas.personalizada'))
-    ->name('piezas.personalizada');
-
-// Preview (público para permitir edición antes de registrarse)
-Route::post('/piezas/preview', [PiezaController::class, 'preview'])
-    ->name('piezas.preview');
-
-// Store (autenticado)
-Route::middleware('auth')->group(function () {
-    Route::post('/piezas/store', [PiezaController::class, 'store'])
-        ->name('piezas.store');
-});
-
-*/
+ Route::post('/forgot-password', function () {
+ // TODO: Implementar lógica de recuperación de contraseña
+ return back()->with('status', 'Email enviado correctamente');
+ })->name('forgot-password.send');
+ Route::get('/login-options', function () {
+ return view('auth.login-options');
+ })->name('login-options');
+ Route::get('/register', function () {
+ return view('auth.register');
+ })->name('register');
+ Route::post('/register', function () {
+ // TODO: Implementar lógica de registro
+ return redirect()->route('home')->with('status', 'Registro completado correctamente');
+ })->name('register.store');
+ Route::view('reportes', 'reportes')
+ ->name('reportes');
+ Route::view('usuarios', 'usuarios')
+ ->name('usuarios');
+ Route::view('solicitudes', 'solicitudes')
+ ->name('solicitudes');
+ // Rutas administrativas de piezas (protegidas)
+ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
+ Route::get('/piezas', [PiezaController::class, 'adminIndex'])
+ ->name('admin.piezas.index');
+ Route::post('/piezas', [PiezaController::class, 'adminStore'])
+ ->name('admin.piezas.store');
+ Route::put('/piezas/{pieza}', [PiezaController::class, 'adminUpdate'])
+ ->name('admin.piezas.update');
+ Route::delete('/piezas/{pieza}', [PiezaController::class, 'adminDestroy'])
+ ->name('admin.piezas.destroy');
+ });
+ // Rutas para Catálogo de Piezas (públicas)
+ Route::get('/piezas/catalogo', [PiezaController::class, 'catalogo'])
+ ->name('piezas.catalogo');
+ // Selección de tipo
+ Route::get('/piezas/solicitar', fn () => view('piezas.solicitar'))
+ ->name('piezas.solicitar');
+ // Formularios
+ Route::get('/piezas/propia', fn () => view('piezas.propia'))
+ ->name('piezas.propia');
+ Route::get('/piezas/personalizada', fn () => view('piezas.personalizada'))
+ ->name('piezas.personalizada');
+ // Preview (público para permitir edición antes de registrarse)
+ Route::post('/piezas/preview', [PiezaController::class, 'preview'])
+ ->name('piezas.preview');
+ // Store (autenticado)
+ Route::middleware('auth')->group(function () {
+ Route::post('/piezas/store', [PiezaController::class, 'store'])
+ ->name('piezas.store');
+ });
+ */

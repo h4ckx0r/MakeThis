@@ -15,16 +15,17 @@ class SolicitudController extends Controller
     {
         $solicitudes = Solicitud::with(['user', 'estado', 'adjuntos', 'threeDModel.color', 'piezaCatalogo'])
             ->when($request->search, function ($q) use ($request) {
-                $q->where('id', 'like', '%' . $request->search . '%')
-                  ->orWhereHas('user', function ($uq) use ($request) {
-                      $uq->where('nombre', 'like', '%' . $request->search . '%')
-                         ->orWhere('apellidos', 'like', '%' . $request->search . '%')
-                         ->orWhere('email', 'like', '%' . $request->search . '%');
-                  });
-            })
+            $q->where('id', 'like', '%' . $request->search . '%')
+                ->orWhereHas('user', function ($uq) use ($request) {
+                $uq->where('nombre', 'like', '%' . $request->search . '%')
+                    ->orWhere('apellidos', 'like', '%' . $request->search . '%')
+                    ->orWhere('email', 'like', '%' . $request->search . '%');
+            }
+            );
+        })
             ->when($request->estado_id, function ($q) use ($request) {
-                $q->where('estadoId', $request->estado_id);
-            })
+            $q->where('estadoId', $request->estado_id);
+        })
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -37,11 +38,11 @@ class SolicitudController extends Controller
     public function update(Request $request, Solicitud $solicitud)
     {
         $request->validate([
-            'estado_id'          => 'required|uuid|exists:estados,id',
-            'detalles'           => 'nullable|string',
-            'altura_capa'        => 'nullable|numeric|min:0.05|max:1.0',
+            'estado_id' => 'required|uuid|exists:estados,id',
+            'detalles' => 'nullable|string',
+            'altura_capa' => 'nullable|numeric|min:0.05|max:1.0',
             'porcentaje_relleno' => 'nullable|integer|min:0|max:100',
-            'patron_relleno'     => 'nullable|string|in:rejilla,giroide,cubico,panal_de_abeja,panal_de_abeja_3d',
+            'patron_relleno' => 'nullable|string|in:rejilla,giroide,cubico,panal_de_abeja,panal_de_abeja_3d',
         ]);
 
         $solicitud->estadoId = $request->estado_id;
@@ -62,6 +63,22 @@ class SolicitudController extends Controller
         $solicitud->save();
 
         return redirect()->route('admin.requests')->with('success', 'Solicitud actualizada correctamente.');
+    }
+
+    public function cancel(Solicitud $solicitud)
+    {
+        if ($solicitud->userId !== auth()->id()) {
+            abort(403, 'No tienes permiso para cancelar esta solicitud.');
+        }
+
+        if ($solicitud->estado->nombreEstado !== 'Pendiente') {
+            return back()->with('error', 'Solo se pueden cancelar solicitudes en estado pendiente.');
+        }
+
+        $estadoCancelado = Estado::where('nombreEstado', 'Cancelada')->firstOrFail();
+        $solicitud->update(['estadoId' => $estadoCancelado->id]);
+
+        return back()->with('success', 'Solicitud cancelada correctamente.');
     }
 
     public function downloadAdjunto(Adjunto $adjunto)
