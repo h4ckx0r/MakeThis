@@ -6,6 +6,7 @@ use App\Models\ApiKey;
 use App\Models\Reporte;
 use App\Models\Solicitud;
 use App\Models\User;
+use App\Rules\ShortOrFullUuid;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -108,11 +109,13 @@ class ReporteController extends Controller
     public function apiStore(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'solicitudId' => 'required|uuid|exists:solicitudes,id',
+            'solicitudId' => ['required', new ShortOrFullUuid('solicitudes')],
             'fecha'       => 'required|date',
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'required|string',
         ]);
+
+        $validated['solicitudId'] = ShortOrFullUuid::resolveToFullUuid('solicitudes', $validated['solicitudId']);
 
         $reporte = Reporte::create($validated);
 
@@ -122,11 +125,15 @@ class ReporteController extends Controller
     public function apiUpdate(Request $request, Reporte $reporte): JsonResponse
     {
         $validated = $request->validate([
-            'solicitudId' => 'sometimes|uuid|exists:solicitudes,id',
+            'solicitudId' => ['sometimes', new ShortOrFullUuid('solicitudes')],
             'fecha'       => 'sometimes|date',
             'titulo'      => 'sometimes|string|max:255',
             'descripcion' => 'sometimes|string',
         ]);
+
+        if (isset($validated['solicitudId'])) {
+            $validated['solicitudId'] = ShortOrFullUuid::resolveToFullUuid('solicitudes', $validated['solicitudId']);
+        }
 
         $reporte->update($validated);
 

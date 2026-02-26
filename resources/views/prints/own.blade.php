@@ -1,5 +1,5 @@
 <x-layouts::home :title="'Sube tu Modelo 3D'">
-    <main class="grow container mx-auto px-4 py-6 md:py-12"
+    <main class="grow container px-4 py-6 md:py-12"
           x-data="{
               materialId: '',
               colorId: '',
