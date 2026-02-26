@@ -2,7 +2,7 @@
     <header
         class="flex h-16 w-full items-center justify-between rounded-full bg-black px-4 sm:px-8 ring-1 ring-white/10">
         {{-- Logo Section --}}
-        <div class="flex items-center gap-4 sm:gap-8">
+        <div class="flex items-center gap-2 sm:gap-8">
             <a href="{{ route('home') }}" class="flex items-center gap-2 transition-transform hover:scale-105"
                 wire:navigate>
                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-inner">
@@ -14,15 +14,15 @@
             {{-- Navigation Links --}}
             <nav class="flex items-center">
                 <a href="{{ route('prints.catalog') }}" wire:navigate
-                    class="px-3 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('prints.catalog') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
+                    class="px-2 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('prints.catalog') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
                     {{ __('Catálogo') }}
                 </a>
                 <a href="{{ route('prints.request') }}" wire:navigate
-                    class="px-3 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('prints.request') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
+                    class="px-2 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('prints.request') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
                     {{ __('Solicitar Pieza') }}
                 </a>
                 <a href="{{ route('about-us') }}" wire:navigate
-                    class="px-3 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('about-us.about-us') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
+                    class="hidden sm:block px-2 sm:px-4 py-2 text-sm font-medium transition-colors rounded-full {{ request()->routeIs('about-us.about-us') ? 'text-celeste bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/5' }}">
                     {{ __('Sobre nosotros') }}
                 </a>
             </nav>

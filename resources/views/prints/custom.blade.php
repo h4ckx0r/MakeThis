@@ -1,5 +1,5 @@
 <x-layouts::home :title="'Pieza Personalizada'">
-    <main class="grow container mx-auto px-4 py-12"
+    <main class="grow container mx-auto px-4 py-6 md:py-12"
           x-data="{
               materialId: '',
               colorId: '',
@@ -18,8 +18,8 @@
               }
           }">
 
-        <div class="mb-12">
-            <h1 class="text-4xl font-bold mb-2">Pieza Personalizada</h1>
+        <div class="mb-6 md:mb-12">
+            <h1 class="text-2xl sm:text-4xl font-bold mb-2">Pieza Personalizada</h1>
             <p class="text-base-content/60">Cuéntanos tu idea y nuestros diseñadores crearán el modelo perfecto para ti</p>
         </div>
 
@@ -137,9 +137,9 @@
             </div>
 
             <!-- Botones -->
-            <div class="flex gap-4 pt-6">
-                <a href="{{ route('prints.request') }}" class="btn btn-outline">Cancelar</a>
-                <button type="submit" class="btn btn-primary flex-1">Vista Previa</button>
+            <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                <a href="{{ route('prints.request') }}" class="btn btn-outline w-full sm:w-auto">Cancelar</a>
+                <button type="submit" class="btn btn-primary sm:flex-1">Vista Previa</button>
             </div>
         </form>
     </main>
