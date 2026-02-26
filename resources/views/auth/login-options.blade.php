@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        @include('partials.head')
-    </head>
-    <body class="bg-base-100 text-base-content">
-        <div class="min-h-screen flex flex-col">
+<x-layouts::home title="Iniciar Sesión">
             {{-- Header simple con logo --}}
             <header class="border-b border-base-300">
                 <div class="navbar mx-auto max-w-7xl px-6 py-4">
@@ -105,10 +99,4 @@
                     </div>
                 </div>
             </main>
-
-            {{-- Footer --}}
-            <x-home-footer />
-        </div>
-        @fluxScripts
-    </body>
-</html>
+</x-layouts::home>
